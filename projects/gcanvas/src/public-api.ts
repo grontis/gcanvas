@@ -1,6 +1,10 @@
-/*
- * Public API Surface of gcanvas
- */
-
-export * from './lib/gcanvas.service';
-export * from './lib/gcanvas.component';
+export { CanvasComponent } from './lib/canvas/canvas.component';
+export { ElementWrapperComponent } from './lib/elements/element-wrapper/element-wrapper.component';
+export { TextElementComponent } from './lib/elements/text-element/text-element.component';
+export { ImageElementComponent } from './lib/elements/image-element/image-element.component';
+export { FloatingToolbarComponent } from './lib/toolbar/floating-toolbar.component';
+export { CanvasStateService } from './lib/services/canvas-state.service';
+export { SelectionService } from './lib/services/selection.service';
+export { ELEMENT_REGISTRY_TOKEN, type ElementRegistryEntry } from './lib/tokens/element-registry.token';
+export * from './lib/models/canvas-element.model';
+export * from './lib/models/canvas-data.model';
