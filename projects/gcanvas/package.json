@@ -1,0 +1,20 @@
+{
+  "name": "gcanvas",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/cdk": ">=19.0.0",
+    "@angular/common": ">=19.0.0",
+    "@angular/core": ">=19.0.0",
+    "@tiptap/core": ">=2.0.0",
+    "@tiptap/extension-color": ">=2.0.0",
+    "@tiptap/extension-text-style": ">=2.0.0",
+    "@tiptap/extension-underline": ">=2.0.0",
+    "@tiptap/html": ">=2.0.0",
+    "@tiptap/starter-kit": ">=2.0.0",
+    "ngx-tiptap": ">=9.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
