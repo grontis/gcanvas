@@ -1,1 +1,16 @@
-<!-- gc-floating-toolbar -->
+@if (isVisible()) {
+  <div
+    class="gc-toolbar"
+    [style.top]="toolbarTop()"
+    [style.left]="toolbarLeft()"
+  >
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="bold()" title="Bold"><b>B</b></button>
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="italic()" title="Italic"><i>I</i></button>
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="underline()" title="Underline"><u>U</u></button>
+    <input
+      type="color"
+      title="Text color"
+      (input)="setColor($any($event.target).value)"
+    />
+  </div>
+}

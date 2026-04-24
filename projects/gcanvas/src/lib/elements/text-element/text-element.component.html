@@ -1,1 +1,14 @@
-<!-- gc-text-element -->
+@if (editMode()) {
+  <div class="gc-editor-wrapper" (focusout)="onEditorFocusOut($event)">
+    <tiptap-editor
+      [editor]="editor!"
+      (keydown.escape)="exitEdit()"
+    ></tiptap-editor>
+  </div>
+} @else {
+  <div
+    class="gc-text-display"
+    [innerHTML]="displayHtml()"
+    (dblclick)="onDoubleClick()"
+  ></div>
+}

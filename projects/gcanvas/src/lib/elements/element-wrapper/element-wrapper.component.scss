@@ -1,0 +1,35 @@
+:host {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.gc-element-wrapper {
+  position: relative;
+  box-sizing: border-box;
+  cursor: move;
+
+  &.cdk-drag-dragging {
+    opacity: 0.85;
+  }
+}
+
+// Resize handle base styles
+.gc-resize-handle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  border: 2px solid #1976d2;
+  border-radius: 2px;
+  z-index: 10;
+
+  &--n  { top: -5px;    left: 50%;   transform: translateX(-50%); cursor: n-resize;  }
+  &--ne { top: -5px;    right: -5px;                               cursor: ne-resize; }
+  &--e  { top: 50%;     right: -5px; transform: translateY(-50%); cursor: e-resize;  }
+  &--se { bottom: -5px; right: -5px;                               cursor: se-resize; }
+  &--s  { bottom: -5px; left: 50%;   transform: translateX(-50%); cursor: s-resize;  }
+  &--sw { bottom: -5px; left: -5px;                                cursor: sw-resize; }
+  &--w  { top: 50%;     left: -5px;  transform: translateY(-50%); cursor: w-resize;  }
+  &--nw { top: -5px;    left: -5px;                                cursor: nw-resize; }
+}

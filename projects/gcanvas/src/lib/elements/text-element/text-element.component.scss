@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: text;
+}
+
+.gc-text-display {
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.gc-editor-wrapper {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+tiptap-editor {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  /* TipTap renders a .ProseMirror div; give it full size and focus ring */
+  :global(.ProseMirror) {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    padding: 4px;
+    box-sizing: border-box;
+  }
+}

@@ -8,7 +8,7 @@
     "strict": true,
     "paths": {
       "gcanvas": [
-        "dist/gcanvas/gcanvas"
+        "dist/gcanvas"
       ]
     },
     "noImplicitOverride": true,

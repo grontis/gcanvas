@@ -1,1 +1,32 @@
-<!-- gc-element-wrapper -->
+<div
+  cdkDrag
+  [cdkDragFreeDragPosition]="dragPosition()"
+  [cdkDragDisabled]="element().locked ?? false"
+  (cdkDragStarted)="onSelect()"
+  (cdkDragEnded)="onDragEnded($event)"
+  (click)="onSelect()"
+  class="gc-element-wrapper"
+  [style.width.px]="effectiveSize().width"
+  [style.height.px]="effectiveSize().height"
+  [style.z-index]="element().zIndex"
+>
+  <!-- Dynamic element rendering -->
+  @if (elementComponent()) {
+    <ng-container
+      [ngComponentOutlet]="elementComponent()!"
+      [ngComponentOutletInputs]="outletInputs()"
+    ></ng-container>
+  }
+
+  <!-- Resize handles — shown only when selected -->
+  @if (isSelected()) {
+    @for (handle of ['n','ne','e','se','s','sw','w','nw']; track handle) {
+      <div
+        class="gc-resize-handle gc-resize-handle--{{ handle }}"
+        (pointerdown)="onResizeStart($event, handle)"
+        (pointermove)="onResizeMove($event)"
+        (pointerup)="onResizeEnd($event)"
+      ></div>
+    }
+  }
+</div>
