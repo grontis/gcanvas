@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CanvasComponent } from 'gcanvas';
-import type { CanvasData, CanvasChangeEvent, TextCanvasElement, ImageCanvasElement } from 'gcanvas';
+import { CanvasComponent } from '@grontis/gcanvas';
+import type { CanvasData, CanvasChangeEvent, TextCanvasElement, ImageCanvasElement } from '@grontis/gcanvas';
 
 @Component({
   selector: 'app-root',

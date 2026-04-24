@@ -7,7 +7,7 @@
     "baseUrl": ".",
     "strict": true,
     "paths": {
-      "gcanvas": [
+      "@grontis/gcanvas": [
         "dist/gcanvas"
       ]
     },

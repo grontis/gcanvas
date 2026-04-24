@@ -1,59 +1,110 @@
-# Gcanvas
+# @grontis/gcanvas
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.22.
+An Angular no-code canvas editor library. Embed a visual canvas where users can place, drag, resize, and edit text boxes (with rich text) and images.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Drag and reposition elements freely
+- Resize elements with 8-point handles
+- Rich text editing via TipTap (bold, italic, underline, color)
+- Image elements with configurable `objectFit`
+- Undo/redo (50-step history)
+- Signal-based, `OnPush` throughout — Angular 19 idiomatic
+- Storage-agnostic: accepts `CanvasData` as input, emits `CanvasChangeEvent` on every change
+- Plugin-friendly element registry for custom element types
 
-```bash
-ng serve
+## Installation
+
+Add a `.npmrc` to your project pointing `@grontis` to GitHub Packages:
+
+```
+@grontis:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Then install:
 
 ```bash
-ng generate component component-name
+npm install @grontis/gcanvas
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Peer dependencies (install these too if not already present):
 
 ```bash
-ng generate --help
+npm install @angular/cdk @tiptap/core @tiptap/starter-kit @tiptap/html \
+  @tiptap/extension-text-style @tiptap/extension-color @tiptap/extension-underline \
+  ngx-tiptap
 ```
 
-## Building
+## Basic usage
 
-To build the project run:
+```typescript
+import { CanvasComponent } from '@grontis/gcanvas';
+import type { CanvasData, CanvasChangeEvent } from '@grontis/gcanvas';
+
+@Component({
+  imports: [CanvasComponent],
+  template: `
+    <gc-canvas
+      [canvasData]="canvasData"
+      (canvasChange)="onCanvasChange($event)"
+    />
+  `,
+})
+export class AppComponent {
+  canvasData: CanvasData = {
+    version: 1,
+    viewport: { width: 1200, height: 800, backgroundColor: '#ffffff' },
+    elements: [],
+  };
+
+  onCanvasChange(event: CanvasChangeEvent): void {
+    this.canvasData = event.canvasData;
+  }
+}
+```
+
+## Development
 
 ```bash
-ng build
+# Terminal 1 — watch-build the library
+ng build gcanvas --watch
+
+# Terminal 2 — serve the demo app
+ng serve demo
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The demo app imports `@grontis/gcanvas` via a `tsconfig.json` path alias pointing to `dist/gcanvas`, so you must run the library build at least once before serving the demo.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Running tests
 
 ```bash
-ng test
+ng test gcanvas --no-watch --browsers=ChromeHeadless
 ```
 
-## Running end-to-end tests
+## Releasing
 
-For end-to-end (e2e) testing, run:
+Releases are published to GitHub Packages automatically when a version tag is pushed.
 
 ```bash
-ng e2e
+# Bump the version in projects/gcanvas/package.json, then:
+git add projects/gcanvas/package.json
+git commit -m "chore: bump version to x.y.z"
+git tag vx.y.z
+git push origin main --tags
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The `.github/workflows/publish.yml` workflow triggers on `v*` tags, builds the library in production mode, and publishes `dist/gcanvas` to `https://npm.pkg.github.com`.
 
-## Additional Resources
+No manual secrets are needed — the workflow uses the built-in `GITHUB_TOKEN`.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Keyboard shortcuts (in the canvas)
+
+| Key | Action |
+|-----|--------|
+| Click | Select element |
+| Double-click | Enter text edit mode |
+| Escape | Deselect / exit text edit |
+| Delete / Backspace | Remove selected element |
+| Ctrl+Z | Undo |
+| Ctrl+Shift+Z / Ctrl+Y | Redo |

@@ -1,6 +1,9 @@
 {
-  "name": "gcanvas",
-  "version": "0.0.1",
+  "name": "@grontis/gcanvas",
+  "version": "0.1.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "peerDependencies": {
     "@angular/cdk": ">=19.0.0",
     "@angular/common": ">=19.0.0",
