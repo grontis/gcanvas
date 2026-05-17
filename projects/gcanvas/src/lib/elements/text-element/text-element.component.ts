@@ -10,17 +10,16 @@ import {
 } from '@angular/core';
 import { TiptapEditorDirective } from 'ngx-tiptap';
 import { Editor } from '@tiptap/core';
-import { StarterKit } from '@tiptap/starter-kit';
-import { TextStyle } from '@tiptap/extension-text-style';
-import { Color } from '@tiptap/extension-color';
-import { Underline } from '@tiptap/extension-underline';
 import { generateHTML } from '@tiptap/html';
 import type { JSONContent } from '@tiptap/core';
 import { TextCanvasElement } from '../../models/canvas-element.model';
 import { CanvasStateService } from '../../services/canvas-state.service';
 import { SelectionService } from '../../services/selection.service';
+import {
+  TIPTAP_EXTENSIONS_TOKEN,
+  DEFAULT_TIPTAP_EXTENSIONS,
+} from '../../tokens/tiptap-extensions.token';
 
-const TIPTAP_EXTENSIONS = [StarterKit, TextStyle, Color, Underline];
 const DEBOUNCE_MS = 300;
 
 @Component({
@@ -38,6 +37,10 @@ export class TextElementComponent implements OnDestroy {
   private readonly canvasState = inject(CanvasStateService);
   private readonly selection = inject(SelectionService);
 
+  // Extensions — injected via token (optional) with fallback to the library defaults
+  private readonly extensions =
+    inject(TIPTAP_EXTENSIONS_TOKEN, { optional: true }) ?? DEFAULT_TIPTAP_EXTENSIONS;
+
   // Mode signal
   readonly editMode = signal(false);
 
@@ -46,7 +49,7 @@ export class TextElementComponent implements OnDestroy {
 
   // Computed display HTML — derived from element signal
   readonly displayHtml: Signal<string> = computed(() =>
-    generateHTML(this.element().content as JSONContent, TIPTAP_EXTENSIONS),
+    generateHTML(this.element().content as JSONContent, this.extensions),
   );
 
   private _debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -55,7 +58,7 @@ export class TextElementComponent implements OnDestroy {
     if (this.editMode()) return;
     this.editMode.set(true);
     this.editor = new Editor({
-      extensions: TIPTAP_EXTENSIONS,
+      extensions: this.extensions,
       content: this.element().content as JSONContent,
       onUpdate: ({ editor }) => {
         if (this._debounceTimer) clearTimeout(this._debounceTimer);

@@ -1,0 +1,27 @@
+.gc-preview-chrome {
+  background: #000;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+
+.gc-preview-columns {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+.gc-preview-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.gc-preview-label {
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

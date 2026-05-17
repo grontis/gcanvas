@@ -1,0 +1,55 @@
+<section class="gc-inspector-section">
+  <div class="gc-section-header">Effects</div>
+
+  <!-- Border radius -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Radius</label>
+    <input
+      class="gc-input gc-input--sm"
+      type="text"
+      [value]="borderRadius()"
+      (change)="onBorderRadiusChange($event)"
+      placeholder="0"
+    />
+  </div>
+
+  <!-- Shadow preset -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Shadow</label>
+    <select
+      class="gc-select"
+      [value]="shadowPreset()"
+      (change)="onShadowChange($event)"
+    >
+      @for (p of shadowPresets; track p) {
+        <option [value]="p">{{ p.charAt(0).toUpperCase() + p.slice(1) }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Opacity -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Opacity</label>
+    <input
+      class="gc-range"
+      type="range"
+      min="0"
+      max="100"
+      [value]="opacity()"
+      (input)="onOpacityInput($event)"
+    />
+    <span class="gc-field-unit">{{ opacity() }}%</span>
+  </div>
+
+  <!-- Border shorthand -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Border</label>
+    <input
+      class="gc-input"
+      type="text"
+      [value]="borderValue()"
+      (change)="onBorderChange($event)"
+      placeholder="e.g. 1px solid #ccc"
+    />
+  </div>
+</section>

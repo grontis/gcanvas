@@ -14,6 +14,17 @@
   }
 }
 
+// Locked element — suppress cursor and dim opacity
+.gc-element-wrapper--locked {
+  opacity: 0.6;
+  cursor: default;
+}
+
+// Hidden element — display: none when visible === false
+.gc-element-wrapper--hidden {
+  display: none;
+}
+
 // Resize handle base styles
 .gc-resize-handle {
   position: absolute;
@@ -32,4 +43,38 @@
   &--sw { bottom: -5px; left: -5px;                                cursor: sw-resize; }
   &--w  { top: 50%;     left: -5px;  transform: translateY(-50%); cursor: w-resize;  }
   &--nw { top: -5px;    left: -5px;                                cursor: nw-resize; }
+}
+
+// Dimension pill — shown during drag/resize
+.gc-dim-pill {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+}
+
+// Label badge — shown above selected element
+.gc-label-badge {
+  position: absolute;
+  top: -22px;
+  left: 0;
+  background: #1976d2;
+  color: #fff;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

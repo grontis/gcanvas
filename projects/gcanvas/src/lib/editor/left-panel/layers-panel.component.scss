@@ -1,0 +1,69 @@
+.gc-layers-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  min-height: 40px;
+}
+
+.gc-layer-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  background: #f5f5f5;
+  user-select: none;
+
+  &--selected {
+    background: #e3f2fd;
+    font-weight: 600;
+  }
+
+  &.cdk-drag-preview {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    background: #fff;
+  }
+
+  &.cdk-drag-placeholder {
+    opacity: 0.3;
+  }
+
+  &__drag-handle {
+    cursor: grab;
+    color: #999;
+    font-size: 14px;
+  }
+
+  &__label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__type {
+    color: #999;
+    font-size: 10px;
+    min-width: 36px;
+  }
+
+  &__icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 2px;
+    font-size: 13px;
+    opacity: 0.3;
+
+    &--active {
+      opacity: 1;
+    }
+  }
+}
+
+.cdk-drop-list-dragging .gc-layer-row:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

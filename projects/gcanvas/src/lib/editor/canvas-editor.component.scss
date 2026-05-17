@@ -1,0 +1,49 @@
+:host {
+  display: grid;
+  grid-template-columns: 248px 1fr 296px;
+  grid-template-rows: 40px 44px 1fr;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+}
+
+gc-editor-chrome-top {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+gc-editor-toolbar {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+gc-editor-left-panel {
+  grid-row: 3;
+  grid-column: 1;
+  border-right: 1px solid #e5e7eb;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.gc-canvas-wrap {
+  grid-row: 3;
+  grid-column: 2;
+  background-color: #f6f7f9;
+  background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: -1px -1px;
+  padding: 32px;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+gc-editor-inspector {
+  grid-row: 3;
+  grid-column: 3;
+}

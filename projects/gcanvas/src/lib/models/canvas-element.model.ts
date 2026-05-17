@@ -14,6 +14,8 @@ export interface BaseCanvasElement {
   size: ElementSize;
   zIndex: number;
   locked?: boolean;
+  visible?: boolean;
+  lockAspectRatio?: boolean;
   styles?: Record<string, string>;
 }
 

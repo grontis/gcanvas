@@ -1,0 +1,22 @@
+<!-- Vertical guide lines (axis === 'x') and horizontal guide lines (axis === 'y') -->
+@for (guide of snapGuide.activeGuides(); track guide.value + guide.axis) {
+  @if (guide.axis === 'x') {
+    <div
+      class="gc-snap-guide gc-snap-guide--vertical"
+      [style.left.px]="guide.value"
+      [style.height.px]="canvasHeight()"
+    ></div>
+  }
+  @if (guide.axis === 'y') {
+    <div
+      class="gc-snap-guide gc-snap-guide--horizontal"
+      [style.top.px]="guide.value"
+      [style.width.px]="canvasWidth()"
+    ></div>
+  }
+}
+
+<!-- Width-measurement pill -->
+@if (snapGuide.measurementWidth(); as w) {
+  <div class="gc-snap-measure-pill">W: {{ w }}px</div>
+}

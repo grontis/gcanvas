@@ -1,0 +1,2213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Canvas Editor — Wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F6F7F9;
+    --panel: #FFFFFF;
+    --ink: #0B0D10;
+    --ink-2: #1A1D21;
+    --text: #2B2F36;
+    --muted: #6B7280;
+    --sub: #9AA1AB;
+    --line: #E5E7EB;
+    --line-2: #EEF0F3;
+    --hover: #F3F4F6;
+    --chip: #F3F4F6;
+    --accent: oklch(0.62 0.19 258);
+    --accent-2: oklch(0.56 0.21 258);
+    --accent-soft: oklch(0.62 0.19 258 / 0.10);
+    --accent-ink: oklch(0.42 0.18 258);
+    --warn: #B4631D;
+    --warn-bg: #FBF4EA;
+    --ok: #187A47;
+    --ok-bg: #EAF5EE;
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --ui: 'Inter', system-ui, -apple-system, sans-serif;
+    --shadow-sm: 0 1px 2px rgba(10,13,18,0.04), 0 1px 1px rgba(10,13,18,0.03);
+    --shadow-md: 0 4px 12px rgba(10,13,18,0.06), 0 1px 2px rgba(10,13,18,0.04);
+    --shadow-lg: 0 12px 32px rgba(10,13,18,0.10), 0 2px 6px rgba(10,13,18,0.05);
+    --r-sm: 4px;
+    --r: 6px;
+    --r-md: 8px;
+    --r-lg: 10px;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: var(--ui);
+    font-size: 14px; line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.005em;
+  }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ========== TOP NAV ========== */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: saturate(140%) blur(8px);
+    -webkit-backdrop-filter: saturate(140%) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 24px 0;
+  }
+  .brand .logo {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: var(--ink); color: white;
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 13px;
+  }
+  .brand h1 {
+    font-size: 14px; font-weight: 600; margin: 0;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  .brand .sub {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--sub); letter-spacing: 0.02em;
+  }
+  .brand .spacer { flex: 1; }
+  .brand .tweak-hint {
+    font-size: 12px; color: var(--muted);
+    padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--panel);
+  }
+  .tabs {
+    display: flex; gap: 0; padding: 0 16px;
+    overflow-x: auto;
+  }
+  .tab {
+    font-family: var(--ui); font-size: 13px; font-weight: 500;
+    background: transparent; border: none; cursor: pointer;
+    padding: 12px 14px;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color 0.12s, border-color 0.12s;
+    margin-top: 8px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+  }
+  .tab .num {
+    font-family: var(--mono); font-size: 10px; color: var(--sub);
+    letter-spacing: 0.04em;
+  }
+  .tab.active .num { color: var(--ink); }
+
+  /* ========== SCREEN CONTAINER ========== */
+  .screen { display: none; padding: 28px 32px 96px; max-width: 1440px; margin: 0 auto; }
+  .screen.active { display: block; }
+  .screen-head {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px;
+  }
+  .screen-head h2 {
+    font-size: 22px; margin: 0; font-weight: 600;
+    color: var(--ink); letter-spacing: -0.015em;
+  }
+  .screen-head .tag {
+    font-family: var(--mono); font-size: 11px; color: var(--sub);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .screen-desc {
+    font-size: 13px; color: var(--muted);
+    max-width: 760px; margin: 0 0 22px;
+    line-height: 1.55;
+  }
+
+  /* ========== VARIATION SWITCHER ========== */
+  .var-switch {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 3px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .var-switch button {
+    font-family: var(--ui); font-size: 12px; font-weight: 500;
+    background: transparent; border: none; cursor: pointer;
+    padding: 6px 14px; border-radius: 4px;
+    color: var(--muted);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .var-switch button .n {
+    font-family: var(--mono); font-size: 10px; color: var(--sub);
+  }
+  .var-switch button:hover { color: var(--ink); }
+  .var-switch button.on {
+    background: var(--ink); color: white;
+  }
+  .var-switch button.on .n { color: rgba(255,255,255,0.6); }
+
+  /* ========== EDITOR SHELL ========== */
+  .editor {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    display: grid;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .editor.v1 { grid-template-columns: 248px 1fr 296px; grid-template-rows: 40px 44px 1fr; }
+  .editor.v2 { grid-template-columns: 52px 1fr 296px; grid-template-rows: 40px 1fr; }
+  .editor.v3 { grid-template-columns: 1fr; grid-template-rows: 40px 44px 1fr; }
+  .editor.v4 { grid-template-columns: 260px 1fr; grid-template-rows: 40px 1fr; }
+
+  /* chrome top */
+  .chrome-top {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    font-size: 12px;
+  }
+  .chrome-top .crumbs { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .chrome-top .crumbs b { color: var(--ink); font-weight: 600; }
+  .chrome-top .crumbs .sep { color: var(--sub); }
+  .chrome-top .dot-saved {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ok);
+  }
+  .chrome-top .status { color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+  .chrome-top .spacer { flex: 1; }
+  .chrome-top .mini { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+  .chrome-top .mini:hover { background: var(--hover); color: var(--ink); }
+  .kbd {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--muted);
+    background: var(--chip);
+    border: 1px solid var(--line);
+    padding: 1px 5px; border-radius: 3px;
+    line-height: 1.4;
+  }
+  .btn-publish {
+    background: var(--ink); color: white;
+    border: none; padding: 6px 12px; border-radius: var(--r-sm);
+    font-family: var(--ui); font-size: 12px; font-weight: 500;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-publish:hover { background: var(--ink-2); }
+  .btn-publish svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* toolbar row */
+  .toolbar {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 2px;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    font-size: 12px;
+  }
+  .tool {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 9px; border-radius: var(--r-sm);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 12px; font-weight: 500;
+  }
+  .tool:hover { background: var(--hover); }
+  .tool.on { background: var(--ink); color: white; }
+  .tool svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .tsep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+  .toolbar .right-tools { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .bp-group {
+    display: flex; gap: 1px; background: var(--chip);
+    padding: 2px; border-radius: 5px;
+  }
+  .bp-group .tool {
+    padding: 4px 8px; color: var(--muted); background: transparent;
+  }
+  .bp-group .tool.on { background: var(--panel); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+  /* left panel */
+  .left {
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--line-2);
+    font-weight: 500;
+  }
+  .panel-head .title { color: var(--ink); font-weight: 600; font-size: 12px; }
+  .search-input {
+    display: flex; align-items: center; gap: 6px;
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    padding: 5px 8px; background: var(--bg);
+    font-size: 12px; color: var(--muted);
+    flex: 1;
+  }
+  .search-input svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .search-input .k { margin-left: auto; }
+
+  .comp-section {
+    font-family: var(--ui); font-size: 10px;
+    color: var(--sub); letter-spacing: 0.06em;
+    padding: 10px 12px 6px; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .comp-grid { padding: 0 10px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .comp {
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    background: var(--panel); padding: 10px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--text);
+    cursor: grab;
+    aspect-ratio: 1.25;
+    transition: border-color 0.1s, background 0.1s;
+  }
+  .comp:hover { border-color: var(--ink); background: var(--hover); }
+  .comp svg { width: 22px; height: 20px; stroke: var(--text); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* right panel / inspector */
+  .right {
+    border-left: 1px solid var(--line);
+    background: var(--panel);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .right .panel-head { justify-content: space-between; }
+  .right .panel-head .type-chip {
+    font-family: var(--mono); font-size: 10px;
+    background: var(--chip); color: var(--text);
+    padding: 1px 6px; border-radius: 3px;
+  }
+  .inspector { padding: 4px 0 14px; overflow-y: auto; }
+  .insp-section {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .insp-section:last-child { border-bottom: none; }
+  .insp-title {
+    font-size: 10px; color: var(--sub);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 8px; font-weight: 600;
+    display: flex; justify-content: space-between;
+  }
+  .insp-title .link { color: var(--muted); cursor: pointer; font-weight: 500; letter-spacing: 0; text-transform: none; }
+  .insp-row {
+    display: grid; grid-template-columns: 52px 1fr; gap: 8px;
+    align-items: center; margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .insp-row label { color: var(--muted); font-size: 11px; }
+  .insp-row .v {
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    padding: 4px 8px; background: var(--panel);
+    font-family: var(--mono); font-size: 11px;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 6px;
+    min-height: 26px;
+  }
+  .insp-row .v.ph { color: var(--sub); }
+  .insp-row .v .unit { color: var(--sub); margin-left: auto; }
+  .insp-row .v .caret { color: var(--sub); margin-left: auto; font-size: 10px; }
+  .insp-row .v.focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+  .insp-pair {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  }
+  .swatch {
+    width: 14px; height: 14px; border-radius: 3px;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .seg {
+    display: flex; background: var(--chip); border-radius: 5px; padding: 2px; gap: 1px;
+  }
+  .seg button {
+    flex: 1; border: none; background: transparent;
+    padding: 4px; border-radius: 3px; cursor: pointer;
+    color: var(--muted);
+    display: grid; place-items: center;
+  }
+  .seg button.on { background: var(--panel); color: var(--ink); box-shadow: var(--shadow-sm); }
+  .seg button svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+
+  /* canvas area */
+  .canvas-wrap {
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle, #D1D5DB 1px, transparent 1px);
+    background-size: 16px 16px;
+    background-position: -1px -1px;
+    padding: 32px;
+    overflow: auto;
+    position: relative;
+    min-height: 640px;
+  }
+  .page {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    box-shadow: var(--shadow-md);
+    margin: 0 auto;
+    position: relative;
+    min-height: 720px;
+    width: 900px;
+    max-width: 100%;
+  }
+  .page.mobile { width: 375px; }
+  .page.tablet { width: 768px; }
+
+  /* elements */
+  .el { position: absolute; }
+  .el-label {
+    position: absolute; top: -22px; left: 0;
+    font-family: var(--mono); font-size: 10px; color: white;
+    background: var(--accent); padding: 2px 6px; border-radius: 3px 3px 0 0;
+    white-space: nowrap; font-weight: 500;
+  }
+  .el.selected { outline: 1.5px solid var(--accent); outline-offset: 0; }
+  .el.selected .handles i {
+    position: absolute; width: 8px; height: 8px;
+    background: white; border: 1.5px solid var(--accent);
+    border-radius: 1.5px;
+    z-index: 3;
+  }
+  .el.selected .handles i.tl { top: -5px; left: -5px; }
+  .el.selected .handles i.tr { top: -5px; right: -5px; }
+  .el.selected .handles i.bl { bottom: -5px; left: -5px; }
+  .el.selected .handles i.br { bottom: -5px; right: -5px; }
+  .el.selected .handles i.tm { top: -5px; left: 50%; transform: translateX(-50%); }
+  .el.selected .handles i.bm { bottom: -5px; left: 50%; transform: translateX(-50%); }
+  .el.selected .handles i.lm { left: -5px; top: 50%; transform: translateY(-50%); }
+  .el.selected .handles i.rm { right: -5px; top: 50%; transform: translateY(-50%); }
+
+  .el-heading {
+    font-family: var(--ui); font-size: 34px; color: var(--ink);
+    line-height: 1.15; font-weight: 600; letter-spacing: -0.02em;
+  }
+  .el-body { font-family: var(--ui); font-size: 14px; color: var(--text); line-height: 1.55; }
+  .el-btn {
+    background: var(--ink); color: white;
+    padding: 9px 16px; border-radius: var(--r-sm);
+    font-family: var(--ui); font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  /* image placeholder */
+  .img-ph {
+    background: #F3F4F6;
+    background-image: linear-gradient(135deg, transparent 46%, #E5E7EB 46%, #E5E7EB 54%, transparent 54%);
+    background-size: 10px 10px;
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.02em;
+    border-radius: var(--r-sm);
+    position: relative;
+  }
+  .img-ph.small::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' stroke='%239AA1AB' stroke-width='1.3' fill='none' stroke-linejoin='round'><rect x='3' y='5' width='18' height='14' rx='1'/><circle cx='9' cy='10' r='1.5'/><path d='M21 16l-5-5-7 7'/></svg>") no-repeat center / 20px;
+    opacity: 0.5;
+  }
+  .shape-ph {
+    border: 1px solid var(--line);
+    background: #FAFBFC;
+    border-radius: var(--r-sm);
+  }
+
+  /* rich text float */
+  .rt-float {
+    position: absolute;
+    background: var(--ink); color: white;
+    border-radius: var(--r);
+    padding: 4px;
+    display: flex; align-items: center; gap: 1px;
+    font-size: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 10;
+  }
+  .rt-float::after {
+    content: ""; position: absolute; bottom: -5px; left: 28px;
+    width: 10px; height: 10px; background: var(--ink);
+    transform: rotate(45deg);
+  }
+  .rt-float .rt {
+    padding: 5px 8px; border-radius: 3px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,0.85);
+  }
+  .rt-float .rt:hover { background: rgba(255,255,255,0.1); color: white; }
+  .rt-float .rt.on { background: var(--accent); color: white; }
+  .rt-float .rt svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .rt-float .sep { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: 0 2px; }
+  .rt-float .sel {
+    font-family: var(--ui); font-size: 12px;
+    padding: 5px 8px; border-radius: 3px; display: inline-flex; align-items: center; gap: 6px;
+    color: white;
+  }
+
+  /* guides */
+  .guide-v { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--accent); opacity: 0.7; }
+  .guide-h { position: absolute; left: 0; right: 0; height: 1px; background: var(--accent); opacity: 0.7; }
+  .dim-pill {
+    position: absolute;
+    background: var(--accent); color: white;
+    font-family: var(--mono); font-size: 10px;
+    padding: 2px 6px; border-radius: 3px;
+    white-space: nowrap; font-weight: 500;
+  }
+
+  /* ========== V2 RAIL ========== */
+  .rail {
+    border-right: 1px solid var(--line);
+    background: var(--panel);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 8px 0; gap: 2px;
+  }
+  .rail .r-btn {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    border-radius: var(--r-sm); cursor: pointer;
+    color: var(--muted);
+    position: relative;
+  }
+  .rail .r-btn:hover { background: var(--hover); color: var(--ink); }
+  .rail .r-btn.on { background: var(--ink); color: white; }
+  .rail .r-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .rail .sep { width: 20px; height: 1px; background: var(--line); margin: 4px 0; }
+
+  /* ========== V3 CANVAS-FIRST ========== */
+  .canvas-wrap.v3 {
+    background-color: var(--bg);
+  }
+
+  /* ========== V4 UNIFIED LEFT ========== */
+  .left-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    padding: 0 8px;
+  }
+  .left-tabs button {
+    padding: 10px 12px; font-size: 12px; font-weight: 500;
+    background: transparent; border: none; cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .left-tabs button.on { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ========== TEMPLATE PICKER ========== */
+  .tpl-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .tpl-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+  }
+  .tpl-card:hover {
+    border-color: var(--ink);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .tpl-card .preview {
+    background: var(--bg); aspect-ratio: 4/3;
+    border-bottom: 1px solid var(--line);
+    padding: 16px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .tpl-card .meta {
+    padding: 12px 14px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .tpl-card .meta .name { font-weight: 500; font-size: 13px; color: var(--ink); }
+  .tpl-card .meta .cat {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--sub); letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .tpl-card .mini-block { background: var(--line); border-radius: 3px; }
+  .tpl-card.blank .preview {
+    align-items: center; justify-content: center;
+    background: #FCFCFD;
+    color: var(--muted);
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tpl-card.blank .plus-ic {
+    width: 36px; height: 36px; border: 1.5px dashed var(--line);
+    border-radius: 50%; display: grid; place-items: center; font-size: 20px;
+    color: var(--muted);
+  }
+
+  /* ========== PREVIEW MODE ========== */
+  .preview-bar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 16px;
+    background: var(--ink); color: white;
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    font-size: 12px;
+  }
+  .preview-bar .back {
+    color: rgba(255,255,255,0.7);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+  }
+  .preview-bar .back svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .preview-bar .path { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.6); letter-spacing: 0.03em; }
+  .preview-bar .bp-switch { display: flex; gap: 1px; background: rgba(255,255,255,0.08); border-radius: 5px; padding: 2px; margin-left: auto; }
+  .preview-bar .bp-switch button {
+    background: transparent; border: none; color: rgba(255,255,255,0.7);
+    font-family: var(--ui); font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 3px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .preview-bar .bp-switch button.on { background: rgba(255,255,255,0.14); color: white; }
+  .preview-bar .bp-switch svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .preview-bar .share {
+    font-size: 12px; padding: 5px 10px; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.15); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .preview-bar .share svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+  .preview-stage {
+    background: #1A1D21;
+    border: 1px solid var(--ink);
+    border-top: none;
+    border-radius: 0 0 var(--r-md) var(--r-md);
+    padding: 36px 24px 32px; min-height: 620px;
+    overflow: auto;
+    display: flex; justify-content: center; align-items: flex-start;
+    gap: 24px;
+  }
+  .device {
+    background: white; border-radius: var(--r);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.2);
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .device .bp-label {
+    position: absolute; top: -22px; left: 0;
+    font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.6);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .device .bp-size { position: absolute; top: -22px; right: 0; font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,0.4); }
+  .device-mobile { width: 360px; min-height: 560px; }
+  .device-tablet { width: 720px; min-height: 560px; }
+  .device-desktop { width: 1040px; min-height: 560px; }
+
+  /* live-preview page content */
+  .pg-nav {
+    display: flex; align-items: center; gap: 18px;
+    padding: 12px 20px; border-bottom: 1px solid var(--line-2);
+    font-size: 13px;
+  }
+  .pg-nav .logo { font-weight: 700; font-size: 14px; color: var(--ink); flex: 1; letter-spacing: -0.01em; }
+  .pg-nav a { color: var(--muted); font-size: 13px; }
+  .mburger { margin-left: auto; font-family: var(--mono); color: var(--ink); }
+  .pg-hero { padding: 28px 20px; }
+  .pg-hero .kicker {
+    font-family: var(--mono); font-size: 10px; color: var(--accent-ink);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .pg-hero h3 {
+    font-size: 32px; margin: 0 0 10px; line-height: 1.15;
+    color: var(--ink); font-weight: 600; letter-spacing: -0.02em;
+  }
+  .pg-hero p { font-size: 14px; color: var(--muted); margin: 0 0 16px; line-height: 1.5; }
+  .pg-hero .cta {
+    display: inline-block; background: var(--ink); color: white;
+    padding: 9px 16px; border-radius: var(--r-sm); font-weight: 500; font-size: 13px;
+  }
+  .pg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 20px; }
+  .pg-grid-3.stack { grid-template-columns: 1fr; }
+  .pg-card { border: 1px solid var(--line-2); border-radius: var(--r-sm); padding: 14px; background: white; }
+  .pg-card h4 { font-size: 14px; margin: 10px 0 2px; font-weight: 600; color: var(--ink); }
+  .pg-card p { font-size: 12px; color: var(--muted); margin: 0; }
+
+  .mobile-stack .pg-grid-3 { grid-template-columns: 1fr; }
+  .mobile-stack .pg-hero h3 { font-size: 24px; }
+  .mobile-stack .pg-nav a:not(.mburger) { display: none; }
+
+  /* ========== PUBLISH ========== */
+  .pub-wrap {
+    max-width: 580px; margin: 0 auto;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+  .pub-head {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .pub-head h3 {
+    font-size: 18px; margin: 0 0 4px;
+    font-weight: 600; color: var(--ink); letter-spacing: -0.015em;
+  }
+  .pub-head p { color: var(--muted); font-size: 13px; margin: 0; }
+  .pub-body { padding: 18px 24px 20px; }
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 11px; letter-spacing: 0.04em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .field .input {
+    border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--panel);
+    padding: 8px 12px; font-size: 13px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .field .input .prefix { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+  .field .input .val { flex: 1; color: var(--ink); font-family: var(--mono); font-size: 12px; }
+  .field .input .badge {
+    font-family: var(--mono); font-size: 10px;
+    background: var(--ok-bg); color: var(--ok);
+    padding: 2px 7px; border-radius: 3px;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-weight: 500;
+  }
+  .field .input .badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--ok); }
+  .checklist { list-style: none; padding: 0; margin: 0; }
+  .checklist li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; font-size: 13px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .fix {
+    margin-left: auto; font-size: 12px; color: var(--accent);
+    font-weight: 500; cursor: pointer;
+  }
+  .check {
+    width: 18px; height: 18px; border: 1px solid var(--line); border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0; color: var(--sub);
+  }
+  .check svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+  .check.done { background: var(--ok); border-color: var(--ok); color: white; }
+  .check.warn { background: var(--warn-bg); border-color: var(--warn); color: var(--warn); }
+  .pub-footer {
+    padding: 14px 24px; background: var(--bg); border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .btn {
+    font-family: var(--ui); font-size: 13px; font-weight: 500;
+    padding: 7px 14px; border-radius: var(--r-sm); cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--hover); }
+  .btn.primary { background: var(--ink); border-color: var(--ink); color: white; }
+  .btn.primary:hover { background: var(--ink-2); }
+  .btn.ghost { border: none; background: transparent; color: var(--muted); }
+  .btn.ghost:hover { background: var(--hover); color: var(--ink); }
+
+  /* ========== LIBRARY ========== */
+  .lib-shell {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-md);
+    display: grid; grid-template-columns: 200px 1fr 320px;
+    min-height: 620px;
+    overflow: hidden;
+  }
+  .lib-nav { border-right: 1px solid var(--line); padding: 12px 8px; background: var(--panel); }
+  .lib-nav .n-sec {
+    font-size: 10px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 10px 10px 4px; font-weight: 600;
+  }
+  .lib-nav .n-item {
+    font-size: 13px; padding: 6px 10px; border-radius: var(--r-sm);
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+    color: var(--text);
+  }
+  .lib-nav .n-item:hover { background: var(--hover); }
+  .lib-nav .n-item.on { background: var(--ink); color: white; }
+  .lib-nav .n-item .n-count {
+    margin-left: auto; font-family: var(--mono); font-size: 10px;
+    color: var(--sub); opacity: 0.8;
+  }
+  .lib-nav .n-item.on .n-count { color: rgba(255,255,255,0.6); }
+  .lib-nav .n-item svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+  .lib-main { padding: 18px 20px; overflow: auto; background: var(--bg); }
+  .lib-filter {
+    display: flex; gap: 6px; margin-bottom: 16px; align-items: center;
+  }
+  .lib-filter .chip {
+    padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line);
+    font-size: 12px; color: var(--muted); background: var(--panel);
+    cursor: pointer; font-weight: 500;
+  }
+  .lib-filter .chip.on { background: var(--ink); color: white; border-color: var(--ink); }
+  .lib-filter .search-big {
+    margin-left: auto;
+    min-width: 220px;
+  }
+  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .lib-item {
+    border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--panel);
+    overflow: hidden; cursor: grab;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+  .lib-item:hover { border-color: var(--ink); box-shadow: var(--shadow-sm); }
+  .lib-item .prev {
+    aspect-ratio: 4/3; background: var(--bg); padding: 14px;
+    display: flex; flex-direction: column; gap: 5px; border-bottom: 1px solid var(--line-2);
+  }
+  .lib-item .nm {
+    padding: 8px 10px; font-size: 12px; color: var(--ink);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .lib-item .nm .k {
+    font-family: var(--mono); font-size: 10px; color: var(--sub);
+    background: var(--chip); padding: 1px 5px; border-radius: 3px;
+  }
+  .lib-item.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .lib-detail { border-left: 1px solid var(--line); background: var(--panel); padding: 18px; overflow: auto; }
+  .lib-detail h4 { font-size: 15px; margin: 0 0 4px; font-weight: 600; color: var(--ink); }
+  .lib-detail .desc { font-size: 13px; color: var(--muted); margin: 0 0 14px; line-height: 1.5; }
+  .lib-detail .big-prev {
+    background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm);
+    aspect-ratio: 4/3; margin-bottom: 16px; padding: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .lib-detail .prop {
+    display: flex; justify-content: space-between; font-size: 12px;
+    padding: 6px 0; border-bottom: 1px solid var(--line-2);
+    color: var(--muted);
+  }
+  .lib-detail .prop:last-of-type { border-bottom: none; }
+  .lib-detail .prop span:last-child { font-family: var(--mono); font-size: 11px; color: var(--ink); }
+
+  /* annotations */
+  .annot {
+    position: absolute;
+    font-size: 11px;
+    color: var(--accent-ink);
+    pointer-events: none;
+  }
+  .annot .note {
+    background: var(--accent-soft); padding: 3px 8px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 500;
+    color: var(--accent-ink);
+  }
+
+  /* TWEAKS PANEL */
+  .tweaks-panel {
+    position: fixed; right: 20px; bottom: 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-lg);
+    padding: 14px; width: 260px; z-index: 200;
+    display: none;
+  }
+  .tweaks-panel.on { display: block; }
+  .tweaks-panel h4 {
+    font-size: 13px; margin: 0 0 12px; font-weight: 600;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  .tweaks-panel .row { margin-bottom: 12px; }
+  .tweaks-panel .row:last-child { margin-bottom: 0; }
+  .tweaks-panel label {
+    font-size: 10px; color: var(--sub);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: block; margin-bottom: 6px; font-weight: 600;
+  }
+  .tweaks-panel .accents { display: flex; gap: 6px; }
+  .tweaks-panel .accents button {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--panel);
+    outline: 1px solid var(--line);
+    cursor: pointer; padding: 0;
+  }
+  .tweaks-panel .accents button.on { outline: 2px solid var(--ink); outline-offset: 0; }
+  .tweaks-panel .toggle {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; padding: 4px 0; color: var(--text);
+  }
+  .tweaks-panel .sw {
+    width: 30px; height: 18px; border-radius: 9px; background: var(--line);
+    position: relative; cursor: pointer; transition: background 0.15s;
+  }
+  .tweaks-panel .sw::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; background: white; border-radius: 50%;
+    transition: transform 0.15s;
+    box-shadow: var(--shadow-sm);
+  }
+  .tweaks-panel .sw.on { background: var(--ink); }
+  .tweaks-panel .sw.on::after { transform: translateX(12px); }
+  .tweaks-panel .radio {
+    display: flex; gap: 4px;
+  }
+  .tweaks-panel .radio button {
+    flex: 1; padding: 5px; font-size: 11px; font-weight: 500;
+    border: 1px solid var(--line); border-radius: var(--r-sm);
+    background: var(--panel); cursor: pointer; color: var(--text);
+  }
+  .tweaks-panel .radio button.on { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* blink */
+  @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+  .caret-blink { display: inline-block; width: 2px; height: 34px; background: var(--accent); vertical-align: middle; margin-left: 1px; animation: blink 1s infinite; }
+
+  /* status pill green dot in chrome */
+  .status-pill { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; padding: 4px 8px; }
+
+  /* layers tree */
+  .layer-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 10px; font-size: 12px;
+    border-radius: var(--r-sm); cursor: pointer;
+    color: var(--text);
+  }
+  .layer-row:hover { background: var(--hover); }
+  .layer-row.sel { background: var(--accent-soft); color: var(--accent-ink); font-weight: 500; }
+  .layer-row .ic { width: 14px; height: 14px; color: var(--muted); }
+  .layer-row.sel .ic { color: var(--accent-ink); }
+  .layer-row.sel svg { stroke: var(--accent-ink); }
+  .layer-row svg { width: 14px; height: 14px; stroke: var(--muted); fill: none; stroke-width: 1.7; }
+  .layer-indent { padding-left: 14px; }
+
+  /* inspector focal cross */
+  .focal-box {
+    position: relative;
+    width: 100%; aspect-ratio: 4/3;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: calc(100%/3) calc(100%/3);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+  }
+  .focal-dot {
+    position: absolute; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); border: 2px solid white;
+    box-shadow: 0 0 0 1px var(--accent);
+    transform: translate(-50%, -50%);
+    cursor: grab;
+  }
+</style>
+</head>
+<body>
+
+<!-- ICON DEFS -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-cursor" viewBox="0 0 24 24"><path d="M5 3l4 15 3-6 6-3z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M5 6h14M12 6v14M9 20h6" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M21 16l-5-5-7 7" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shape" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-button" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.7"/></symbol>
+    <symbol id="i-section" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-cols2" viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="13" y="4" width="8" height="16" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-cols3" viewBox="0 0 24 24"><rect x="3" y="4" width="5" height="16" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="9.5" y="4" width="5" height="16" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="16" y="4" width="5" height="16" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-stack" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="0.8" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="3" y="10" width="18" height="4" rx="0.8" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="3" y="16" width="18" height="4" rx="0.8" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-para" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.7"/></symbol>
+    <symbol id="i-form" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="4" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="3" y="11" width="18" height="4" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/><rect x="3" y="17" width="8" height="3" rx="1" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></symbol>
+    <symbol id="i-embed" viewBox="0 0 24 24"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 18l9 5 9-5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M21 21l-4.5-4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-desktop" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-tablet" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-mobile" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 5v9M12 18.5v.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bold" viewBox="0 0 24 24"><path d="M7 5h6a4 4 0 010 8H7zM7 13h7a4 4 0 010 8H7z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-italic" viewBox="0 0 24 24"><path d="M10 5h8M6 19h8M14 5l-4 14" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="i-underline" viewBox="0 0 24 24"><path d="M7 4v8a5 5 0 0010 0V4M5 20h14" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-align-l" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-align-c" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M5 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-align-r" viewBox="0 0 24 24"><path d="M4 6h16M10 12h10M6 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="18" cy="12" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-crop" viewBox="0 0 24 24"><path d="M7 3v14h14M3 7h14v14" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-replace" viewBox="0 0 24 24"><path d="M17 3l4 4-4 4M3 7h18M7 21l-4-4 4-4M21 17H3" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v14" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-media" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><circle cx="9" cy="10" r="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-nav" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.5 6 6.5.6-5 4.4 1.5 6.4L12 17l-5.5 3.4L8 14l-5-4.4 6.5-.6z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a1 1 0 011-1h5l2 2h9a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-shop" viewBox="0 0 24 24"><path d="M4 8h16l-1.5 11a1 1 0 01-1 .9H6.5a1 1 0 01-1-.9zM8 8V6a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 6a3 3 0 10-3 3h12a3 3 0 10-3-3v12a3 3 0 103-3H6a3 3 0 103 3z" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M8 11V8a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.7" fill="none"/></symbol>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">C</div>
+    <h1>Canvas Editor</h1>
+    <span class="sub">Wireframes · v2 · technical</span>
+    <div class="spacer"></div>
+    <span class="tweak-hint">Enable Tweaks in toolbar to explore variations</span>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-screen="s1"><span class="num">01</span>Editor</button>
+    <button class="tab" data-screen="s2"><span class="num">02</span>Empty · New</button>
+    <button class="tab" data-screen="s3"><span class="num">03</span>Text editing</button>
+    <button class="tab" data-screen="s4"><span class="num">04</span>Image editing</button>
+    <button class="tab" data-screen="s5"><span class="num">05</span>Library</button>
+    <button class="tab" data-screen="s6"><span class="num">06</span>Responsive preview</button>
+    <button class="tab" data-screen="s7"><span class="num">07</span>Publish</button>
+    <button class="tab" data-screen="s8"><span class="num">08</span>Templates</button>
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SCREEN 1: EDITOR + 4 VARIATIONS               -->
+<!-- ============================================= -->
+<section class="screen active" id="s1">
+  <div class="screen-head">
+    <h2>Editor</h2>
+    <span class="tag">Four layout approaches</span>
+  </div>
+  <p class="screen-desc">Same content, four different chrome arrangements. V1 is the standard three-panel layout. V2 trades the components grid for a thin icon rail with a flyout. V3 removes fixed panels entirely and lets a ⌘K command palette + contextual floating controls drive everything. V4 unifies Add, Layers, and Style into one tabbed left panel.</p>
+
+  <div class="var-switch" id="varSwitch">
+    <button class="on" data-var="v1"><span class="n">V1</span> Classic three-panel</button>
+    <button data-var="v2"><span class="n">V2</span> Icon rail + inspector</button>
+    <button data-var="v3"><span class="n">V3</span> Canvas-first · ⌘K</button>
+    <button data-var="v4"><span class="n">V4</span> Unified left panel</button>
+  </div>
+
+  <!-- V1 -->
+  <div class="editor v1" data-var="v1">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Sunrise Bakery</b><span class="sep">/</span><span>Home</span></div>
+      <div class="spacer"></div>
+      <span class="status-pill"><span class="dot-saved"></span>Saved</span>
+      <span class="mini"><span class="kbd">⌘Z</span></span>
+      <span class="mini"><span class="kbd">⌘⇧Z</span></span>
+      <button class="btn-publish">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg><use href="#i-cursor"/></svg>Select</div>
+      <div class="tool"><svg><use href="#i-text"/></svg>Text</div>
+      <div class="tool"><svg><use href="#i-image"/></svg>Image</div>
+      <div class="tool"><svg><use href="#i-shape"/></svg>Shape</div>
+      <div class="tool"><svg><use href="#i-button"/></svg>Button</div>
+      <div class="tsep"></div>
+      <div class="tool"><svg><use href="#i-layers"/></svg>Layers</div>
+      <div class="tool"><svg><use href="#i-trash"/></svg></div>
+      <div class="right-tools">
+        <span class="kbd">Zoom 100%</span>
+        <div class="bp-group">
+          <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+          <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+          <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEFT: components -->
+    <div class="left">
+      <div class="panel-head">
+        <div class="search-input"><svg><use href="#i-search"/></svg>Search components<span class="k kbd">⌘K</span></div>
+      </div>
+      <div class="comp-section">Layout</div>
+      <div class="comp-grid">
+        <div class="comp"><svg><use href="#i-section"/></svg>Section</div>
+        <div class="comp"><svg><use href="#i-cols2"/></svg>2 columns</div>
+        <div class="comp"><svg><use href="#i-cols3"/></svg>3 columns</div>
+        <div class="comp"><svg><use href="#i-stack"/></svg>Stack</div>
+      </div>
+      <div class="comp-section">Content</div>
+      <div class="comp-grid">
+        <div class="comp"><svg><use href="#i-text"/></svg>Heading</div>
+        <div class="comp"><svg><use href="#i-para"/></svg>Paragraph</div>
+        <div class="comp"><svg><use href="#i-image"/></svg>Image</div>
+        <div class="comp"><svg><use href="#i-button"/></svg>Button</div>
+        <div class="comp"><svg><use href="#i-card"/></svg>Card</div>
+        <div class="comp"><svg><use href="#i-form"/></svg>Form</div>
+      </div>
+      <div class="comp-section">Media</div>
+      <div class="comp-grid">
+        <div class="comp"><svg><use href="#i-video"/></svg>Video</div>
+        <div class="comp"><svg><use href="#i-embed"/></svg>Embed</div>
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="guide-v" style="left: 40px;"></div>
+        <div class="guide-v" style="right: 40px;"></div>
+
+        <div class="el" style="top: 48px; left: 40px; width: 520px;">
+          <div class="el-heading">Fresh-baked,<br>every morning.</div>
+        </div>
+        <div class="el" style="top: 190px; left: 40px; width: 440px;">
+          <div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries from our Oak Street counter.</div>
+        </div>
+        <div class="el" style="top: 290px; left: 40px;">
+          <div class="el-btn">Order for pickup <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="el selected" style="top: 48px; left: 596px; width: 264px; height: 284px;">
+          <div class="el-label">Image · hero.jpg</div>
+          <div class="img-ph" style="width:100%;height:100%;">1200 × 1400</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+          <div class="dim-pill" style="bottom: -24px; right: 0;">264 × 284</div>
+        </div>
+
+        <div class="el" style="top: 390px; left: 40px; right: 40px; width: calc(100% - 80px);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div style="border: 1px solid var(--line); border-radius: 6px; padding: 14px;">
+              <div class="img-ph small" style="height: 100px; margin-bottom: 12px;"></div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">Sourdough</div>
+              <div style="font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 2px;">$8.00 / loaf</div>
+            </div>
+            <div style="border: 1px solid var(--line); border-radius: 6px; padding: 14px;">
+              <div class="img-ph small" style="height: 100px; margin-bottom: 12px;"></div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">Croissants</div>
+              <div style="font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 2px;">$4.00 each</div>
+            </div>
+            <div style="border: 1px solid var(--line); border-radius: 6px; padding: 14px;">
+              <div class="img-ph small" style="height: 100px; margin-bottom: 12px;"></div>
+              <div style="font-size: 14px; font-weight: 600; color: var(--ink);">Morning buns</div>
+              <div style="font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 2px;">$5.00 each</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: inspector -->
+    <div class="right">
+      <div class="panel-head">
+        <span class="title">Inspector</span>
+        <span class="type-chip">Image</span>
+      </div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Position &amp; size</div>
+          <div class="insp-row"><label>Position</label>
+            <div class="insp-pair">
+              <div class="v"><span style="color:var(--sub);">X</span> 596<span class="unit">px</span></div>
+              <div class="v"><span style="color:var(--sub);">Y</span> 48<span class="unit">px</span></div>
+            </div>
+          </div>
+          <div class="insp-row"><label>Size</label>
+            <div class="insp-pair">
+              <div class="v"><span style="color:var(--sub);">W</span> 264<span class="unit">px</span></div>
+              <div class="v"><span style="color:var(--sub);">H</span> 284<span class="unit">px</span></div>
+            </div>
+          </div>
+          <div class="insp-row"><label>Align</label>
+            <div class="seg">
+              <button><svg><use href="#i-align-l"/></svg></button>
+              <button class="on"><svg><use href="#i-align-c"/></svg></button>
+              <button><svg><use href="#i-align-r"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Image <span class="link">Replace</span></div>
+          <div class="insp-row"><label>Source</label><div class="v">hero.jpg<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Alt text</label><div class="v ph">Describe image…</div></div>
+          <div class="insp-row"><label>Fit</label><div class="v">Cover<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Radius</label><div class="v">0<span class="unit">px</span></div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Effects</div>
+          <div class="insp-row"><label>Shadow</label><div class="v">None<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Border</label>
+            <div class="insp-pair">
+              <div class="v">0<span class="unit">px</span></div>
+              <div class="v">Solid<span class="caret">▾</span></div>
+            </div>
+          </div>
+          <div class="insp-row"><label>Opacity</label><div class="v">100<span class="unit">%</span></div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Link</div>
+          <div class="insp-row"><label>URL</label><div class="v ph">No link</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- V2 -->
+  <div class="editor v2" data-var="v2" style="display:none;">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Sunrise Bakery</b><span class="sep">/</span><span>Home</span></div>
+      <div class="spacer"></div>
+      <span class="status-pill"><span class="dot-saved"></span>Saved</span>
+      <div class="bp-group">
+        <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+        <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+        <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+      </div>
+      <button class="btn-publish">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+
+    <div class="rail">
+      <div class="r-btn on" title="Select"><svg><use href="#i-cursor"/></svg></div>
+      <div class="r-btn" title="Components"><svg><use href="#i-section"/></svg></div>
+      <div class="r-btn" title="Text"><svg><use href="#i-text"/></svg></div>
+      <div class="r-btn" title="Media"><svg><use href="#i-image"/></svg></div>
+      <div class="r-btn" title="Shape"><svg><use href="#i-shape"/></svg></div>
+      <div class="sep"></div>
+      <div class="r-btn" title="Layers"><svg><use href="#i-layers"/></svg></div>
+      <div class="r-btn" title="Assets"><svg><use href="#i-folder"/></svg></div>
+    </div>
+
+    <div class="canvas-wrap" style="position: relative;">
+      <div class="page">
+        <div class="el" style="top: 48px; left: 40px;"><div class="el-heading">Fresh-baked,<br>every morning.</div></div>
+        <div class="el" style="top: 190px; left: 40px; width: 420px;"><div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and pastries.</div></div>
+        <div class="el selected" style="top: 48px; left: 520px; width: 300px; height: 284px;">
+          <div class="el-label">Image</div>
+          <div class="img-ph" style="width:100%;height:100%;">hero image</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+        </div>
+      </div>
+      <!-- flyout library -->
+      <div style="position:absolute; top: 20px; left: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow-lg); padding: 10px; width: 280px; z-index: 5;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 8px;">
+          <span style="font-size: 11px; font-weight: 600; color: var(--sub); letter-spacing: 0.06em; text-transform: uppercase;">Components</span>
+          <span style="font-size: 14px; color: var(--sub); cursor: pointer;">×</span>
+        </div>
+        <div class="search-input" style="margin-bottom: 8px;"><svg><use href="#i-search"/></svg>Search</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+          <div class="comp"><svg><use href="#i-section"/></svg>Section</div>
+          <div class="comp"><svg><use href="#i-text"/></svg>Text</div>
+          <div class="comp"><svg><use href="#i-image"/></svg>Image</div>
+          <div class="comp"><svg><use href="#i-button"/></svg>Button</div>
+          <div class="comp"><svg><use href="#i-card"/></svg>Card</div>
+          <div class="comp"><svg><use href="#i-video"/></svg>Video</div>
+        </div>
+      </div>
+      <div class="annot" style="top: 230px; left: 90px;">
+        <span class="note">Thin rail keeps the canvas wide</span>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head">
+        <span class="title">Inspector</span>
+        <span class="type-chip">Image</span>
+      </div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Size</div>
+          <div class="insp-row"><label>Size</label>
+            <div class="insp-pair">
+              <div class="v">300<span class="unit">px</span></div>
+              <div class="v">284<span class="unit">px</span></div>
+            </div>
+          </div>
+          <div class="insp-row"><label>Ratio</label><div class="v"><svg width="11" height="11" viewBox="0 0 24 24"><use href="#i-lock"/></svg> 75 : 71</div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Image</div>
+          <div class="insp-row"><label>File</label><div class="v">hero.jpg<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Fit</label><div class="v">Cover<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Focal</label><div class="v">center</div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Style</div>
+          <div class="insp-row"><label>Radius</label><div class="v">0<span class="unit">px</span></div></div>
+          <div class="insp-row"><label>Shadow</label><div class="v">None<span class="caret">▾</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- V3 -->
+  <div class="editor v3" data-var="v3" style="display:none;">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Sunrise Bakery</b><span class="sep">/</span><span>Home</span></div>
+      <div class="spacer"></div>
+      <span class="mini"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-command"/></svg> Press <span class="kbd">⌘K</span> for everything</span>
+      <button class="btn-publish">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg><use href="#i-cursor"/></svg>Select</div>
+      <div class="tool"><svg><use href="#i-text"/></svg>Text</div>
+      <div class="tool"><svg><use href="#i-image"/></svg>Image</div>
+      <div class="tool"><svg><use href="#i-shape"/></svg>Shape</div>
+      <div class="tool"><svg><use href="#i-plus"/></svg>Add</div>
+      <div class="right-tools">
+        <div class="bp-group">
+          <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+          <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+          <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <div class="canvas-wrap v3" style="padding: 40px;">
+      <div class="page" style="width: 1040px;">
+        <div class="el" style="top: 60px; left: 64px;"><div class="el-heading">Fresh-baked,<br>every morning.</div></div>
+        <div class="el" style="top: 210px; left: 64px; width: 440px;"><div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries.</div></div>
+        <div class="el selected" style="top: 60px; left: 600px; width: 340px; height: 300px;">
+          <div class="img-ph" style="width:100%;height:100%;">hero image</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+          <div style="position: absolute; top: -52px; left: 0; background: var(--ink); color: white; border-radius: 6px; padding: 4px; display: flex; gap: 1px; font-size: 12px; box-shadow: var(--shadow-lg);">
+            <span style="padding: 5px 9px; display: inline-flex; align-items: center; gap: 5px; color: rgba(255,255,255,0.85);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#i-replace"/></svg> Replace</span>
+            <span style="padding: 5px 9px; display: inline-flex; align-items: center; gap: 5px; color: rgba(255,255,255,0.85);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#i-crop"/></svg> Crop</span>
+            <span style="width: 1px; background: rgba(255,255,255,0.15); margin: 3px 2px;"></span>
+            <span style="padding: 5px 9px; color: white; font-family: var(--mono); font-size: 11px;">340 × 300</span>
+            <span style="padding: 5px 9px; color: rgba(255,255,255,0.85);">Fit: Cover ▾</span>
+            <span style="padding: 5px 6px; color: rgba(255,255,255,0.7);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#i-more"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <!-- command palette -->
+      <div style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%); width: 520px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-lg); overflow: hidden;">
+        <div style="padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.7"><use href="#i-search"/></svg>
+          <span style="flex: 1; color: var(--muted); font-size: 13px;">Add image, edit text, go to page…</span>
+          <span class="kbd">esc</span>
+        </div>
+        <div style="padding: 4px 0;">
+          <div style="padding: 8px 14px; display: flex; gap: 10px; align-items: center; font-size: 13px; background: var(--accent-soft); color: var(--accent-ink);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-image"/></svg>
+            Add image<span style="color: var(--muted); margin-left: auto; font-size: 12px;">Drag onto canvas</span>
+            <span class="kbd">I</span>
+          </div>
+          <div style="padding: 8px 14px; display: flex; gap: 10px; align-items: center; font-size: 13px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-text"/></svg>
+            Add heading<span style="margin-left: auto;"></span>
+            <span class="kbd">T</span>
+          </div>
+          <div style="padding: 8px 14px; display: flex; gap: 10px; align-items: center; font-size: 13px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-button"/></svg>
+            Add button<span style="margin-left: auto;"></span>
+            <span class="kbd">B</span>
+          </div>
+          <div style="padding: 8px 14px; display: flex; gap: 10px; align-items: center; font-size: 13px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-nav"/></svg>
+            Jump to: About page<span style="margin-left: auto; color: var(--muted); font-size: 11px;">navigate</span>
+          </div>
+        </div>
+        <div style="padding: 8px 14px; background: var(--bg); font-size: 11px; color: var(--muted); border-top: 1px solid var(--line); display: flex; gap: 14px;">
+          <span><span class="kbd">↑↓</span> navigate</span>
+          <span><span class="kbd">↵</span> select</span>
+        </div>
+      </div>
+      <div class="annot" style="top: 70px; right: 40px;">
+        <span class="note">No fixed panels — command palette drives everything</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- V4 -->
+  <div class="editor v4" data-var="v4" style="display:none;">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Sunrise Bakery</b><span class="sep">/</span><span>Home</span></div>
+      <div class="spacer"></div>
+      <span class="status-pill"><span class="dot-saved"></span>Saved</span>
+      <div class="bp-group">
+        <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+        <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+        <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+      </div>
+      <button class="btn-publish">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+
+    <div class="left">
+      <div class="left-tabs">
+        <button class="on">Add</button>
+        <button>Layers</button>
+        <button>Style</button>
+      </div>
+      <div class="comp-section">Quick add</div>
+      <div class="comp-grid">
+        <div class="comp"><svg><use href="#i-text"/></svg>Text</div>
+        <div class="comp"><svg><use href="#i-image"/></svg>Image</div>
+        <div class="comp"><svg><use href="#i-button"/></svg>Button</div>
+        <div class="comp"><svg><use href="#i-card"/></svg>Card</div>
+      </div>
+      <div class="comp-section">Selection · Image</div>
+      <div class="inspector" style="padding: 0 12px 12px;">
+        <div class="insp-row"><label>Size</label>
+          <div class="insp-pair">
+            <div class="v">340<span class="unit">px</span></div>
+            <div class="v">300<span class="unit">px</span></div>
+          </div>
+        </div>
+        <div class="insp-row"><label>Fit</label><div class="v">Cover<span class="caret">▾</span></div></div>
+        <div class="insp-row"><label>Radius</label><div class="v">0<span class="unit">px</span></div></div>
+        <div class="insp-row"><label>Alt</label><div class="v ph">Describe…</div></div>
+      </div>
+      <div class="comp-section">Layers</div>
+      <div style="padding: 2px 8px 14px;">
+        <div class="layer-row"><svg><use href="#i-section"/></svg>Home</div>
+        <div class="layer-row layer-indent"><svg><use href="#i-section"/></svg>Hero section</div>
+        <div class="layer-row" style="padding-left: 38px;"><svg><use href="#i-text"/></svg>Headline</div>
+        <div class="layer-row" style="padding-left: 38px;"><svg><use href="#i-para"/></svg>Description</div>
+        <div class="layer-row sel" style="padding-left: 38px;"><svg><use href="#i-image"/></svg>Hero image</div>
+        <div class="layer-row" style="padding-left: 38px;"><svg><use href="#i-button"/></svg>CTA button</div>
+        <div class="layer-row layer-indent"><svg><use href="#i-cols3"/></svg>Product grid</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 48px; left: 40px;"><div class="el-heading">Fresh-baked,<br>every morning.</div></div>
+        <div class="el" style="top: 190px; left: 40px; width: 420px;"><div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and pastries.</div></div>
+        <div class="el selected" style="top: 48px; left: 520px; width: 340px; height: 300px;">
+          <div class="el-label">Image · hero.jpg</div>
+          <div class="img-ph" style="width:100%;height:100%;">hero image</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+        </div>
+      </div>
+      <div class="annot" style="top: 20px; right: 40px;">
+        <span class="note">Everything in one panel · more canvas room</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 2: EMPTY                                -->
+<!-- ============================================= -->
+<section class="screen" id="s2">
+  <div class="screen-head">
+    <h2>Empty canvas · new project</h2>
+    <span class="tag">First-run state</span>
+  </div>
+  <p class="screen-desc">What a user sees after creating a blank page. Canvas is centered with guides visible; the empty state nudges toward dragging from the library or using shortcut keys.</p>
+
+  <div class="editor v1">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Untitled</b></div>
+      <div class="spacer"></div>
+      <span class="status-pill" style="color: var(--muted);">Not saved</span>
+      <button class="btn-publish" style="background: var(--line); color: var(--muted);">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg><use href="#i-cursor"/></svg>Select</div>
+      <div class="tool"><svg><use href="#i-text"/></svg>Text</div>
+      <div class="tool"><svg><use href="#i-image"/></svg>Image</div>
+      <div class="tool"><svg><use href="#i-shape"/></svg>Shape</div>
+      <div class="right-tools">
+        <div class="bp-group">
+          <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+          <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+          <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left">
+      <div class="panel-head"><div class="search-input"><svg><use href="#i-search"/></svg>Search<span class="k kbd">⌘K</span></div></div>
+      <div class="comp-section">Start with</div>
+      <div class="comp-grid">
+        <div class="comp"><svg><use href="#i-section"/></svg>Section</div>
+        <div class="comp"><svg><use href="#i-text"/></svg>Text</div>
+        <div class="comp"><svg><use href="#i-image"/></svg>Image</div>
+        <div class="comp"><svg><use href="#i-button"/></svg>Button</div>
+      </div>
+      <div class="comp-section">Or pick a template</div>
+      <div style="padding: 0 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div style="border: 1px solid var(--line); border-radius: var(--r-sm); aspect-ratio: 1.3; padding: 8px; font-size: 11px; color: var(--muted); display: flex; flex-direction: column; justify-content: flex-end;">Landing</div>
+        <div style="border: 1px solid var(--line); border-radius: var(--r-sm); aspect-ratio: 1.3; padding: 8px; font-size: 11px; color: var(--muted); display: flex; flex-direction: column; justify-content: flex-end;">Shop</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page" style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; padding: 48px 32px;">
+        <div style="width: 56px; height: 56px; border: 1.5px dashed var(--line); border-radius: 50%; display: grid; place-items: center; color: var(--sub);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-plus"/></svg>
+        </div>
+        <div style="font-size: 17px; font-weight: 600; color: var(--ink);">An empty page</div>
+        <div style="color: var(--muted); text-align: center; max-width: 340px; font-size: 13px;">Drag a component from the left, or press a shortcut key to place one. Elements snap to guides and can be moved freely.</div>
+        <div style="display: flex; gap: 8px; margin-top: 4px;">
+          <div class="btn primary">Start from template</div>
+          <div class="btn">Start blank</div>
+        </div>
+        <div style="margin-top: 24px; display: flex; gap: 16px; font-size: 11px; color: var(--muted);">
+          <span><span class="kbd">T</span> Text</span>
+          <span><span class="kbd">I</span> Image</span>
+          <span><span class="kbd">B</span> Button</span>
+          <span><span class="kbd">S</span> Shape</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span class="title">Page</span><span class="type-chip">Root</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Page</div>
+          <div class="insp-row"><label>Name</label><div class="v">Home</div></div>
+          <div class="insp-row"><label>Slug</label><div class="v">/</div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Canvas</div>
+          <div class="insp-row"><label>Background</label><div class="v"><span class="swatch" style="background:white;"></span>#FFFFFF</div></div>
+          <div class="insp-row"><label>Max width</label><div class="v">1200<span class="unit">px</span></div></div>
+          <div class="insp-row"><label>Padding</label>
+            <div class="insp-pair">
+              <div class="v">40<span class="unit">px</span></div>
+              <div class="v">40<span class="unit">px</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">SEO</div>
+          <div class="insp-row"><label>Title</label><div class="v ph">Untitled page</div></div>
+          <div class="insp-row"><label>Description</label><div class="v ph">Add a description…</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 3: TEXT EDITING                        -->
+<!-- ============================================= -->
+<section class="screen" id="s3">
+  <div class="screen-head">
+    <h2>Editing a text block</h2>
+    <span class="tag">Rich-text toolbar on selection</span>
+  </div>
+  <p class="screen-desc">Double-click text to enter edit mode. A floating toolbar appears above the cursor with the essentials — heading level, size, weight, color, link, list, alignment. The right inspector mirrors block-level typography.</p>
+
+  <div class="editor v1">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Sunrise Bakery</b><span class="sep">/</span><span>About</span></div>
+      <div class="spacer"></div>
+      <span class="status-pill" style="color: var(--accent);"><span class="dot-saved" style="background: var(--accent);"></span>Editing text</span>
+      <button class="btn-publish">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+    <div class="toolbar">
+      <div class="tool"><svg><use href="#i-cursor"/></svg>Select</div>
+      <div class="tool on"><svg><use href="#i-text"/></svg>Text</div>
+      <div class="tool"><svg><use href="#i-image"/></svg>Image</div>
+      <div class="tsep"></div>
+      <span style="font-size: 11px; color: var(--muted); padding: 0 8px; display: inline-flex; align-items: center; gap: 6px;">Editing · press <span class="kbd">esc</span> to exit</span>
+      <div class="right-tools">
+        <div class="bp-group">
+          <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+          <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+          <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left">
+      <div class="panel-head"><div class="search-input"><svg><use href="#i-search"/></svg>Search</div></div>
+      <div class="comp-section">Text blocks</div>
+      <div class="comp-grid">
+        <div class="comp"><svg><use href="#i-text"/></svg>Heading</div>
+        <div class="comp"><svg><use href="#i-para"/></svg>Paragraph</div>
+        <div class="comp"><svg><use href="#i-list"/></svg>List</div>
+        <div class="comp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 4v8a5 5 0 0010 0V4M4 20h16"/></svg>Quote</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 60px; left: 40px; width: 760px;">
+          <div class="el-label" style="background: var(--accent);">Editing · Heading 1</div>
+          <div style="outline: 1.5px solid var(--accent); outline-offset: 4px; padding: 2px; border-radius: 2px;">
+            <div class="el-heading" style="font-size: 40px;">
+              Baked with <span style="background: var(--accent-soft); border-bottom: 2px solid var(--accent);">care since 2014</span><span class="caret-blink"></span>
+            </div>
+          </div>
+
+          <div class="rt-float" style="top: -48px; left: 180px;">
+            <span class="sel">Heading 1 <svg><use href="#i-chev-d"/></svg></span>
+            <span class="sep"></span>
+            <span class="sel mono" style="font-family: var(--mono);">40</span>
+            <span class="sep"></span>
+            <span class="rt on"><svg><use href="#i-bold"/></svg></span>
+            <span class="rt"><svg><use href="#i-italic"/></svg></span>
+            <span class="rt"><svg><use href="#i-underline"/></svg></span>
+            <span class="sep"></span>
+            <span class="rt"><svg><use href="#i-link"/></svg></span>
+            <span class="rt"><svg><use href="#i-list"/></svg></span>
+            <span class="sep"></span>
+            <span class="rt"><span class="swatch" style="width: 12px; height: 12px; background: var(--accent); border-color: rgba(255,255,255,0.2);"></span></span>
+            <span class="rt"><svg><use href="#i-more"/></svg></span>
+          </div>
+        </div>
+
+        <div class="el" style="top: 200px; left: 40px; width: 680px;">
+          <div class="el-body">Two brothers. One neighborhood. A whole lot of sourdough. We started out of a shared home oven and now bake through the night for the morning crowd at Oak Street.</div>
+        </div>
+        <div class="el" style="top: 340px; left: 40px; width: 680px;">
+          <div class="el-body">Every loaf uses organic stone-milled flour and a 36-hour cold ferment. If you can't tell the difference, we'll give you your money back.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span class="title">Typography</span><span class="type-chip">Heading 1</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Font</div>
+          <div class="insp-row"><label>Family</label><div class="v">Inter<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Weight</label><div class="v">Semibold · 600<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Size</label><div class="v focus">40<span class="unit">px</span></div></div>
+          <div class="insp-row"><label>Line</label><div class="v">1.1</div></div>
+          <div class="insp-row"><label>Letter</label><div class="v">-0.02<span class="unit">em</span></div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Color</div>
+          <div class="insp-row"><label>Text</label><div class="v"><span class="swatch" style="background:#0B0D10;"></span>#0B0D10</div></div>
+          <div class="insp-row"><label>Highlight</label><div class="v"><span class="swatch" style="background:var(--accent);"></span>accent</div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Alignment</div>
+          <div class="insp-row"><label>Align</label>
+            <div class="seg">
+              <button class="on"><svg><use href="#i-align-l"/></svg></button>
+              <button><svg><use href="#i-align-c"/></svg></button>
+              <button><svg><use href="#i-align-r"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Responsive overrides</div>
+          <div class="insp-row"><label>Tablet</label><div class="v">34<span class="unit">px</span></div></div>
+          <div class="insp-row"><label>Mobile</label><div class="v">28<span class="unit">px</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 4: IMAGE RESIZE                        -->
+<!-- ============================================= -->
+<section class="screen" id="s4">
+  <div class="screen-head">
+    <h2>Resizing an image</h2>
+    <span class="tag">Handles · snap guides · live dimensions</span>
+  </div>
+  <p class="screen-desc">Drag corner handles to resize. Hold Shift to lock ratio. Center and edge guides appear when the element aligns with others. Replace, crop, and fit controls float above the selection.</p>
+
+  <div class="editor v1">
+    <div class="chrome-top">
+      <div class="crumbs"><span>Projects</span><span class="sep">/</span><b>Sunrise Bakery</b><span class="sep">/</span><span>Home</span></div>
+      <div class="spacer"></div>
+      <span class="status-pill"><span class="dot-saved"></span>Resizing</span>
+      <button class="btn-publish">Publish <svg><use href="#i-arrow-up-right"/></svg></button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg><use href="#i-cursor"/></svg>Select</div>
+      <div class="tool"><svg><use href="#i-text"/></svg>Text</div>
+      <div class="tool"><svg><use href="#i-image"/></svg>Image</div>
+      <div class="tsep"></div>
+      <span style="font-size: 11px; color: var(--muted); padding: 0 8px; display: inline-flex; align-items: center; gap: 8px;">
+        Hold <span class="kbd">⇧</span> to lock ratio · <span class="kbd">⌥</span> to resize from center
+      </span>
+      <div class="right-tools">
+        <div class="bp-group">
+          <div class="tool on"><svg><use href="#i-desktop"/></svg></div>
+          <div class="tool"><svg><use href="#i-tablet"/></svg></div>
+          <div class="tool"><svg><use href="#i-mobile"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="left">
+      <div class="panel-head"><span class="title">Assets</span></div>
+      <div class="panel-head" style="border-top: 0;"><div class="search-input"><svg><use href="#i-search"/></svg>Search assets</div></div>
+      <div class="comp-section">Recent</div>
+      <div class="comp-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="comp" style="padding: 0;"><div class="img-ph" style="width:100%; aspect-ratio: 1; border: none;"></div><div style="font-size: 10px; color: var(--muted); font-family: var(--mono); padding: 4px 0 8px;">hero.jpg</div></div>
+        <div class="comp" style="padding: 0;"><div class="img-ph" style="width:100%; aspect-ratio: 1; border: none;"></div><div style="font-size: 10px; color: var(--muted); font-family: var(--mono); padding: 4px 0 8px;">loaf.jpg</div></div>
+        <div class="comp" style="padding: 0;"><div class="img-ph" style="width:100%; aspect-ratio: 1; border: none;"></div><div style="font-size: 10px; color: var(--muted); font-family: var(--mono); padding: 4px 0 8px;">team.jpg</div></div>
+        <div class="comp" style="padding: 0;"><div class="img-ph" style="width:100%; aspect-ratio: 1; border: none;"></div><div style="font-size: 10px; color: var(--muted); font-family: var(--mono); padding: 4px 0 8px;">shop.jpg</div></div>
+      </div>
+      <div class="comp-section">Stock · Unsplash</div>
+      <div class="comp-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="comp" style="padding: 0;"><div class="img-ph" style="width:100%; aspect-ratio: 1; border: none;"></div><div style="font-size: 10px; color: var(--muted); padding: 4px 0 8px;">bread</div></div>
+        <div class="comp" style="padding: 0;"><div class="img-ph" style="width:100%; aspect-ratio: 1; border: none;"></div><div style="font-size: 10px; color: var(--muted); padding: 4px 0 8px;">coffee</div></div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 48px; left: 40px; width: 360px;">
+          <div class="el-heading" style="font-size: 30px;">Fresh-baked, every morning.</div>
+        </div>
+        <div class="el" style="top: 190px; left: 40px; width: 320px;">
+          <div class="el-body">Order online before 10am and pick up warm sourdough from Oak Street.</div>
+        </div>
+
+        <div class="guide-v" style="left: 430px;"></div>
+        <div class="guide-h" style="top: 48px;"></div>
+        <div class="guide-h" style="top: 368px;"></div>
+
+        <div class="el selected" style="top: 48px; left: 430px; width: 420px; height: 320px;">
+          <div class="img-ph" style="width:100%;height:100%;">sourdough.jpg · 2400 × 1800</div>
+          <div class="handles">
+            <i class="tl"></i><i class="tr"></i><i class="bl"></i>
+            <i class="br" style="background: var(--accent); transform: scale(1.4);"></i>
+            <i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i>
+          </div>
+          <div style="position: absolute; top: -44px; left: 0; background: var(--ink); color: white; border-radius: 6px; padding: 4px; display: flex; gap: 1px; font-size: 12px; box-shadow: var(--shadow-lg);">
+            <span style="padding: 5px 9px; color: rgba(255,255,255,0.85); display: inline-flex; align-items: center; gap: 5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#i-replace"/></svg> Replace</span>
+            <span style="padding: 5px 9px; color: rgba(255,255,255,0.85); display: inline-flex; align-items: center; gap: 5px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#i-crop"/></svg> Crop</span>
+            <span style="padding: 5px 9px; color: rgba(255,255,255,0.85);">Fit: Cover ▾</span>
+            <span style="width: 1px; background: rgba(255,255,255,0.15); margin: 3px 2px;"></span>
+            <span style="padding: 5px 7px; color: rgba(255,255,255,0.85);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-link"/></svg></span>
+            <span style="padding: 5px 7px; color: rgba(255,255,255,0.7);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><use href="#i-more"/></svg></span>
+          </div>
+          <div class="dim-pill" style="bottom: -26px; right: 0;">420 × 320</div>
+          <div class="dim-pill" style="top: 50%; left: -60px; transform: translateY(-50%); background: var(--ink);"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="vertical-align: middle;"><use href="#i-lock"/></svg> 21:16</div>
+        </div>
+
+        <div style="position: absolute; top: 22px; left: 430px; width: 420px; display: flex; align-items: center; gap: 6px;">
+          <div style="flex: 1; height: 1px; border-top: 1px dashed var(--accent);"></div>
+          <span class="dim-pill">420</span>
+          <div style="flex: 1; height: 1px; border-top: 1px dashed var(--accent);"></div>
+        </div>
+
+        <div class="el" style="top: 410px; left: 40px; width: 820px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+            <div class="shape-ph" style="height: 140px;"></div>
+            <div class="shape-ph" style="height: 140px;"></div>
+            <div class="shape-ph" style="height: 140px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span class="title">Inspector</span><span class="type-chip">Image</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Size</div>
+          <div class="insp-row"><label>Size</label>
+            <div class="insp-pair">
+              <div class="v focus">420<span class="unit">px</span></div>
+              <div class="v focus">320<span class="unit">px</span></div>
+            </div>
+          </div>
+          <div class="insp-row"><label>Ratio</label><div class="v"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-lock"/></svg> 21 : 16</div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Position</div>
+          <div class="insp-row"><label>Position</label>
+            <div class="insp-pair">
+              <div class="v"><span style="color:var(--sub);">X</span> 430<span class="unit">px</span></div>
+              <div class="v"><span style="color:var(--sub);">Y</span> 48<span class="unit">px</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Image <span class="link">Replace</span></div>
+          <div class="insp-row"><label>Source</label><div class="v">sourdough.jpg<span class="caret">▾</span></div></div>
+          <div class="insp-row"><label>Fit</label><div class="v">Cover<span class="caret">▾</span></div></div>
+          <div class="insp-row" style="grid-template-columns: 52px 1fr; align-items: start;"><label style="padding-top: 4px;">Focal</label>
+            <div class="focal-box">
+              <div class="focal-dot" style="top: 50%; left: 50%;"></div>
+            </div>
+          </div>
+          <div class="insp-row" style="margin-top: 8px;"><label>Alt text</label><div class="v">Fresh sourdough on wire rack</div></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Effects</div>
+          <div class="insp-row"><label>Radius</label><div class="v">0<span class="unit">px</span></div></div>
+          <div class="insp-row"><label>Shadow</label><div class="v">None<span class="caret">▾</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 5: LIBRARY                              -->
+<!-- ============================================= -->
+<section class="screen" id="s5">
+  <div class="screen-head">
+    <h2>Components &amp; assets library</h2>
+    <span class="tag">Full-view modal</span>
+  </div>
+  <p class="screen-desc">When the user wants to browse rather than drag-and-grab, the sidebar's library expands: category nav on the left, searchable grid in the middle, detail pane on the right.</p>
+
+  <div class="lib-shell">
+    <div class="lib-nav">
+      <div class="n-sec">Components</div>
+      <div class="n-item on"><svg><use href="#i-section"/></svg>Basic <span class="n-count">18</span></div>
+      <div class="n-item"><svg><use href="#i-stack"/></svg>Layout <span class="n-count">12</span></div>
+      <div class="n-item"><svg><use href="#i-media"/></svg>Media <span class="n-count">8</span></div>
+      <div class="n-item"><svg><use href="#i-form"/></svg>Forms <span class="n-count">6</span></div>
+      <div class="n-item"><svg><use href="#i-nav"/></svg>Navigation <span class="n-count">5</span></div>
+      <div class="n-item"><svg><use href="#i-shop"/></svg>Commerce <span class="n-count">9</span></div>
+      <div class="n-sec">Assets</div>
+      <div class="n-item"><svg><use href="#i-image"/></svg>My images <span class="n-count">24</span></div>
+      <div class="n-item"><svg><use href="#i-shape"/></svg>Icons <span class="n-count">400+</span></div>
+      <div class="n-item"><svg><use href="#i-folder"/></svg>Stock photos</div>
+      <div class="n-sec">Saved</div>
+      <div class="n-item"><svg><use href="#i-star"/></svg>Favorites</div>
+      <div class="n-item"><svg><use href="#i-section"/></svg>My blocks <span class="n-count">3</span></div>
+    </div>
+    <div class="lib-main">
+      <div class="lib-filter">
+        <span class="chip on">All</span>
+        <span class="chip">Text</span>
+        <span class="chip">Media</span>
+        <span class="chip">Buttons</span>
+        <span class="chip">Containers</span>
+        <div class="search-input search-big"><svg><use href="#i-search"/></svg>Search 18 components…<span class="k kbd">⌘K</span></div>
+      </div>
+      <div class="lib-grid">
+        <div class="lib-item">
+          <div class="prev">
+            <div style="background: var(--ink); height: 10px; width: 70%; border-radius: 2px;"></div>
+            <div style="background: var(--line); height: 5px; width: 90%; border-radius: 2px;"></div>
+            <div style="background: var(--line); height: 5px; width: 80%; border-radius: 2px;"></div>
+          </div>
+          <div class="nm"><span>Heading + text</span><span class="k">T</span></div>
+        </div>
+        <div class="lib-item selected">
+          <div class="prev"><div class="img-ph small" style="flex: 1; border: none;"></div></div>
+          <div class="nm"><span>Image</span><span class="k">I</span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="justify-content: center; align-items: flex-start;"><div style="background: var(--ink); height: 24px; width: 96px; border-radius: 4px; margin-top: auto; margin-bottom: auto;"></div></div>
+          <div class="nm"><span>Button</span><span class="k">B</span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="flex-direction: row; gap: 6px;"><div class="img-ph small" style="flex: 1;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 4px; justify-content: center;"><div style="background: var(--ink); height: 6px; border-radius: 2px;"></div><div style="background: var(--line); height: 4px; border-radius: 2px;"></div><div style="background: var(--line); height: 4px; border-radius: 2px; width: 70%;"></div></div></div>
+          <div class="nm"><span>Image + text</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="flex-direction: row; gap: 4px;"><div class="img-ph small" style="flex: 1;"></div><div class="img-ph small" style="flex: 1;"></div><div class="img-ph small" style="flex: 1;"></div></div>
+          <div class="nm"><span>Gallery · 3-up</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev"><div style="background: var(--line); height: 14px; border-radius: 3px;"></div><div style="background: var(--line); height: 14px; border-radius: 3px;"></div><div style="background: var(--ink); height: 14px; border-radius: 3px; width: 40%;"></div></div>
+          <div class="nm"><span>Contact form</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="flex-direction: row; justify-content: space-between; align-items: center;"><div style="background: var(--ink); width: 22px; height: 22px; border-radius: 4px;"></div><div style="display: flex; gap: 6px;"><div style="background: var(--line); width: 24px; height: 4px; border-radius: 2px;"></div><div style="background: var(--line); width: 24px; height: 4px; border-radius: 2px;"></div><div style="background: var(--line); width: 24px; height: 4px; border-radius: 2px;"></div></div></div>
+          <div class="nm"><span>Nav bar</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev"><div style="background: var(--line); height: 38px; border-radius: 3px; margin-bottom: 6px;"></div><div style="background: var(--ink); height: 6px; width: 60%; border-radius: 2px;"></div></div>
+          <div class="nm"><span>Card</span><span class="k">C</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="lib-detail">
+      <h4>Image</h4>
+      <p class="desc">A single image element. Drag onto the canvas and replace with your own file or a stock photo.</p>
+      <div class="big-prev"><div class="img-ph small" style="flex: 1; width: 100%; border: none;"></div></div>
+      <div style="font-size: 10px; color: var(--sub); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Default props</div>
+      <div class="prop"><span>Fit</span><span>cover</span></div>
+      <div class="prop"><span>Radius</span><span>0 px</span></div>
+      <div class="prop"><span>Aspect</span><span>auto</span></div>
+      <div class="prop"><span>Lazy load</span><span>true</span></div>
+      <div style="margin-top: 16px; display: flex; gap: 8px;">
+        <div class="btn primary" style="flex: 1; justify-content: center;">Drag to canvas</div>
+        <div class="btn" style="padding: 7px 10px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-star"/></svg></div>
+      </div>
+      <div style="margin-top: 14px; font-size: 11px; color: var(--muted); display: flex; gap: 6px; align-items: center;">Shortcut <span class="kbd">I</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 6: RESPONSIVE PREVIEW                  -->
+<!-- ============================================= -->
+<section class="screen" id="s6">
+  <div class="screen-head">
+    <h2>Responsive preview</h2>
+    <span class="tag">All three widths, side-by-side</span>
+  </div>
+  <p class="screen-desc">A dedicated preview mode (not just a dropdown). Mobile, tablet, and desktop render together so layout breaks are spotted at a glance. The top bar can focus on one device or scroll all three in sync.</p>
+
+  <div class="preview-bar">
+    <span class="back"><svg><use href="#i-arrow-left"/></svg> Back to editing</span>
+    <span class="path">sunrisebakery.site / home</span>
+    <div class="bp-switch">
+      <button><svg><use href="#i-mobile"/></svg>Mobile</button>
+      <button><svg><use href="#i-tablet"/></svg>Tablet</button>
+      <button><svg><use href="#i-desktop"/></svg>Desktop</button>
+      <button class="on">All three</button>
+    </div>
+    <span class="share"><svg><use href="#i-share"/></svg> Share preview</span>
+  </div>
+  <div class="preview-stage">
+    <div class="device device-mobile mobile-stack">
+      <div class="bp-label">Mobile</div>
+      <div class="bp-size">360 px</div>
+      <div class="pg-nav">
+        <div class="logo">Sunrise</div>
+        <a class="mburger">☰</a>
+      </div>
+      <div class="pg-hero">
+        <div class="kicker">Oak Street Bakery</div>
+        <h3>Fresh-baked, every morning.</h3>
+        <p>Order online before 10am.</p>
+        <span class="cta">Order for pickup →</span>
+      </div>
+      <div class="img-ph" style="margin: 0 20px; height: 160px;"></div>
+      <div class="pg-grid-3 stack">
+        <div class="pg-card"><div class="img-ph small" style="height: 80px;"></div><h4>Sourdough</h4><p>$8 / loaf</p></div>
+        <div class="pg-card"><div class="img-ph small" style="height: 80px;"></div><h4>Croissants</h4><p>$4 each</p></div>
+        <div class="pg-card"><div class="img-ph small" style="height: 80px;"></div><h4>Morning buns</h4><p>$5 each</p></div>
+      </div>
+    </div>
+
+    <div class="device device-tablet">
+      <div class="bp-label">Tablet</div>
+      <div class="bp-size">720 px</div>
+      <div class="pg-nav">
+        <div class="logo">Sunrise</div>
+        <a>Menu</a><a>About</a><a>Visit</a>
+        <span style="background: var(--ink); color: white; padding: 6px 12px; border-radius: 4px; font-weight: 500; font-size: 12px;">Order →</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+        <div class="pg-hero">
+          <div class="kicker">Oak Street</div>
+          <h3>Fresh-baked, every morning.</h3>
+          <p>Order online before 10am.</p>
+          <span class="cta">Order for pickup →</span>
+        </div>
+        <div class="img-ph" style="height: 260px; margin: 20px;"></div>
+      </div>
+      <div class="pg-grid-3">
+        <div class="pg-card"><div class="img-ph small" style="height: 80px;"></div><h4>Sourdough</h4><p>$8 / loaf</p></div>
+        <div class="pg-card"><div class="img-ph small" style="height: 80px;"></div><h4>Croissants</h4><p>$4 each</p></div>
+        <div class="pg-card"><div class="img-ph small" style="height: 80px;"></div><h4>Morning buns</h4><p>$5 each</p></div>
+      </div>
+    </div>
+
+    <div class="device device-desktop">
+      <div class="bp-label">Desktop</div>
+      <div class="bp-size">1040 px+</div>
+      <div class="pg-nav" style="padding: 14px 32px;">
+        <div class="logo">Sunrise Bakery</div>
+        <a>Menu</a><a>About</a><a>Visit</a><a>Wholesale</a>
+        <span style="background: var(--ink); color: white; padding: 7px 14px; border-radius: 4px; font-weight: 500; font-size: 13px;">Order for pickup →</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 16px 16px 16px 0;">
+        <div class="pg-hero" style="padding: 28px 40px;">
+          <div class="kicker">Oak Street Bakery</div>
+          <h3 style="font-size: 44px;">Fresh-baked, every morning.</h3>
+          <p style="font-size: 15px;">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries.</p>
+          <span class="cta">Order for pickup →</span>
+        </div>
+        <div class="img-ph" style="height: 320px; margin: 20px;"></div>
+      </div>
+      <div class="pg-grid-3" style="padding: 20px 40px 40px;">
+        <div class="pg-card"><div class="img-ph small" style="height: 120px;"></div><h4>Sourdough</h4><p>$8 / loaf</p></div>
+        <div class="pg-card"><div class="img-ph small" style="height: 120px;"></div><h4>Croissants</h4><p>$4 each</p></div>
+        <div class="pg-card"><div class="img-ph small" style="height: 120px;"></div><h4>Morning buns</h4><p>$5 each</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 7: PUBLISH                             -->
+<!-- ============================================= -->
+<section class="screen" id="s7">
+  <div class="screen-head">
+    <h2>Publish</h2>
+    <span class="tag">Pre-flight · Go live</span>
+  </div>
+  <p class="screen-desc">Clicking Publish opens a compact modal: confirm the URL, review the auto-generated pre-flight checklist, and ship. Once live, the primary action becomes "View live →".</p>
+
+  <div class="pub-wrap">
+    <div class="pub-head">
+      <h3>Publish Sunrise Bakery?</h3>
+      <p>Changes will go live immediately at the URL below.</p>
+    </div>
+    <div class="pub-body">
+      <div class="field">
+        <label>Live URL</label>
+        <div class="input">
+          <span class="prefix">https://</span>
+          <span class="val">sunrisebakery.site</span>
+          <span class="badge">Connected</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Changes in this publish</label>
+        <ul class="checklist">
+          <li><span class="check done"><svg><use href="#i-check"/></svg></span> Added hero image on Home</li>
+          <li><span class="check done"><svg><use href="#i-check"/></svg></span> Edited heading on About</li>
+          <li><span class="check done"><svg><use href="#i-check"/></svg></span> 3 product cards added</li>
+          <li style="color: var(--muted); font-size: 12px; padding-left: 28px;">+ 5 more changes</li>
+        </ul>
+      </div>
+      <div class="field">
+        <label>Pre-flight</label>
+        <ul class="checklist">
+          <li><span class="check done"><svg><use href="#i-check"/></svg></span> Looks good on mobile</li>
+          <li><span class="check done"><svg><use href="#i-check"/></svg></span> SEO title &amp; description set</li>
+          <li><span class="check warn"><svg><use href="#i-alert"/></svg></span> 2 images missing alt text<span class="fix">Fix →</span></li>
+          <li><span class="check done"><svg><use href="#i-check"/></svg></span> All links resolve</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pub-footer">
+      <span class="btn ghost">Schedule for later</span>
+      <div style="display: flex; gap: 8px;">
+        <span class="btn">Cancel</span>
+        <span class="btn primary">Publish now <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-arrow-up-right"/></svg></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 8: TEMPLATES                           -->
+<!-- ============================================= -->
+<section class="screen" id="s8">
+  <div class="screen-head">
+    <h2>Start from a template</h2>
+    <span class="tag">Onboarding first step</span>
+  </div>
+  <p class="screen-desc">The first thing a new user sees. Category chips across the top, a grid of template cards, plus a blank-canvas option. Each template has a rough preview rendered as blocks so the user quickly gets the feel.</p>
+
+  <div class="lib-filter" style="margin-bottom: 20px;">
+    <span class="chip on">All templates</span>
+    <span class="chip">Landing pages</span>
+    <span class="chip">Shops</span>
+    <span class="chip">Portfolios</span>
+    <span class="chip">Restaurants</span>
+    <span class="chip">Events</span>
+    <div class="search-input search-big"><svg><use href="#i-search"/></svg>Search templates…</div>
+  </div>
+
+  <div class="tpl-grid">
+    <div class="tpl-card blank">
+      <div class="preview">
+        <div class="plus-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><use href="#i-plus"/></svg></div>
+        <div style="font-size: 12px; color: var(--muted);">Start fresh</div>
+      </div>
+      <div class="meta"><span class="name">Blank canvas</span><span class="cat">From scratch</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: flex; gap: 8px; align-items: center;"><div class="mini-block" style="width: 20px; height: 8px;"></div><div style="flex:1;"></div><div class="mini-block" style="width: 50px; height: 8px; background: var(--ink);"></div></div>
+        <div class="mini-block" style="height: 18px; width: 70%; background: var(--ink); margin-top: 10px;"></div>
+        <div class="mini-block" style="height: 5px; width: 80%;"></div>
+        <div class="mini-block" style="height: 5px; width: 60%;"></div>
+        <div style="display: flex; gap: 6px; margin-top: 8px;"><div class="mini-block" style="flex:1;height:40px;"></div><div class="mini-block" style="flex:1;height:40px;"></div><div class="mini-block" style="flex:1;height:40px;"></div></div>
+      </div>
+      <div class="meta"><span class="name">Cafe · Oak</span><span class="cat">Restaurant</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 100%;">
+          <div class="mini-block" style="background: var(--ink);"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px; justify-content: center;">
+            <div class="mini-block" style="height: 14px; background: var(--ink);"></div>
+            <div class="mini-block" style="height: 4px;"></div>
+            <div class="mini-block" style="height: 4px; width: 70%;"></div>
+            <div class="mini-block" style="height: 16px; width: 60%; background: var(--accent); margin-top: 4px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="meta"><span class="name">Product launch</span><span class="cat">Landing</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: flex; gap: 6px;"><div class="mini-block" style="width: 40px; height: 40px;"></div><div style="flex:1;"><div class="mini-block" style="height: 6px; margin-bottom: 3px; background: var(--ink); width: 60%;"></div><div class="mini-block" style="height: 4px;"></div></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px;"><div class="mini-block" style="height: 46px;"></div><div class="mini-block" style="height: 46px;"></div><div class="mini-block" style="height: 46px;"></div><div class="mini-block" style="height: 46px;"></div><div class="mini-block" style="height: 46px;"></div><div class="mini-block" style="height: 46px;"></div></div>
+      </div>
+      <div class="meta"><span class="name">Shop · grid</span><span class="cat">Commerce</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div class="mini-block" style="height: 10px; width: 30%; background: var(--ink);"></div>
+        <div class="mini-block" style="height: 22px; width: 90%; background: var(--ink); margin-top: 6px;"></div>
+        <div class="mini-block" style="flex: 1; margin-top: 10px;"></div>
+      </div>
+      <div class="meta"><span class="name">Portfolio · big</span><span class="cat">Portfolio</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: flex; justify-content: center; margin-top: 8px;"><div class="mini-block" style="width: 60%; height: 14px; background: var(--ink);"></div></div>
+        <div style="display: flex; justify-content: center; margin-top: 4px;"><div class="mini-block" style="width: 70%; height: 4px;"></div></div>
+        <div class="mini-block" style="height: 54px; margin-top: 14px;"></div>
+        <div style="display: flex; justify-content: center; margin-top: 10px;"><div class="mini-block" style="width: 50%; height: 18px; background: var(--accent);"></div></div>
+      </div>
+      <div class="meta"><span class="name">Event · one-pager</span><span class="cat">Event</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- TWEAKS                                        -->
+<!-- ============================================= -->
+<div class="tweaks-panel" id="tweaksPanel">
+  <h4>Tweaks</h4>
+  <div class="row">
+    <label>Accent color</label>
+    <div class="accents" id="accents">
+      <button data-c="oklch(0.62 0.19 258)" class="on" style="background: oklch(0.62 0.19 258);"></button>
+      <button data-c="oklch(0.58 0.2 150)" style="background: oklch(0.58 0.2 150);"></button>
+      <button data-c="oklch(0.65 0.2 48)" style="background: oklch(0.65 0.2 48);"></button>
+      <button data-c="oklch(0.58 0.22 340)" style="background: oklch(0.58 0.22 340);"></button>
+      <button data-c="#0B0D10" style="background: #0B0D10;"></button>
+    </div>
+  </div>
+  <div class="row">
+    <label>Chrome</label>
+    <div class="toggle"><span>Grid background</span><div class="sw on" id="sw-dots"></div></div>
+    <div class="toggle"><span>Annotations</span><div class="sw on" id="sw-annot"></div></div>
+    <div class="toggle"><span>Left panel</span><div class="sw on" id="sw-left"></div></div>
+    <div class="toggle"><span>Right panel</span><div class="sw on" id="sw-right"></div></div>
+  </div>
+  <div class="row">
+    <label>Density</label>
+    <div class="radio" id="density">
+      <button data-d="compact">Compact</button>
+      <button data-d="comfy" class="on">Comfy</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /*EDITMODE-BEGIN*/
+  const TWEAKS = {
+    "accent": "oklch(0.62 0.19 258)",
+    "dots": true,
+    "annotations": true,
+    "leftPanel": true,
+    "rightPanel": true,
+    "density": "comfy"
+  }
+  /*EDITMODE-END*/;
+
+  // Tabs
+  const tabs = document.querySelectorAll('#tabs .tab');
+  const screens = document.querySelectorAll('.screen');
+  function showScreen(id) {
+    screens.forEach(s => s.classList.toggle('active', s.id === id));
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.screen === id));
+    localStorage.setItem('ce_screen', id);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => showScreen(t.dataset.screen)));
+  const savedScreen = localStorage.getItem('ce_screen');
+  if (savedScreen && document.getElementById(savedScreen)) showScreen(savedScreen);
+
+  // Variation switch
+  const varBtns = document.querySelectorAll('#varSwitch button');
+  const vars = document.querySelectorAll('#s1 .editor');
+  varBtns.forEach(b => b.addEventListener('click', () => {
+    varBtns.forEach(x => x.classList.toggle('on', x === b));
+    vars.forEach(v => v.style.display = v.dataset.var === b.dataset.var ? '' : 'none');
+    localStorage.setItem('ce_var', b.dataset.var);
+  }));
+  const savedVar = localStorage.getItem('ce_var');
+  if (savedVar) {
+    const btn = document.querySelector(`#varSwitch button[data-var="${savedVar}"]`);
+    if (btn) btn.click();
+  }
+
+  // TWEAKS apply
+  const panel = document.getElementById('tweaksPanel');
+  function applyTweaks() {
+    document.documentElement.style.setProperty('--accent', TWEAKS.accent);
+    const isOklch = TWEAKS.accent.startsWith('oklch');
+    if (isOklch) {
+      document.documentElement.style.setProperty('--accent-soft', TWEAKS.accent.replace(')', ' / 0.10)'));
+    } else {
+      document.documentElement.style.setProperty('--accent-soft', TWEAKS.accent + '1a');
+    }
+    document.querySelectorAll('.canvas-wrap').forEach(w => {
+      if (w.classList.contains('v3')) return;
+      w.style.backgroundImage = TWEAKS.dots
+        ? 'radial-gradient(circle, #D1D5DB 1px, transparent 1px)'
+        : 'none';
+    });
+    document.querySelectorAll('.annot').forEach(a => a.style.display = TWEAKS.annotations ? '' : 'none');
+    document.querySelectorAll('.left').forEach(l => l.style.display = TWEAKS.leftPanel ? '' : 'none');
+    document.querySelectorAll('.right').forEach(r => r.style.display = TWEAKS.rightPanel ? '' : 'none');
+    document.querySelectorAll('.editor.v1, .editor.v4').forEach(ed => {
+      let cols = '';
+      if (ed.classList.contains('v4')) {
+        if (TWEAKS.leftPanel) cols += '260px ';
+        cols += '1fr';
+      } else {
+        if (TWEAKS.leftPanel) cols += '248px ';
+        cols += '1fr';
+        if (TWEAKS.rightPanel) cols += ' 296px';
+      }
+      ed.style.gridTemplateColumns = cols;
+    });
+    document.body.style.fontSize = TWEAKS.density === 'compact' ? '13px' : '14px';
+  }
+  applyTweaks();
+
+  document.querySelectorAll('#accents button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#accents button').forEach(x => x.classList.toggle('on', x === b));
+      TWEAKS.accent = b.dataset.c;
+      persist();
+    });
+  });
+  function bindSw(id, key) {
+    const sw = document.getElementById(id);
+    sw.addEventListener('click', () => {
+      TWEAKS[key] = !TWEAKS[key];
+      sw.classList.toggle('on', TWEAKS[key]);
+      persist();
+    });
+  }
+  bindSw('sw-dots', 'dots');
+  bindSw('sw-annot', 'annotations');
+  bindSw('sw-left', 'leftPanel');
+  bindSw('sw-right', 'rightPanel');
+  document.querySelectorAll('#density button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#density button').forEach(x => x.classList.toggle('on', x === b));
+      TWEAKS.density = b.dataset.d;
+      persist();
+    });
+  });
+  function persist() {
+    applyTweaks();
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: TWEAKS }, '*');
+  }
+
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') panel.classList.add('on');
+    else if (d.type === '__deactivate_edit_mode') panel.classList.remove('on');
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+</script>
+
+</body>
+</html>

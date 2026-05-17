@@ -1,0 +1,97 @@
+<section class="gc-inspector-section">
+  <div class="gc-section-header">Typography</div>
+
+  <!-- Font family -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Font</label>
+    <select class="gc-select" [value]="fontFamily()" (change)="onFontFamilyChange($event)">
+      <option value="">— inherit —</option>
+      @for (f of systemFonts; track f) {
+        <option [value]="f">{{ f }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Font weight -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Weight</label>
+    <select class="gc-select" [value]="fontWeight()" (change)="onFontWeightChange($event)">
+      <option value="">— inherit —</option>
+      <option value="100">Thin (100)</option>
+      <option value="300">Light (300)</option>
+      <option value="400">Regular (400)</option>
+      <option value="500">Medium (500)</option>
+      <option value="600">SemiBold (600)</option>
+      <option value="700">Bold (700)</option>
+      <option value="800">ExtraBold (800)</option>
+      <option value="900">Black (900)</option>
+    </select>
+  </div>
+
+  <!-- Font size -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Size</label>
+    <input
+      class="gc-input gc-input--sm"
+      type="number"
+      min="1"
+      max="999"
+      [value]="fontSize()"
+      (change)="onFontSizeChange($event)"
+      placeholder="px"
+    />
+    <span class="gc-field-unit">px</span>
+  </div>
+
+  <!-- Line height -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Line-H</label>
+    <input
+      class="gc-input gc-input--sm"
+      type="text"
+      [value]="lineHeight()"
+      (change)="onLineHeightChange($event)"
+      placeholder="e.g. 1.5"
+    />
+  </div>
+
+  <!-- Letter spacing -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Spacing</label>
+    <input
+      class="gc-input gc-input--sm"
+      type="text"
+      [value]="letterSpacing()"
+      (change)="onLetterSpacingChange($event)"
+      placeholder="e.g. 0.05em"
+    />
+  </div>
+
+  <!-- Text color -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Color</label>
+    <input type="color" [value]="color()" (input)="onColorChange($event)" />
+  </div>
+
+  <!-- Highlight color -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Highlight</label>
+    <input type="color" [value]="highlight()" (input)="onHighlightChange($event)" />
+  </div>
+
+  <!-- Alignment -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Align</label>
+    <div class="gc-align-group">
+      @for (a of alignOptions; track a) {
+        <button
+          type="button"
+          class="gc-align-btn"
+          [class.gc-align-btn--active]="textAlign() === a"
+          (click)="onAlignChange(a)"
+          [title]="a"
+        >{{ a.charAt(0).toUpperCase() }}</button>
+      }
+    </div>
+  </div>
+</section>

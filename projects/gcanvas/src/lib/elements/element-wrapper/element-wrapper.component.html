@@ -1,11 +1,14 @@
 <div
   cdkDrag
   [cdkDragFreeDragPosition]="dragPosition()"
-  [cdkDragDisabled]="element().locked ?? false"
-  (cdkDragStarted)="onSelect()"
+  [cdkDragDisabled]="readonly() || (element().locked ?? false)"
+  [cdkDragConstrainPosition]="constrainPosition"
+  (cdkDragStarted)="onDragStarted($event)"
   (cdkDragEnded)="onDragEnded($event)"
   (click)="onSelect()"
   class="gc-element-wrapper"
+  [class.gc-element-wrapper--locked]="element().locked"
+  [class.gc-element-wrapper--hidden]="element().visible === false"
   [style.width.px]="effectiveSize().width"
   [style.height.px]="effectiveSize().height"
   [style.z-index]="element().zIndex"
@@ -18,8 +21,18 @@
     ></ng-container>
   }
 
-  <!-- Resize handles — shown only when selected -->
-  @if (isSelected()) {
+  <!-- Dimension pill — shown during drag or resize -->
+  @if (showDimPill()) {
+    <div class="gc-dim-pill">{{ dimPillText() }}</div>
+  }
+
+  <!-- Label badge — shown when element is selected and has a label -->
+  @if (isSelected() && label()) {
+    <div class="gc-label-badge">{{ label() }}</div>
+  }
+
+  <!-- Resize handles — shown only when selected and not locked -->
+  @if (isSelected() && !readonly() && !element().locked) {
     @for (handle of ['n','ne','e','se','s','sw','w','nw']; track handle) {
       <div
         class="gc-resize-handle gc-resize-handle--{{ handle }}"

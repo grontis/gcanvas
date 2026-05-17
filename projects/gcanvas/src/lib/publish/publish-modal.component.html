@@ -1,0 +1,46 @@
+@if (open()) {
+  <div class="gc-modal-backdrop" (click)="onBackdropClick()">
+    <div class="gc-modal" (click)="$event.stopPropagation()">
+      <header class="gc-modal__header">
+        <h2 class="gc-modal__title">Publish</h2>
+        <button class="gc-modal__close" (click)="dismiss()" aria-label="Close">&#x2715;</button>
+      </header>
+
+      @if (publishUrl()) {
+        <div class="gc-modal__url">
+          <span class="gc-modal__url-label">URL</span>
+          <a [href]="publishUrl()" target="_blank" rel="noopener">{{ publishUrl() }}</a>
+        </div>
+      }
+
+      <section class="gc-modal__section">
+        <h3 class="gc-modal__section-title">Recent changes</h3>
+        @for (event of (recentChanges$ | async); track event.changeType) {
+          <div class="gc-modal__change-row">
+            <span class="gc-modal__change-type">{{ event.changeType }}</span>
+          </div>
+        }
+        @empty {
+          <p class="gc-modal__empty">No changes recorded yet.</p>
+        }
+      </section>
+
+      <section class="gc-modal__section">
+        <h3 class="gc-modal__section-title">Pre-flight checks</h3>
+        @for (result of preflightResults(); track result.id) {
+          <div class="gc-modal__preflight-row gc-modal__preflight-row--{{ result.severity }}">
+            {{ result.label }}
+          </div>
+        }
+        @empty {
+          <p class="gc-modal__all-clear">All checks passed.</p>
+        }
+      </section>
+
+      <footer class="gc-modal__footer">
+        <button class="gc-btn-secondary" type="button" (click)="dismiss()">Cancel</button>
+        <button class="gc-btn-publish" type="button" (click)="confirm()">Publish now</button>
+      </footer>
+    </div>
+  </div>
+}

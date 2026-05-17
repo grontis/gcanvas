@@ -1,0 +1,28 @@
+<div class="gc-palette-grid">
+  @for (entry of entries; track entry.toolId) {
+    <div
+      class="gc-palette-tile"
+      [class.gc-palette-tile--active]="activeTool() === entry.toolId"
+      cdkDrag
+      [cdkDragData]="entry"
+      (click)="setTool(entry)"
+      [attr.aria-label]="entry.label"
+      [attr.title]="entry.label"
+    >
+      <div
+        class="gc-palette-tile__icon"
+        [innerHTML]="entry.icon"
+      ></div>
+      <span class="gc-palette-tile__label">{{ entry.label }}</span>
+
+      <!-- CDK drag preview — shown while dragging -->
+      <div *cdkDragPreview class="gc-palette-drag-preview">
+        <div [innerHTML]="entry.icon"></div>
+        <span>{{ entry.label }}</span>
+      </div>
+
+      <!-- CDK drag placeholder — shown in original position while dragging -->
+      <div *cdkDragPlaceholder class="gc-palette-drag-placeholder"></div>
+    </div>
+  }
+</div>

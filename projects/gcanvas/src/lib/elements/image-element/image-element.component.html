@@ -3,6 +3,7 @@
     [src]="element().src"
     [alt]="element().alt ?? ''"
     [style.object-fit]="element().objectFit ?? 'cover'"
+    [style.object-position]="element().styles?.['object-position'] ?? 'center center'"
     class="gc-image"
   />
 } @else {

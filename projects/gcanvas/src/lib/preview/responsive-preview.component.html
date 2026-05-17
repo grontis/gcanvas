@@ -1,0 +1,16 @@
+<div class="gc-preview-chrome">
+  <div class="gc-preview-columns">
+    <div class="gc-preview-column">
+      <span class="gc-preview-label">Mobile</span>
+      <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="375" />
+    </div>
+    <div class="gc-preview-column">
+      <span class="gc-preview-label">Tablet</span>
+      <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="768" />
+    </div>
+    <div class="gc-preview-column">
+      <span class="gc-preview-label">Desktop</span>
+      <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="1280" />
+    </div>
+  </div>
+</div>

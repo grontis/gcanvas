@@ -1,0 +1,28 @@
+<div class="gc-layers-panel" cdkDropList (cdkDropListDropped)="onDrop($event)">
+  @for (layer of layers(); track layer.id) {
+    <div
+      class="gc-layer-row"
+      cdkDrag
+      [class.gc-layer-row--selected]="selection.selectedId() === layer.id"
+      (click)="selectLayer(layer.id)"
+    >
+      <span class="gc-layer-row__drag-handle" cdkDragHandle>&#x2807;</span>
+      <span class="gc-layer-row__label">{{ labelOf(layer) || layer.type }}</span>
+      <span class="gc-layer-row__type">{{ layer.type }}</span>
+      <button
+        class="gc-layer-row__icon-btn"
+        [class.gc-layer-row__icon-btn--active]="layer.visible !== false"
+        (click)="$event.stopPropagation(); toggleVisible(layer)"
+        title="Toggle visibility"
+        type="button"
+      >&#128065;</button>
+      <button
+        class="gc-layer-row__icon-btn"
+        [class.gc-layer-row__icon-btn--active]="layer.locked"
+        (click)="$event.stopPropagation(); toggleLock(layer)"
+        title="Toggle lock"
+        type="button"
+      >&#128274;</button>
+    </div>
+  }
+</div>

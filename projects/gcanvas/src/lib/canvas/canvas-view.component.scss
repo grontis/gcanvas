@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  outline: none; // suppress focus ring from tabindex
+}
+
+.gc-canvas {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+:host.gc-canvas-view--readonly {
+  .gc-canvas > * {
+    pointer-events: none;
+  }
+}

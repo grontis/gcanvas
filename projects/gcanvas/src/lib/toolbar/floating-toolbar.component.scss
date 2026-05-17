@@ -34,3 +34,61 @@
     cursor: pointer;
   }
 }
+
+.gc-toolbar__sep {
+  width: 1px;
+  height: 20px;
+  background: #ddd;
+  margin: 0 2px;
+}
+
+.gc-toolbar__select {
+  height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+  padding: 0 2px;
+  cursor: pointer;
+}
+
+.gc-toolbar__size-input {
+  width: 48px;
+  height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+  padding: 0 4px;
+  text-align: center;
+  /* Remove spinner arrows */
+  appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    display: none;
+  }
+}
+
+.gc-toolbar__link-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 200;
+  white-space: nowrap;
+}
+
+.gc-toolbar__link-input {
+  width: 220px;
+  height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0 6px;
+  font-size: 13px;
+}

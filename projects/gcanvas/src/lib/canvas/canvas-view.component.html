@@ -1,0 +1,19 @@
+<div
+  class="gc-canvas"
+  [style.width.px]="viewport().width"
+  [style.height.px]="viewport().height"
+  [style.background-color]="viewport().backgroundColor ?? '#ffffff'"
+>
+  @for (el of elements(); track el.id) {
+    <gc-element-wrapper [element]="el" [readonly]="readonly()" />
+  }
+
+  <gc-floating-toolbar />
+
+  <gc-floating-action-toolbar />
+
+  <gc-snap-guides-overlay
+    [canvasWidth]="viewport().width"
+    [canvasHeight]="viewport().height"
+  />
+</div>

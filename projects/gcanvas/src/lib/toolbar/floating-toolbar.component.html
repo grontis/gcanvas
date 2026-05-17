@@ -4,13 +4,79 @@
     [style.top]="toolbarTop()"
     [style.left]="toolbarLeft()"
   >
+    <!-- Heading level -->
+    <select class="gc-toolbar__select" title="Heading" (change)="setHeading($event)">
+      <option value="">P</option>
+      <option value="1">H1</option>
+      <option value="2">H2</option>
+      <option value="3">H3</option>
+      <option value="4">H4</option>
+      <option value="5">H5</option>
+      <option value="6">H6</option>
+    </select>
+
+    <div class="gc-toolbar__sep"></div>
+
+    <!-- Font size -->
+    <input
+      class="gc-toolbar__size-input"
+      type="number"
+      min="1"
+      max="999"
+      placeholder="px"
+      title="Font size"
+      (mousedown)="$event.stopPropagation()"
+      (change)="setFontSize($event)"
+    />
+
+    <div class="gc-toolbar__sep"></div>
+
+    <!-- Bold / Italic / Underline -->
     <button type="button" (mousedown)="$event.preventDefault()" (click)="bold()" title="Bold"><b>B</b></button>
     <button type="button" (mousedown)="$event.preventDefault()" (click)="italic()" title="Italic"><i>I</i></button>
     <button type="button" (mousedown)="$event.preventDefault()" (click)="underline()" title="Underline"><u>U</u></button>
+
+    <div class="gc-toolbar__sep"></div>
+
+    <!-- Lists -->
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="toggleBulletList()" title="Bullet list">&#8226;&#8212;</button>
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="toggleOrderedList()" title="Ordered list">1&#8212;</button>
+
+    <div class="gc-toolbar__sep"></div>
+
+    <!-- Alignment -->
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="setAlign('left')"    title="Align left">&#8676;</button>
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="setAlign('center')"  title="Align center">&#8677;</button>
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="setAlign('right')"   title="Align right">&#8678;</button>
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="setAlign('justify')" title="Justify">&#8660;</button>
+
+    <div class="gc-toolbar__sep"></div>
+
+    <!-- Text color -->
     <input
       type="color"
       title="Text color"
       (input)="setColor($any($event.target).value)"
     />
+
+    <!-- Link -->
+    <button type="button" (mousedown)="$event.preventDefault()" (click)="openLinkPopover()" title="Link">&#128279;</button>
+
+    <!-- Inline link popover -->
+    @if (showLinkPopover()) {
+      <div class="gc-toolbar__link-popover" (mousedown)="$event.stopPropagation()">
+        <input
+          class="gc-toolbar__link-input"
+          type="url"
+          placeholder="https://..."
+          [(ngModel)]="linkUrl"
+          (keydown.enter)="applyLink()"
+          (keydown.escape)="cancelLink()"
+          autofocus
+        />
+        <button type="button" (click)="applyLink()">Apply</button>
+        <button type="button" (click)="cancelLink()">Cancel</button>
+      </div>
+    }
   </div>
 }

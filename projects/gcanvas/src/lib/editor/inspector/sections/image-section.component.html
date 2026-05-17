@@ -1,0 +1,59 @@
+<section class="gc-inspector-section">
+  <div class="gc-section-header">Image</div>
+
+  <!-- Source / Replace -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Source</label>
+    <span class="gc-field-value gc-truncate">{{ element().src ? 'Image set' : 'None' }}</span>
+    <button class="gc-btn-sm" (click)="triggerReplace()">Replace</button>
+    <input
+      #filePicker
+      type="file"
+      accept="image/*"
+      style="display:none"
+      (change)="onFileSelected($event)"
+    />
+  </div>
+
+  <!-- Fit segmented control -->
+  <div class="gc-field-row">
+    <label class="gc-field-label">Fit</label>
+    <div class="gc-segmented" role="group">
+      @for (opt of fitOptions; track opt) {
+        <button
+          class="gc-seg-btn"
+          [class.active]="objectFit() === opt"
+          (click)="setObjectFit(opt)"
+        >{{ opt }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Focal-point 3x3 grid -->
+  <div class="gc-field-row gc-field-row--top">
+    <label class="gc-field-label">Position</label>
+    <div class="gc-focal-grid" role="group" aria-label="Focal point">
+      @for (pos of focalPositions; track pos) {
+        <button
+          class="gc-focal-btn"
+          [class.active]="focalPoint() === pos"
+          [title]="pos"
+          (click)="setFocalPoint(pos)"
+        ></button>
+      }
+    </div>
+  </div>
+
+  <!-- Alt text -->
+  <div class="gc-field-row">
+    <label class="gc-field-label" for="gc-alt-input">Alt text</label>
+    <input
+      id="gc-alt-input"
+      class="gc-input"
+      type="text"
+      [value]="altText()"
+      (change)="onAltTextChange($event)"
+      placeholder="Describe the image"
+    />
+  </div>
+</section>

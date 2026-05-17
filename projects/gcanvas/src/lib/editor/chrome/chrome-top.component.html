@@ -1,0 +1,51 @@
+<div class="gc-crumbs">
+  <span>Projects</span>
+  @for (crumb of breadcrumbs(); track crumb) {
+    <span class="gc-crumbs__sep">/</span>
+    <span>{{ crumb }}</span>
+  }
+  <span class="gc-crumbs__sep">/</span>
+  <b>{{ projectName() }}</b>
+</div>
+
+<div class="gc-chrome-spacer"></div>
+
+@if (isEditingText()) {
+  <span class="gc-status-pill gc-status-pill--editing">
+    <span class="gc-status-pill__dot"></span>
+    Editing text
+  </span>
+} @else {
+  <span class="gc-status-pill" [class]="'gc-status-pill--' + saveStatus()">
+    <span class="gc-status-pill__dot"></span>
+    {{ saveStatus() === 'saved' ? 'Saved' : saveStatus() === 'saving' ? 'Saving…' : 'Unsaved' }}
+  </span>
+}
+
+<button
+  class="gc-chrome-mini"
+  [disabled]="!canUndo()"
+  (click)="undo()"
+  title="Undo"
+  aria-label="Undo"
+>
+  <kbd class="gc-kbd">&#8984;Z</kbd>
+</button>
+
+<button
+  class="gc-chrome-mini"
+  [disabled]="!canRedo()"
+  (click)="redo()"
+  title="Redo"
+  aria-label="Redo"
+>
+  <kbd class="gc-kbd">&#8984;&#8679;Z</kbd>
+</button>
+
+<button class="gc-chrome-mini" type="button" (click)="previewClicked.emit()" title="Preview" aria-label="Preview">
+  Preview
+</button>
+
+<button class="gc-btn-publish" type="button" (click)="publishClicked.emit()">
+  Publish
+</button>

@@ -1,0 +1,72 @@
+// Shared inspector section atoms — duplicated from page-section for now.
+// Phase C will extract to a shared _insp-section.scss partial.
+
+.gc-insp-section {
+  padding: 10px 14px;
+  border-bottom: 1px solid #eef0f3;
+  &:last-child { border-bottom: none; }
+}
+
+.gc-insp-title {
+  font-size: 10px;
+  color: #9aa1ab;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.gc-insp-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 12px;
+
+  label {
+    color: #6b7280;
+    font-size: 11px;
+  }
+}
+
+.gc-insp-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.gc-insp-v {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 4px 6px;
+  background: #ffffff;
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  color: #0b0d10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+
+  &__axis { color: #9aa1ab; flex-shrink: 0; }
+  &__unit { color: #9aa1ab; margin-left: auto; flex-shrink: 0; }
+}
+
+.gc-insp-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  padding: 0;
+  width: 100%;
+
+  // Remove number spinners
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  -moz-appearance: textfield;
+}

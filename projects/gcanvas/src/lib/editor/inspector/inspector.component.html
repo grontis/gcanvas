@@ -1,0 +1,22 @@
+<div class="gc-panel-head">
+  <span class="gc-panel-head__title">{{ panelTitle() }}</span>
+  <span class="gc-type-chip">{{ elementTypeLabel() }}</span>
+</div>
+
+<div class="gc-inspector-scroll">
+  @if (selectedElement(); as el) {
+    <gc-position-size-section [element]="el" />
+
+    @if (selectedImageElement(); as imgEl) {
+      <gc-image-section [element]="imgEl" />
+    }
+
+    @if (selectedTextElement(); as txtEl) {
+      <gc-typography-section [element]="txtEl" />
+    }
+
+    <gc-effects-section [element]="el" />
+  } @else {
+    <gc-page-section />
+  }
+</div>

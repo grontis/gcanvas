@@ -1,0 +1,124 @@
+<!-- Page identity -->
+<div class="gc-insp-section">
+  <div class="gc-insp-title">Page</div>
+
+  <div class="gc-insp-row">
+    <label>Name</label>
+    <div class="gc-insp-v gc-insp-v--text">
+      <input
+        class="gc-insp-input"
+        type="text"
+        placeholder="Untitled"
+        [ngModel]="pageName()"
+        (ngModelChange)="onNameChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="gc-insp-row">
+    <label>Slug</label>
+    <div class="gc-insp-v gc-insp-v--text">
+      <input
+        class="gc-insp-input"
+        type="text"
+        placeholder="/"
+        [ngModel]="pageSlug()"
+        (ngModelChange)="onSlugChange($event)"
+      />
+    </div>
+  </div>
+</div>
+
+<!-- Canvas / viewport -->
+<div class="gc-insp-section">
+  <div class="gc-insp-title">Canvas</div>
+
+  <div class="gc-insp-row">
+    <label>Background</label>
+    <div class="gc-insp-v">
+      <span
+        class="gc-color-swatch"
+        [style.background]="bgColor()"
+      ></span>
+      <input
+        class="gc-insp-input"
+        type="text"
+        [ngModel]="bgColor()"
+        (ngModelChange)="onBgColorChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="gc-insp-row">
+    <label>Max width</label>
+    <div class="gc-insp-v">
+      <input
+        class="gc-insp-input"
+        type="number"
+        placeholder="—"
+        [ngModel]="maxWidth()"
+        (ngModelChange)="onMaxWidthChange($event)"
+      />
+      <span class="gc-insp-v__unit">px</span>
+    </div>
+  </div>
+
+  <div class="gc-insp-row">
+    <label>Padding</label>
+    <div class="gc-insp-pair">
+      <div class="gc-insp-v">
+        <span class="gc-insp-v__axis">X</span>
+        <input
+          class="gc-insp-input"
+          type="number"
+          placeholder="0"
+          [ngModel]="paddingX()"
+          (ngModelChange)="onPaddingXChange($event)"
+        />
+        <span class="gc-insp-v__unit">px</span>
+      </div>
+      <div class="gc-insp-v">
+        <span class="gc-insp-v__axis">Y</span>
+        <input
+          class="gc-insp-input"
+          type="number"
+          placeholder="0"
+          [ngModel]="paddingY()"
+          (ngModelChange)="onPaddingYChange($event)"
+        />
+        <span class="gc-insp-v__unit">px</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEO -->
+<div class="gc-insp-section">
+  <div class="gc-insp-title">SEO</div>
+
+  <div class="gc-insp-row">
+    <label>Title</label>
+    <div class="gc-insp-v gc-insp-v--text">
+      <input
+        class="gc-insp-input"
+        type="text"
+        placeholder="Untitled page"
+        [ngModel]="seoTitle()"
+        (ngModelChange)="onSeoTitleChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="gc-insp-row">
+    <label>Description</label>
+    <div class="gc-insp-v gc-insp-v--text">
+      <input
+        class="gc-insp-input"
+        type="text"
+        placeholder="Add a description…"
+        [ngModel]="seoDesc()"
+        (ngModelChange)="onSeoDescChange($event)"
+      />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<div class="gc-toolbar">
+  <div class="gc-toolbar__tools">
+    <button
+      class="gc-tool-btn"
+      [class.gc-tool-btn--active]="activeTool() === 'select'"
+      (click)="setTool('select')"
+      title="Select (V)"
+      aria-label="Select tool"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 3l14 9-7 1-4 6z"/>
+      </svg>
+    </button>
+
+    <button
+      class="gc-tool-btn"
+      [class.gc-tool-btn--active]="activeTool() === 'text'"
+      (click)="setTool('text')"
+      title="Text (T)"
+      aria-label="Text tool"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="4 7 4 4 20 4 20 7"/>
+        <line x1="9" y1="20" x2="15" y2="20"/>
+        <line x1="12" y1="4" x2="12" y2="20"/>
+      </svg>
+    </button>
+
+    <button
+      class="gc-tool-btn"
+      [class.gc-tool-btn--active]="activeTool() === 'image'"
+      (click)="setTool('image')"
+      title="Image (I)"
+      aria-label="Image tool"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+    </button>
+
+    <button
+      class="gc-tool-btn"
+      [class.gc-tool-btn--active]="activeTool() === 'button'"
+      (click)="setTool('button')"
+      title="Button (B)"
+      aria-label="Button tool"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="7" width="20" height="10" rx="3"/>
+        <line x1="7" y1="12" x2="17" y2="12"/>
+      </svg>
+    </button>
+
+    <button
+      class="gc-tool-btn"
+      [class.gc-tool-btn--active]="activeTool() === 'shape'"
+      (click)="setTool('shape')"
+      title="Shape (S)"
+      aria-label="Shape tool"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="gc-toolbar__spacer"></div>
+
+  <div class="gc-toolbar__breakpoints">
+    <button
+      class="gc-bp-btn"
+      [class.gc-bp-btn--active]="currentBreakpoint() === 'mobile'"
+      (click)="setBreakpoint('mobile')"
+      title="Mobile"
+      aria-label="Mobile breakpoint"
+    >M</button>
+    <button
+      class="gc-bp-btn"
+      [class.gc-bp-btn--active]="currentBreakpoint() === 'tablet'"
+      (click)="setBreakpoint('tablet')"
+      title="Tablet"
+      aria-label="Tablet breakpoint"
+    >T</button>
+    <button
+      class="gc-bp-btn"
+      [class.gc-bp-btn--active]="currentBreakpoint() === 'desktop'"
+      (click)="setBreakpoint('desktop')"
+      title="Desktop"
+      aria-label="Desktop breakpoint"
+    >D</button>
+  </div>
+
+  <div class="gc-toolbar__viewport">
+    {{ viewport().width }} &times; {{ viewport().height }}
+  </div>
+</div>

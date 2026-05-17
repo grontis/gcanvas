@@ -1,0 +1,23 @@
+<div class="gc-left-panel-inner">
+  <div class="gc-left-panel__tabs">
+    <button
+      class="gc-left-panel__tab"
+      [class.gc-left-panel__tab--active]="activeTab() === 'components'"
+      (click)="setTab('components')"
+      type="button"
+    >Components</button>
+    <button
+      class="gc-left-panel__tab"
+      [class.gc-left-panel__tab--active]="activeTab() === 'layers'"
+      (click)="setTab('layers')"
+      type="button"
+    >Layers</button>
+  </div>
+
+  @if (activeTab() === 'components') {
+    <gc-component-palette />
+  }
+  @if (activeTab() === 'layers') {
+    <gc-layers-panel />
+  }
+</div>

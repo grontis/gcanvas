@@ -1,0 +1,30 @@
+// Inherits gc-inspector-section, gc-field-row, gc-field-label, gc-select, gc-input patterns
+// from global inspector styles. Only component-specific styles here.
+
+.gc-align-group {
+  display: flex;
+  gap: 2px;
+}
+
+.gc-align-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+
+  &--active {
+    background: #e8f0fe;
+    border-color: #4285f4;
+    color: #4285f4;
+  }
+}

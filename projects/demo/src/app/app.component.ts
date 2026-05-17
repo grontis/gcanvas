@@ -1,11 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CanvasComponent } from '@grontis/gcanvas';
-import type { CanvasData, CanvasChangeEvent, TextCanvasElement, ImageCanvasElement } from '@grontis/gcanvas';
+import { CanvasEditorComponent } from '@grontis/gcanvas';
+import type { CanvasData, CanvasChangeEvent, SaveStatus } from '@grontis/gcanvas';
 
 @Component({
   selector: 'app-root',
-  imports: [CanvasComponent, FormsModule],
+  imports: [CanvasEditorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -35,56 +34,20 @@ export class AppComponent {
         objectFit: 'cover',
       },
     ],
+    meta: { name: 'Home', slug: '/' },
   };
 
-  readonly showImageInput = signal(false);
-  imageUrl = '';
+  readonly saveStatus = signal<SaveStatus>('saved');
 
   onCanvasChange(event: CanvasChangeEvent): void {
     this.canvasData = event.canvasData;
+    this.saveStatus.set('saving');
+    // Simulate async save — replace with real persistence in production.
+    setTimeout(() => this.saveStatus.set('saved'), 1200);
     console.log('Canvas changed:', event.changeType, event.changedElementIds);
   }
 
-  addTextBox(): void {
-    const nextZ = this.canvasData.elements.length + 1;
-    const element: TextCanvasElement = {
-      id: `el-${Date.now()}`,
-      type: 'text',
-      position: { x: 80 + (nextZ % 5) * 40, y: 80 + (nextZ % 4) * 40 },
-      size: { width: 240, height: 120 },
-      zIndex: nextZ,
-      content: {
-        type: 'doc',
-        content: [{ type: 'paragraph', content: [{ type: 'text', text: 'New text box' }] }],
-      },
-    };
-    this.canvasData = {
-      ...this.canvasData,
-      elements: [...this.canvasData.elements, element],
-    };
-  }
-
-  toggleImageInput(): void {
-    this.showImageInput.update(v => !v);
-    this.imageUrl = '';
-  }
-
-  confirmAddImage(): void {
-    const nextZ = this.canvasData.elements.length + 1;
-    const element: ImageCanvasElement = {
-      id: `el-${Date.now()}`,
-      type: 'image',
-      position: { x: 80 + (nextZ % 5) * 40, y: 80 + (nextZ % 4) * 40 },
-      size: { width: 200, height: 200 },
-      zIndex: nextZ,
-      src: this.imageUrl.trim(),
-      objectFit: 'cover',
-    };
-    this.canvasData = {
-      ...this.canvasData,
-      elements: [...this.canvasData.elements, element],
-    };
-    this.showImageInput.set(false);
-    this.imageUrl = '';
+  onPublish(): void {
+    console.log('Publish requested — modal coming in Phase G.');
   }
 }

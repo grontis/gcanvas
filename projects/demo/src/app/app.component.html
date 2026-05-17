@@ -1,28 +1,8 @@
-<div class="demo-toolbar">
-  <span class="demo-toolbar__title">gcanvas demo</span>
-
-  <button class="demo-btn" type="button" (click)="addTextBox()">+ Text Box</button>
-
-  <button class="demo-btn" type="button" (click)="toggleImageInput()">+ Image</button>
-
-  @if (showImageInput()) {
-    <div class="demo-image-input">
-      <input
-        type="url"
-        class="demo-image-input__field"
-        placeholder="Paste image URL…"
-        [(ngModel)]="imageUrl"
-        (keydown.enter)="confirmAddImage()"
-        (keydown.escape)="toggleImageInput()"
-        autofocus
-      />
-      <button class="demo-btn demo-btn--primary" type="button" (click)="confirmAddImage()">Add</button>
-      <button class="demo-btn" type="button" (click)="toggleImageInput()">Cancel</button>
-    </div>
-  }
-</div>
-
-<gc-canvas
+<gc-canvas-editor
   [canvasData]="canvasData"
+  [projectName]="'gcanvas demo'"
+  [breadcrumbs]="['Projects', 'Demo']"
+  [saveStatus]="saveStatus()"
   (canvasChange)="onCanvasChange($event)"
+  (publish)="onPublish()"
 />

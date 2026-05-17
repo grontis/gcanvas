@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, Signal } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-import { CanvasData, CanvasChangeEvent } from '../models/canvas-data.model';
+import { CanvasData, CanvasChangeEvent, CanvasViewport } from '../models/canvas-data.model';
 import { CanvasElement, ElementPosition, ElementSize } from '../models/canvas-element.model';
 
 const HISTORY_LIMIT = 50;
@@ -91,6 +91,54 @@ export class CanvasStateService {
     this._pushHistory();
     this._mutateElement(id, el => ({ ...el, zIndex: newZIndex }));
     this._emit({ changedElementIds: [id], changeType: 'reorder' });
+  }
+
+  /**
+   * Atomically reassigns zIndex values for all elements based on the supplied
+   * ordered ID array. Index 0 = topmost layer (highest zIndex = N).
+   * All IDs in the canvas that are absent from orderedIds retain their existing
+   * zIndex values unchanged (defensive — layers panel always supplies all IDs).
+   */
+  reorderElements(orderedIds: string[]): void {
+    this._pushHistory();
+    const total = orderedIds.length;
+    this._state.update(s => ({
+      ...s,
+      elements: s.elements.map(el => {
+        const listIndex = orderedIds.indexOf(el.id);
+        if (listIndex === -1) return el;
+        return { ...el, zIndex: total - listIndex }; // index 0 → zIndex N (top)
+      }),
+    }));
+    this._emit({ changedElementIds: orderedIds, changeType: 'reorder' });
+  }
+
+  /**
+   * Generic shallow-merge patch for any BaseCanvasElement properties
+   * (e.g. locked, visible). Use specialized methods for position/size/content.
+   */
+  patchElement(id: string, partial: Partial<CanvasElement>): void {
+    this._pushHistory();
+    this._mutateElement(id, el => ({ ...el, ...partial }));
+    this._emit({ changedElementIds: [id], changeType: 'edit' });
+  }
+
+  updateViewport(viewport: Partial<CanvasViewport>): void {
+    this._pushHistory();
+    this._state.update(s => ({
+      ...s,
+      viewport: { ...s.viewport, ...viewport },
+    }));
+    this._emit({ changedElementIds: [], changeType: 'viewport' });
+  }
+
+  updateMeta(meta: Partial<NonNullable<CanvasData['meta']>>): void {
+    this._pushHistory();
+    this._state.update(s => ({
+      ...s,
+      meta: { ...s.meta, ...meta },
+    }));
+    this._emit({ changedElementIds: [], changeType: 'viewport' });
   }
 
   // --- Undo/Redo ---

@@ -1,0 +1,27 @@
+@if (enableTemplatePicker()) {
+  <div class="gc-template-picker">
+    <h2 class="gc-template-picker__title">Start with a template</h2>
+    <div class="gc-template-picker__grid">
+      <!-- Blank canvas tile -->
+      <button class="gc-template-tile gc-template-tile--blank" (click)="selectBlank()">
+        <div class="gc-template-tile__preview gc-template-tile__preview--blank"></div>
+        <span class="gc-template-tile__name">Blank canvas</span>
+      </button>
+
+      @for (entry of templateList(); track entry.id) {
+        <button class="gc-template-tile" (click)="selectTemplate(entry)">
+          <div class="gc-template-tile__preview">
+            @for (block of entry.thumbnailBlocks; track $index) {
+              <div
+                class="gc-template-tile__block"
+                [style.background]="block.color"
+                [style.height.px]="block.height"
+              ></div>
+            }
+          </div>
+          <span class="gc-template-tile__name">{{ entry.name }}</span>
+        </button>
+      }
+    </div>
+  </div>
+}

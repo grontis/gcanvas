@@ -1,0 +1,34 @@
+<gc-editor-chrome-top
+  (publishClicked)="openPublishModal()"
+  (previewClicked)="onPreviewClicked()"
+/>
+
+<gc-editor-toolbar />
+
+<gc-editor-left-panel />
+
+<div
+  class="gc-canvas-wrap"
+  #canvasWrap
+  cdkDropList
+  cdkDropListSortingDisabled
+  id="gc-canvas-drop-zone"
+  [cdkDropListEnterPredicate]="paletteDropPredicate"
+  (cdkDropListDropped)="onPaletteDrop($event)"
+  (click)="onCanvasWrapClick($event)"
+>
+  <gc-template-picker
+    [enableTemplatePicker]="enableTemplatePicker() && elements().length === 0"
+    (templateSelected)="onTemplateSelected($event)"
+  />
+  <gc-canvas-view />
+</div>
+
+<gc-editor-inspector />
+
+<gc-publish-modal
+  [open]="_publishOpen()"
+  [publishUrl]="publishUrl()"
+  (confirmed)="onPublishConfirmed()"
+  (closed)="onPublishClosed()"
+/>

@@ -1,0 +1,42 @@
+@if (isVisible()) {
+  <div
+    class="gc-fat"
+    [style.top]="toolbarTop()"
+    [style.left]="toolbarLeft()"
+  >
+    <!-- Buttons common to all element types -->
+    <button class="gc-fat__btn" title="Duplicate" (click)="onDuplicate()">
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+        <path d="M4 4v8h8V4H4zm-1-1h10v10H3V3z"/>
+        <path d="M1 1h9v1H2v8H1V1z"/>
+      </svg>
+    </button>
+
+    <button class="gc-fat__btn gc-fat__btn--danger" title="Delete" (click)="onDelete()">
+      <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+        <path d="M6 2h4v1H6V2zM2 4h12v1H2V4zm2 2h8v8H4V6zm2 2v4h1V8H6zm3 0v4h1V8H9z"/>
+      </svg>
+    </button>
+
+    <!-- Image-only buttons -->
+    @if (isImage()) {
+      <div class="gc-fat__divider"></div>
+
+      <button class="gc-fat__btn" title="Replace image" (click)="triggerReplace()">
+        Replace
+      </button>
+
+      <button class="gc-fat__btn" title="Crop (stub)" (click)="onCrop()">
+        Crop
+      </button>
+
+      <input
+        #filePicker
+        type="file"
+        accept="image/*"
+        style="display:none"
+        (change)="onFileSelected($event)"
+      />
+    }
+  </div>
+}

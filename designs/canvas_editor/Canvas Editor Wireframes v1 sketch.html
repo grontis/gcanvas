@@ -1,0 +1,1832 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440" />
+<title>Canvas Editor — Wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Kalam:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF7;
+    --ink: #1A1A1A;
+    --ink-2: #2B2B29;
+    --g1: #EDEDE8;
+    --g2: #D8D8D3;
+    --g3: #B8B8B3;
+    --g4: #86868010;
+    --muted: #6B6B66;
+    --accent: oklch(0.68 0.18 48);
+    --accent-soft: oklch(0.68 0.18 48 / 0.12);
+    --accent-ink: oklch(0.42 0.14 48);
+    --hand: 'Kalam', cursive;
+    --head: 'Architects Daughter', cursive;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: var(--hand); }
+  body {
+    background-image:
+      radial-gradient(circle at 20% 30%, #00000006 0 1px, transparent 1px),
+      radial-gradient(circle at 80% 70%, #00000006 0 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* ========== TAB NAV ========== */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--paper);
+    border-bottom: 2px solid var(--ink);
+    padding: 14px 28px 0;
+  }
+  .brand {
+    display: flex; align-items: baseline; gap: 14px; margin-bottom: 10px;
+  }
+  .brand h1 {
+    font-family: var(--head);
+    font-size: 22px; margin: 0; letter-spacing: 0.5px;
+  }
+  .brand .sub {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .brand .spacer { flex: 1; }
+  .brand .tweak-hint {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    padding: 4px 8px; border: 1.5px dashed var(--g3); border-radius: 4px;
+  }
+  .tabs {
+    display: flex; gap: 2px; overflow-x: auto;
+  }
+  .tab {
+    font-family: var(--hand); font-size: 15px;
+    background: transparent; border: none; cursor: pointer;
+    padding: 10px 16px 12px;
+    color: var(--muted);
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink); font-weight: 700;
+    border-bottom-color: var(--accent);
+  }
+  .tab .num {
+    font-family: var(--mono); font-size: 10px; color: var(--g3);
+    margin-right: 6px;
+  }
+  .tab.active .num { color: var(--accent); }
+
+  /* ========== SCREEN CONTAINER ========== */
+  .screen { display: none; padding: 32px 28px 80px; }
+  .screen.active { display: block; }
+  .screen-head {
+    display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px;
+  }
+  .screen-head h2 {
+    font-family: var(--head); font-size: 28px; margin: 0;
+  }
+  .screen-head .tag {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .screen-desc {
+    font-family: var(--hand); font-size: 15px; color: var(--muted);
+    max-width: 720px; margin: 0 0 24px;
+  }
+
+  /* ========== VARIATION SWITCHER (for editor screen) ========== */
+  .var-switch {
+    display: inline-flex; gap: 0;
+    border: 2px solid var(--ink); border-radius: 6px;
+    background: var(--paper);
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .var-switch button {
+    font-family: var(--hand); font-size: 14px;
+    background: transparent; border: none; cursor: pointer;
+    padding: 8px 14px;
+    border-right: 1.5px solid var(--ink);
+    color: var(--ink);
+  }
+  .var-switch button:last-child { border-right: none; }
+  .var-switch button.on {
+    background: var(--accent); color: white; font-weight: 700;
+  }
+
+  /* ========== CANVAS (the fake editor window) ========== */
+  .editor {
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 var(--ink);
+    display: grid;
+    overflow: hidden;
+    position: relative;
+  }
+  .editor.v1 { grid-template-columns: 240px 1fr 280px; grid-template-rows: 48px 52px 1fr; }
+  .editor.v2 { grid-template-columns: 64px 1fr 300px; grid-template-rows: 48px 1fr; }
+  .editor.v3 { grid-template-columns: 1fr; grid-template-rows: 48px 56px 1fr; }
+  .editor.v4 { grid-template-columns: 220px 1fr; grid-template-rows: 48px 1fr; }
+
+  /* chrome bars */
+  .chrome-top {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 14px;
+    padding: 0 14px;
+    border-bottom: 1.5px solid var(--g2);
+    background: var(--g1);
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+  }
+  .dots { display: flex; gap: 5px; }
+  .dots i {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--g3); display: block;
+  }
+  .dots i:nth-child(1) { background: #E88; }
+  .dots i:nth-child(2) { background: #ECA; }
+  .dots i:nth-child(3) { background: #AE8; }
+  .chrome-top .title { font-family: var(--hand); color: var(--ink); font-size: 13px; }
+  .chrome-top .spacer { flex: 1; }
+  .chrome-top .save { color: var(--muted); }
+  .chrome-top .btn-publish {
+    background: var(--accent); color: white;
+    border: none; padding: 5px 12px; border-radius: 4px;
+    font-family: var(--hand); font-size: 12px; font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* toolbar row */
+  .toolbar {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 4px;
+    padding: 0 14px;
+    border-bottom: 1.5px solid var(--g2);
+    background: white;
+    font-family: var(--hand); font-size: 13px;
+  }
+  .tool {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 10px; border-radius: 4px;
+    color: var(--ink);
+    border: 1.5px solid transparent;
+    cursor: pointer;
+  }
+  .tool:hover { background: var(--g1); }
+  .tool.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+  .tool svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .tsep { width: 1.5px; height: 20px; background: var(--g2); margin: 0 4px; }
+  .toolbar .breakpoints { margin-left: auto; display: flex; gap: 2px; border: 1.5px solid var(--g2); border-radius: 5px; padding: 2px; }
+  .toolbar .breakpoints .tool { padding: 4px 8px; }
+  .toolbar .breakpoints .tool.on { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* left panel */
+  .left {
+    border-right: 1.5px solid var(--g2);
+    background: var(--paper);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .panel-head {
+    padding: 12px 14px 8px;
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .panel-head .search {
+    flex: 1; border: 1.5px solid var(--g2); border-radius: 4px;
+    padding: 4px 8px; font-family: var(--hand); font-size: 12px;
+    color: var(--g3); background: white;
+  }
+  .comp-grid { padding: 6px 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; overflow-y: auto; }
+  .comp {
+    border: 1.5px solid var(--g2); border-radius: 6px;
+    background: white; padding: 10px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-family: var(--hand); font-size: 11px; color: var(--muted);
+    cursor: grab;
+    aspect-ratio: 1.2;
+  }
+  .comp:hover { border-color: var(--ink); color: var(--ink); }
+  .comp svg { width: 28px; height: 24px; stroke: var(--ink); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .comp-section {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    padding: 10px 14px 4px; letter-spacing: 1px; text-transform: uppercase;
+    border-top: 1px dashed var(--g2);
+  }
+  .comp-section:first-of-type { border-top: none; }
+
+  /* right panel */
+  .right {
+    border-left: 1.5px solid var(--g2);
+    background: var(--paper);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .inspector { padding: 8px 14px 14px; overflow-y: auto; }
+  .insp-section {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--g2);
+  }
+  .insp-section:last-child { border-bottom: none; }
+  .insp-title {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+    letter-spacing: 1.2px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .insp-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+    font-family: var(--hand); font-size: 12px;
+  }
+  .insp-row label { color: var(--muted); min-width: 44px; }
+  .insp-row .v {
+    flex: 1; border: 1.5px solid var(--g2); border-radius: 4px;
+    padding: 3px 7px; background: white;
+    font-family: var(--mono); font-size: 11px;
+  }
+  .insp-row .v.pair { display: flex; gap: 4px; padding: 0; border: none; background: none; }
+  .insp-row .v.pair span { flex: 1; border: 1.5px solid var(--g2); border-radius: 4px; padding: 3px 7px; background: white; }
+  .swatch {
+    width: 16px; height: 16px; border-radius: 3px;
+    border: 1.5px solid var(--g2); display: inline-block;
+  }
+  .align-row { display: flex; gap: 3px; }
+  .align-row .tool { padding: 4px 6px; border: 1.5px solid var(--g2); }
+
+  /* canvas area */
+  .canvas-wrap {
+    background:
+      linear-gradient(#0001 1px, transparent 1px),
+      linear-gradient(90deg, #0001 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-color: #F2F2EE;
+    padding: 30px;
+    overflow: auto;
+    position: relative;
+    min-height: 620px;
+  }
+  .page {
+    background: white;
+    border: 1.5px solid var(--g2);
+    box-shadow: 0 2px 0 #0001;
+    margin: 0 auto;
+    position: relative;
+    min-height: 720px;
+    width: 900px;
+    max-width: 100%;
+  }
+  .page.mobile { width: 375px; }
+  .page.tablet { width: 768px; }
+
+  /* elements on the page */
+  .el {
+    position: absolute;
+    font-family: var(--hand);
+  }
+  .el-label {
+    position: absolute; top: -18px; left: -2px;
+    font-family: var(--mono); font-size: 10px; color: var(--accent-ink);
+    background: var(--accent-soft); padding: 1px 5px; border-radius: 2px;
+    white-space: nowrap;
+  }
+  .el.selected { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .el.selected .handles i {
+    position: absolute; width: 8px; height: 8px;
+    background: white; border: 1.5px solid var(--accent);
+    border-radius: 1px;
+  }
+  .el.selected .handles i.tl { top: -6px; left: -6px; cursor: nwse-resize; }
+  .el.selected .handles i.tr { top: -6px; right: -6px; cursor: nesw-resize; }
+  .el.selected .handles i.bl { bottom: -6px; left: -6px; cursor: nesw-resize; }
+  .el.selected .handles i.br { bottom: -6px; right: -6px; cursor: nwse-resize; }
+  .el.selected .handles i.tm { top: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+  .el.selected .handles i.bm { bottom: -6px; left: 50%; transform: translateX(-50%); cursor: ns-resize; }
+  .el.selected .handles i.lm { left: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+  .el.selected .handles i.rm { right: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+
+  .el-heading { font-family: var(--head); font-size: 32px; color: var(--ink); line-height: 1.2; }
+  .el-body { font-family: var(--hand); font-size: 14px; color: var(--ink-2); line-height: 1.5; }
+
+  /* hatched image placeholder */
+  .img-ph {
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 6px, #B8B8B340 6px, #B8B8B340 7px
+    );
+    border: 1.5px solid var(--g3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-family: var(--mono); font-size: 11px;
+  }
+  .shape-ph {
+    border: 1.5px solid var(--g3);
+    background: #F7F7F3;
+  }
+
+  /* floating rich-text toolbar */
+  .rt-float {
+    position: absolute;
+    background: var(--ink); color: white;
+    border-radius: 6px;
+    padding: 5px 6px;
+    display: flex; align-items: center; gap: 2px;
+    font-family: var(--hand); font-size: 12px;
+    box-shadow: 0 4px 12px #0003;
+    z-index: 10;
+  }
+  .rt-float::after {
+    content: ""; position: absolute; bottom: -6px; left: 24px;
+    width: 10px; height: 10px; background: var(--ink);
+    transform: rotate(45deg);
+  }
+  .rt-float .rt {
+    padding: 4px 7px; border-radius: 3px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .rt-float .rt:hover { background: #ffffff20; }
+  .rt-float .rt.on { background: var(--accent); }
+  .rt-float .rt svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2; }
+  .rt-float .sep { width: 1px; height: 14px; background: #ffffff40; margin: 0 3px; }
+
+  /* alignment guides */
+  .guide-v { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--accent); }
+  .guide-h { position: absolute; left: 0; right: 0; height: 1px; background: var(--accent); }
+  .dim-pill {
+    position: absolute;
+    background: var(--accent); color: white;
+    font-family: var(--mono); font-size: 10px;
+    padding: 2px 6px; border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* ========== LAYOUT VARIATIONS SPECIFIC BITS ========== */
+  /* V2: icon rail */
+  .rail {
+    border-right: 1.5px solid var(--g2);
+    background: var(--paper);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; gap: 4px;
+  }
+  .rail .r-btn {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; cursor: pointer;
+    color: var(--muted);
+  }
+  .rail .r-btn:hover { background: var(--g1); color: var(--ink); }
+  .rail .r-btn.on { background: var(--accent); color: white; }
+  .rail .r-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .rail .r-label {
+    font-family: var(--mono); font-size: 8px;
+    margin-top: 2px; letter-spacing: 0.5px;
+  }
+  .rail .sep { width: 28px; height: 1.5px; background: var(--g2); margin: 6px 0; }
+
+  /* V3: contextual-only, hides panels */
+  .canvas-wrap.v3 { background-color: var(--paper); }
+
+  /* V4: unified left with tabs */
+  .left-tabs {
+    display: flex; border-bottom: 1.5px solid var(--g2);
+    background: white;
+  }
+  .left-tabs button {
+    flex: 1; padding: 10px 8px; font-family: var(--hand); font-size: 12px;
+    background: transparent; border: none; cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+  }
+  .left-tabs button.on { color: var(--ink); border-bottom-color: var(--accent); font-weight: 700; }
+
+  /* ========== TEMPLATE PICKER ========== */
+  .tpl-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    max-width: 1100px;
+  }
+  .tpl-card {
+    background: white; border: 2px solid var(--ink);
+    border-radius: 8px; overflow: hidden;
+    box-shadow: 3px 3px 0 var(--ink);
+    cursor: pointer;
+  }
+  .tpl-card .preview {
+    background: var(--g1); aspect-ratio: 4/3;
+    border-bottom: 1.5px solid var(--ink);
+    padding: 14px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .tpl-card .meta {
+    padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--hand);
+  }
+  .tpl-card .meta .name { font-weight: 700; font-size: 15px; }
+  .tpl-card .meta .cat { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .tpl-card .mini-block { background: var(--g2); border-radius: 2px; }
+  .tpl-card.blank .preview {
+    align-items: center; justify-content: center;
+    background: repeating-linear-gradient(45deg, white, white 8px, var(--g1) 8px, var(--g1) 9px);
+  }
+  .tpl-card.blank .plus {
+    font-family: var(--head); font-size: 48px; color: var(--muted);
+  }
+
+  /* ========== PREVIEW (responsive) ========== */
+  .preview-bar {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 16px;
+    background: var(--ink); color: white;
+    border-radius: 8px 8px 0 0;
+    font-family: var(--hand); font-size: 13px;
+  }
+  .preview-bar .back { color: #ccc; cursor: pointer; }
+  .preview-bar .bp-switch { display: flex; gap: 2px; background: #ffffff15; border-radius: 5px; padding: 2px; margin-left: auto; }
+  .preview-bar .bp-switch button {
+    background: transparent; border: none; color: white;
+    font-family: var(--hand); font-size: 12px;
+    padding: 4px 12px; border-radius: 3px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .preview-bar .bp-switch button.on { background: var(--accent); }
+  .preview-bar .bp-switch svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .preview-stage {
+    background: #2B2B29;
+    border: 2px solid var(--ink); border-top: none;
+    border-radius: 0 0 8px 8px;
+    padding: 30px; min-height: 620px;
+    overflow: auto;
+    display: flex; justify-content: center; align-items: flex-start;
+    gap: 24px;
+  }
+  .device {
+    background: white; border-radius: 6px;
+    box-shadow: 0 10px 30px #0006;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .device .bp-label {
+    position: absolute; top: -22px; left: 0;
+    font-family: var(--mono); font-size: 10px; color: #bbb;
+    letter-spacing: 1px;
+  }
+  .device .bp-size { position: absolute; top: -22px; right: 0; font-family: var(--mono); font-size: 10px; color: #888; }
+  .device-mobile { width: 375px; min-height: 560px; }
+  .device-tablet { width: 768px; min-height: 560px; }
+  .device-desktop { width: 1100px; min-height: 560px; }
+
+  /* mock page content for preview */
+  .pg-hero { padding: 28px 20px; }
+  .pg-hero .kicker { font-family: var(--mono); font-size: 10px; color: var(--accent-ink); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .pg-hero h3 { font-family: var(--head); font-size: 34px; margin: 0 0 8px; line-height: 1.15; }
+  .pg-hero p { font-family: var(--hand); font-size: 14px; color: var(--muted); margin: 0 0 14px; }
+  .pg-hero .cta { display: inline-block; background: var(--accent); color: white; padding: 8px 16px; border-radius: 4px; font-weight: 700; }
+  .pg-img { height: 160px; }
+  .pg-nav {
+    display: flex; align-items: center; gap: 20px;
+    padding: 12px 20px; border-bottom: 1px solid var(--g1);
+    font-family: var(--hand); font-size: 13px;
+  }
+  .pg-nav .logo { font-family: var(--head); font-weight: 700; font-size: 16px; flex: 1; }
+  .pg-nav a { color: var(--muted); }
+  .pg-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 20px; }
+  .pg-grid-3.stack { grid-template-columns: 1fr; }
+  .pg-card { border: 1px solid var(--g1); border-radius: 6px; padding: 14px; }
+  .pg-card h4 { font-family: var(--head); font-size: 15px; margin: 8px 0 4px; }
+  .pg-card p { font-family: var(--hand); font-size: 12px; color: var(--muted); margin: 0; }
+  .mobile-stack .pg-grid-3 { grid-template-columns: 1fr; }
+  .mobile-stack .pg-hero h3 { font-size: 24px; }
+  .mobile-stack .pg-nav { gap: 10px; }
+  .mobile-stack .pg-nav a:not(.mburger) { display: none; }
+  .mburger { margin-left: auto; font-family: var(--mono); }
+
+  /* ========== PUBLISH FLOW ========== */
+  .pub-wrap {
+    max-width: 640px; margin: 0 auto;
+    background: white; border: 2px solid var(--ink);
+    border-radius: 10px; box-shadow: 4px 4px 0 var(--ink);
+    overflow: hidden;
+  }
+  .pub-head {
+    padding: 22px 28px 16px;
+    border-bottom: 1.5px solid var(--g2);
+  }
+  .pub-head h3 { font-family: var(--head); font-size: 24px; margin: 0 0 4px; }
+  .pub-head p { font-family: var(--hand); color: var(--muted); font-size: 14px; margin: 0; }
+  .pub-body { padding: 20px 28px 24px; }
+  .field {
+    margin-bottom: 18px;
+  }
+  .field label {
+    display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 5px;
+  }
+  .field .input {
+    border: 1.5px solid var(--g2); border-radius: 5px; background: white;
+    padding: 8px 12px; font-family: var(--hand); font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .field .input .prefix { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+  .field .input .val { flex: 1; color: var(--ink); }
+  .field .input .badge {
+    font-family: var(--mono); font-size: 10px;
+    background: #C9EFC9; color: #1A5A1A;
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .checklist { list-style: none; padding: 0; margin: 0; }
+  .checklist li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; font-family: var(--hand); font-size: 13px;
+    border-bottom: 1px dashed var(--g2);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check { width: 18px; height: 18px; border: 1.5px solid var(--g3); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .check.done { background: var(--accent); border-color: var(--accent); color: white; }
+  .check.done::before { content: "✓"; font-family: var(--mono); font-size: 12px; font-weight: 700; }
+  .pub-footer {
+    padding: 16px 28px; background: var(--paper); border-top: 1.5px solid var(--g2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .btn {
+    font-family: var(--hand); font-size: 14px; font-weight: 700;
+    padding: 9px 18px; border-radius: 5px; cursor: pointer;
+    border: 2px solid var(--ink); background: white; color: var(--ink);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn.ghost { border: none; background: transparent; font-weight: 400; color: var(--muted); }
+
+  /* ========== LIBRARY (full screen) ========== */
+  .lib-shell {
+    background: white; border: 2px solid var(--ink); border-radius: 10px;
+    box-shadow: 4px 4px 0 var(--ink);
+    display: grid; grid-template-columns: 180px 1fr 320px;
+    min-height: 620px;
+    overflow: hidden;
+  }
+  .lib-nav { border-right: 1.5px solid var(--g2); padding: 14px 10px; background: var(--paper); }
+  .lib-nav .n-sec { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; padding: 8px 8px 4px; }
+  .lib-nav .n-item { font-family: var(--hand); font-size: 13px; padding: 6px 10px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--ink-2); }
+  .lib-nav .n-item:hover { background: var(--g1); }
+  .lib-nav .n-item.on { background: var(--accent-soft); color: var(--accent-ink); font-weight: 700; }
+  .lib-nav .n-count { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .lib-main { padding: 18px 20px; overflow: auto; }
+  .lib-filter {
+    display: flex; gap: 8px; margin-bottom: 16px; align-items: center;
+  }
+  .lib-filter .chip {
+    padding: 5px 11px; border-radius: 14px; border: 1.5px solid var(--g2);
+    font-family: var(--hand); font-size: 12px; color: var(--muted);
+    cursor: pointer;
+  }
+  .lib-filter .chip.on { background: var(--ink); color: white; border-color: var(--ink); }
+  .lib-filter .search-big {
+    margin-left: auto; border: 1.5px solid var(--g2); border-radius: 5px;
+    padding: 6px 10px; font-family: var(--hand); font-size: 13px; color: var(--muted);
+    min-width: 200px;
+  }
+  .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+  .lib-item {
+    border: 1.5px solid var(--g2); border-radius: 6px; background: white;
+    overflow: hidden; cursor: grab;
+  }
+  .lib-item:hover { border-color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .lib-item .prev {
+    aspect-ratio: 4/3; background: var(--g1); padding: 12px;
+    display: flex; flex-direction: column; gap: 5px; border-bottom: 1px solid var(--g2);
+  }
+  .lib-item .nm { padding: 7px 10px; font-family: var(--hand); font-size: 12px; display: flex; justify-content: space-between; }
+  .lib-item .nm span:last-child { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .lib-item.selected { border-color: var(--accent); box-shadow: 2px 2px 0 var(--accent); }
+  .lib-detail { border-left: 1.5px solid var(--g2); background: var(--paper); padding: 18px; overflow: auto; }
+  .lib-detail h4 { font-family: var(--head); font-size: 18px; margin: 0 0 6px; }
+  .lib-detail .desc { font-family: var(--hand); font-size: 13px; color: var(--muted); margin: 0 0 14px; }
+  .lib-detail .big-prev {
+    background: var(--g1); border: 1.5px solid var(--g2); border-radius: 5px;
+    aspect-ratio: 4/3; margin-bottom: 14px; padding: 14px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .lib-detail .prop { display: flex; justify-content: space-between; font-family: var(--hand); font-size: 12px; padding: 5px 0; border-bottom: 1px dashed var(--g2); }
+  .lib-detail .prop span:last-child { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+  /* ========== ANNOTATIONS ========== */
+  .annot {
+    position: absolute;
+    font-family: var(--hand); font-size: 12px;
+    color: var(--accent-ink);
+    pointer-events: none;
+  }
+  .annot .arrow {
+    display: block; position: absolute;
+  }
+  .annot svg { stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; }
+  .annot .note {
+    background: var(--paper); padding: 2px 6px;
+    border: 1.5px dashed var(--accent); border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  /* ========== TWEAKS PANEL ========== */
+  .tweaks-panel {
+    position: fixed; right: 20px; bottom: 20px;
+    background: white; border: 2px solid var(--ink); border-radius: 8px;
+    box-shadow: 4px 4px 0 var(--ink);
+    padding: 14px; width: 260px; z-index: 200;
+    display: none;
+  }
+  .tweaks-panel.on { display: block; }
+  .tweaks-panel h4 { font-family: var(--head); font-size: 16px; margin: 0 0 10px; }
+  .tweaks-panel .row { margin-bottom: 10px; }
+  .tweaks-panel label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+  .tweaks-panel .accents { display: flex; gap: 6px; }
+  .tweaks-panel .accents button {
+    width: 24px; height: 24px; border-radius: 4px;
+    border: 2px solid var(--g2); cursor: pointer;
+  }
+  .tweaks-panel .accents button.on { border-color: var(--ink); transform: scale(1.1); }
+  .tweaks-panel .toggle {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--hand); font-size: 13px; padding: 4px 0;
+  }
+  .tweaks-panel .sw {
+    width: 34px; height: 20px; border-radius: 10px; background: var(--g2);
+    position: relative; cursor: pointer; transition: background 0.15s;
+  }
+  .tweaks-panel .sw::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; background: white; border-radius: 50%;
+    transition: transform 0.15s;
+  }
+  .tweaks-panel .sw.on { background: var(--accent); }
+  .tweaks-panel .sw.on::after { transform: translateX(14px); }
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <h1>Canvas Editor</h1>
+    <span class="sub">wireframes · v1</span>
+    <div class="spacer"></div>
+    <span class="tweak-hint">toggle Tweaks for variations</span>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-screen="s1"><span class="num">01</span>Editor</button>
+    <button class="tab" data-screen="s2"><span class="num">02</span>Empty / New</button>
+    <button class="tab" data-screen="s3"><span class="num">03</span>Text editing</button>
+    <button class="tab" data-screen="s4"><span class="num">04</span>Image editing</button>
+    <button class="tab" data-screen="s5"><span class="num">05</span>Components library</button>
+    <button class="tab" data-screen="s6"><span class="num">06</span>Responsive preview</button>
+    <button class="tab" data-screen="s7"><span class="num">07</span>Publish</button>
+    <button class="tab" data-screen="s8"><span class="num">08</span>Templates</button>
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- SCREEN 1: EDITOR (with 4 layout variations)   -->
+<!-- ============================================= -->
+<section class="screen active" id="s1">
+  <div class="screen-head">
+    <h2>The editor</h2>
+    <span class="tag">four layout approaches</span>
+  </div>
+  <p class="screen-desc">Same content, same tools — four different chrome arrangements. V1 is the Webflow/Figma familiar. V2 trades the component grid for a thin icon rail and pops the library as a flyout. V3 removes panels entirely and lets contextual toolbars float over the canvas. V4 unifies components + layers + inspector into one left-side tabbed panel.</p>
+
+  <div class="var-switch" id="varSwitch">
+    <button class="on" data-var="v1">V1 · Classic 3-panel</button>
+    <button data-var="v2">V2 · Icon rail + inspector</button>
+    <button data-var="v3">V3 · Canvas-first (floating)</button>
+    <button data-var="v4">V4 · Unified left panel</button>
+  </div>
+
+  <!-- V1 -->
+  <div class="editor v1" data-var="v1">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Sunrise Bakery — Home</span>
+      <span class="save">· saved 2s ago</span>
+      <div class="spacer"></div>
+      <span>⌘Z / ⌘⇧Z</span>
+      <button class="btn-publish">Publish →</button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg viewBox="0 0 24 24"><path d="M5 3l4 18h2l3-14 3 14h2l4-18"/></svg> Select</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg> Text</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-7 7"/></svg> Image</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> Shape</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h10M7 14h6"/></svg> Button</div>
+      <div class="tsep"></div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M3 21v-6l11-11 6 6-11 11H3z"/></svg> Layers</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg> Delete</div>
+      <div class="breakpoints">
+        <div class="tool on"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+    </div>
+
+    <!-- LEFT: components library -->
+    <div class="left">
+      <div class="panel-head">
+        <span>Add</span>
+        <div class="search">🔍  search…</div>
+      </div>
+      <div class="comp-section">Layout</div>
+      <div class="comp-grid">
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="2" y="3" width="24" height="18"/></svg>Section</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="2" y="3" width="11" height="18"/><rect x="15" y="3" width="11" height="18"/></svg>2 cols</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="2" y="3" width="7" height="18"/><rect x="10" y="3" width="7" height="18"/><rect x="19" y="3" width="7" height="18"/></svg>3 cols</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="2" y="3" width="24" height="5"/><rect x="2" y="10" width="24" height="5"/><rect x="2" y="17" width="24" height="5"/></svg>Stack</div>
+      </div>
+      <div class="comp-section">Content</div>
+      <div class="comp-grid">
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 8h20M4 14h14"/></svg>Text</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 7h20M4 12h20M4 17h12"/></svg>Paragraph</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="3" y="4" width="22" height="16"/><circle cx="9" cy="11" r="2"/><path d="M25 18l-7-6-8 7"/></svg>Image</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="4" y="7" width="20" height="10" rx="2"/><path d="M9 12h10"/></svg>Button</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="3" y="5" width="22" height="14"/><path d="M3 10h22"/></svg>Card</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 6h20M4 10h20M4 14h20M4 18h20"/></svg>Form</div>
+      </div>
+      <div class="comp-section">Media</div>
+      <div class="comp-grid">
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M8 5v14l12-7z"/></svg>Video</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><circle cx="14" cy="12" r="8"/><path d="M14 7v5l3 2"/></svg>Embed</div>
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="canvas-wrap">
+      <div class="page" id="page-v1">
+        <!-- guides -->
+        <div class="guide-v" style="left: 40px;"></div>
+        <div class="guide-v" style="right: 40px;"></div>
+
+        <div class="el" style="top: 40px; left: 40px; width: 520px;">
+          <div class="el-heading">Fresh-baked,<br/>every morning.</div>
+        </div>
+        <div class="el" style="top: 180px; left: 40px; width: 420px;">
+          <div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries from our Oak Street counter.</div>
+        </div>
+        <div class="el" style="top: 280px; left: 40px;">
+          <div style="background: var(--ink); color: white; padding: 10px 18px; border-radius: 4px; font-family: var(--hand); font-weight: 700; display: inline-block;">Order for pickup →</div>
+        </div>
+
+        <!-- selected image -->
+        <div class="el selected" style="top: 40px; left: 600px; width: 260px; height: 280px;">
+          <div class="el-label">Image · hero.jpg</div>
+          <div class="img-ph" style="width:100%;height:100%;">1200 × 1400</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+          <div class="dim-pill" style="bottom: -24px; right: 0;">260 × 280</div>
+        </div>
+
+        <!-- 3-up card row -->
+        <div class="el" style="top: 380px; left: 40px; right: 40px; width: calc(100% - 80px);">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+            <div style="border: 1px solid var(--g2); border-radius: 6px; padding: 14px;">
+              <div class="img-ph" style="height: 100px; margin-bottom: 10px;">photo</div>
+              <div style="font-family: var(--head); font-size: 16px;">Sourdough</div>
+              <div style="font-family: var(--hand); font-size: 12px; color: var(--muted);">$8 / loaf</div>
+            </div>
+            <div style="border: 1px solid var(--g2); border-radius: 6px; padding: 14px;">
+              <div class="img-ph" style="height: 100px; margin-bottom: 10px;">photo</div>
+              <div style="font-family: var(--head); font-size: 16px;">Croissants</div>
+              <div style="font-family: var(--hand); font-size: 12px; color: var(--muted);">$4 each</div>
+            </div>
+            <div style="border: 1px solid var(--g2); border-radius: 6px; padding: 14px;">
+              <div class="img-ph" style="height: 100px; margin-bottom: 10px;">photo</div>
+              <div style="font-family: var(--head); font-size: 16px;">Morning buns</div>
+              <div style="font-family: var(--hand); font-size: 12px; color: var(--muted);">$5 each</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: inspector -->
+    <div class="right">
+      <div class="panel-head">
+        <span>Inspector · Image</span>
+      </div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Position</div>
+          <div class="insp-row"><label>X</label><span class="v">600</span><label>Y</label><span class="v">40</span></div>
+          <div class="insp-row"><label>W</label><span class="v">260</span><label>H</label><span class="v">280</span></div>
+          <div class="insp-row"><label>Align</label>
+            <div class="align-row">
+              <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 4v16M8 7h10M8 13h6M8 19h12"/></svg></div>
+              <div class="tool on"><svg viewBox="0 0 24 24"><path d="M12 4v16M7 7h10M9 13h6M5 19h14"/></svg></div>
+              <div class="tool"><svg viewBox="0 0 24 24"><path d="M20 4v16M6 7h10M10 13h6M4 19h12"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Image</div>
+          <div class="insp-row"><label>Source</label><span class="v">hero.jpg</span></div>
+          <div class="insp-row"><label>Alt</label><span class="v" style="color:var(--g3);">describe…</span></div>
+          <div class="insp-row"><label>Fit</label><span class="v">Cover ▾</span></div>
+          <div class="insp-row"><label>Radius</label><span class="v">0 px</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Effects</div>
+          <div class="insp-row"><label>Shadow</label><span class="v">None ▾</span></div>
+          <div class="insp-row"><label>Border</label><span class="v pair"><span>0</span><span>solid ▾</span></span></div>
+          <div class="insp-row"><label>Opacity</label><span class="v">100 %</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Link</div>
+          <div class="insp-row"><label>URL</label><span class="v" style="color:var(--g3);">none</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- V2: icon rail -->
+  <div class="editor v2" data-var="v2" style="display:none;">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Sunrise Bakery — Home</span>
+      <span class="save">· saved</span>
+      <div class="spacer"></div>
+      <div class="breakpoints" style="border: 1.5px solid var(--g2); border-radius: 5px; padding: 2px;">
+        <div class="tool on" style="padding:4px 8px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="2" y="4" width="20" height="14" rx="2"/></svg></div>
+        <div class="tool" style="padding:4px 8px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool" style="padding:4px 8px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+      <button class="btn-publish">Publish →</button>
+    </div>
+
+    <div class="rail">
+      <div class="r-btn on"><svg viewBox="0 0 24 24"><path d="M5 3l4 18h2l3-14 3 14h2l4-18"/></svg></div>
+      <div class="r-btn"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
+      <div class="r-btn"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg></div>
+      <div class="r-btn"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-7 7"/></svg></div>
+      <div class="sep"></div>
+      <div class="r-btn"><svg viewBox="0 0 24 24"><path d="M3 21v-6l11-11 6 6-11 11H3z"/></svg></div>
+      <div class="r-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 40px; left: 40px;"><div class="el-heading">Fresh-baked,<br/>every morning.</div></div>
+        <div class="el" style="top: 180px; left: 40px; width: 420px;"><div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries.</div></div>
+        <div class="el selected" style="top: 40px; left: 520px; width: 300px; height: 280px;">
+          <div class="el-label">Image</div>
+          <div class="img-ph" style="width:100%;height:100%;">hero image</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+        </div>
+        <!-- flyout library -->
+        <div style="position:absolute; top: 20px; left: 20px; background: white; border: 2px solid var(--ink); border-radius: 8px; box-shadow: 4px 4px 0 var(--ink); padding: 12px; width: 280px; z-index: 5;">
+          <div style="font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1.2px; margin-bottom: 8px; display: flex; justify-content: space-between;"><span>COMPONENTS · FLYOUT</span><span style="cursor:pointer;">×</span></div>
+          <div class="search" style="border: 1.5px solid var(--g2); border-radius: 4px; padding: 5px 10px; margin-bottom: 10px; font-family: var(--hand); font-size: 12px; color: var(--g3);">🔍  search…</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+            <div class="comp" style="aspect-ratio: 1;"><svg viewBox="0 0 28 24"><rect x="2" y="3" width="24" height="18"/></svg>Section</div>
+            <div class="comp" style="aspect-ratio: 1;"><svg viewBox="0 0 28 24"><path d="M4 8h20M4 14h14"/></svg>Text</div>
+            <div class="comp" style="aspect-ratio: 1;"><svg viewBox="0 0 28 24"><rect x="3" y="4" width="22" height="16"/></svg>Image</div>
+            <div class="comp" style="aspect-ratio: 1;"><svg viewBox="0 0 28 24"><rect x="4" y="7" width="20" height="10" rx="2"/></svg>Button</div>
+            <div class="comp" style="aspect-ratio: 1;"><svg viewBox="0 0 28 24"><rect x="3" y="5" width="22" height="14"/></svg>Card</div>
+            <div class="comp" style="aspect-ratio: 1;"><svg viewBox="0 0 28 24"><path d="M8 5v14l12-7z"/></svg>Video</div>
+          </div>
+        </div>
+      </div>
+      <div class="annot" style="top: 170px; left: 95px;">
+        <div class="note">rail stays thin — content gets room</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span>Inspector · Image</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Size</div>
+          <div class="insp-row"><label>W</label><span class="v">300</span><label>H</label><span class="v">280</span></div>
+          <div class="insp-row"><label>Ratio</label><span class="v">🔒 15 : 14</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Image</div>
+          <div class="insp-row"><label>File</label><span class="v">hero.jpg</span></div>
+          <div class="insp-row"><label>Fit</label><span class="v">Cover ▾</span></div>
+          <div class="insp-row"><label>Focal</label><span class="v">center</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Style</div>
+          <div class="insp-row"><label>Radius</label><span class="v">0</span></div>
+          <div class="insp-row"><label>Shadow</label><span class="v">None</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- V3: canvas-first -->
+  <div class="editor v3" data-var="v3" style="display:none;">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Sunrise Bakery — Home</span>
+      <div class="spacer"></div>
+      <span style="font-family: var(--mono); font-size: 10px; color: var(--muted);">⌘K for everything</span>
+      <button class="btn-publish">Publish →</button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg viewBox="0 0 24 24"><path d="M5 3l4 18h2l3-14 3 14h2l4-18"/></svg>Select</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>Text</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/></svg>Image</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Shape</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg>Add</div>
+      <div class="tsep"></div>
+      <span style="font-family: var(--mono); font-size: 11px; color: var(--muted);">press <b style="background: var(--g1); padding: 2px 5px; border-radius: 3px;">⌘K</b> to search commands, layers, assets</span>
+      <div class="breakpoints" style="margin-left:auto;">
+        <div class="tool on"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+    </div>
+    <div class="canvas-wrap v3" style="padding: 40px;">
+      <div class="page" style="width: 1000px;">
+        <div class="el" style="top: 50px; left: 60px;"><div class="el-heading">Fresh-baked,<br/>every morning.</div></div>
+        <div class="el" style="top: 210px; left: 60px; width: 440px;"><div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries.</div></div>
+        <div class="el selected" style="top: 50px; left: 580px; width: 340px; height: 300px;">
+          <div class="img-ph" style="width:100%;height:100%;">hero image</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+          <!-- floating contextual panel pinned to selection -->
+          <div style="position: absolute; top: -56px; left: 0; background: var(--ink); color: white; border-radius: 6px; padding: 6px 8px; display: flex; gap: 3px; font-family: var(--hand); font-size: 12px; box-shadow: 0 4px 12px #0003;">
+            <span style="padding: 4px 8px;">↔ 340</span>
+            <span style="padding: 4px 8px;">↕ 300</span>
+            <span style="width: 1px; background: #ffffff40;"></span>
+            <span style="padding: 4px 8px;">Replace</span>
+            <span style="padding: 4px 8px;">Crop</span>
+            <span style="padding: 4px 8px;">Fit ▾</span>
+            <span style="padding: 4px 8px;">⋯</span>
+          </div>
+        </div>
+      </div>
+      <!-- command palette floater -->
+      <div style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%); width: 480px; background: white; border: 2px solid var(--ink); border-radius: 10px; box-shadow: 0 10px 30px #0003;">
+        <div style="padding: 12px 14px; border-bottom: 1.5px solid var(--g2); font-family: var(--hand); color: var(--muted);">🔍  add image, edit text, go to contact page…</div>
+        <div style="padding: 6px 0;">
+          <div style="padding: 7px 14px; display: flex; gap: 10px; align-items: center; font-family: var(--hand); font-size: 13px; background: var(--accent-soft);"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/></svg> Add image — drag onto canvas <span style="margin-left:auto; font-family: var(--mono); font-size: 10px; color: var(--muted);">I</span></div>
+          <div style="padding: 7px 14px; display: flex; gap: 10px; align-items: center; font-family: var(--hand); font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8"><path d="M4 6h16M4 12h10"/></svg> Add heading <span style="margin-left:auto; font-family: var(--mono); font-size: 10px; color: var(--muted);">T</span></div>
+          <div style="padding: 7px 14px; display: flex; gap: 10px; align-items: center; font-family: var(--hand); font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8"><rect x="4" y="7" width="16" height="10" rx="2"/></svg> Add button</div>
+          <div style="padding: 7px 14px; display: flex; gap: 10px; align-items: center; font-family: var(--hand); font-size: 13px;"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/></svg> Jump to: About page</div>
+        </div>
+        <div style="padding: 6px 14px; background: var(--paper); font-family: var(--mono); font-size: 10px; color: var(--muted); border-top: 1px solid var(--g2);">↑↓ navigate · ↵ select · esc close</div>
+      </div>
+      <div class="annot" style="top: 50px; right: 40px;">
+        <div class="note">no fixed panels — command palette does the work</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- V4: unified left -->
+  <div class="editor v4" data-var="v4" style="display:none;">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Sunrise Bakery — Home</span>
+      <span class="save">· saved</span>
+      <div class="spacer"></div>
+      <div class="breakpoints" style="border: 1.5px solid var(--g2); border-radius: 5px; padding: 2px; margin-right: 10px;">
+        <div class="tool on" style="padding:4px 8px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="2" y="4" width="20" height="14" rx="2"/></svg></div>
+        <div class="tool" style="padding:4px 8px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool" style="padding:4px 8px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+      <button class="btn-publish">Publish →</button>
+    </div>
+
+    <div class="left">
+      <div class="left-tabs">
+        <button class="on">Add</button>
+        <button>Layers</button>
+        <button>Style</button>
+      </div>
+      <div class="comp-section">Quick</div>
+      <div class="comp-grid">
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 8h20M4 14h14"/></svg>Text</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="3" y="4" width="22" height="16"/></svg>Image</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="4" y="7" width="20" height="10" rx="2"/></svg>Button</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="3" y="5" width="22" height="14"/></svg>Card</div>
+      </div>
+      <div class="comp-section">Selection · Image</div>
+      <div class="inspector" style="padding: 4px 14px 14px;">
+        <div class="insp-row"><label>W</label><span class="v">340</span><label>H</label><span class="v">300</span></div>
+        <div class="insp-row"><label>Fit</label><span class="v">Cover ▾</span></div>
+        <div class="insp-row"><label>Radius</label><span class="v">0</span></div>
+        <div class="insp-row"><label>Alt</label><span class="v" style="color:var(--g3);">describe…</span></div>
+      </div>
+      <div class="comp-section">Layers</div>
+      <div style="padding: 0 8px 12px; font-family: var(--hand); font-size: 12px;">
+        <div style="padding: 5px 8px; display: flex; gap: 6px; align-items: center;">📄 Home</div>
+        <div style="padding: 4px 8px 4px 22px; color: var(--muted);">▸ Hero section</div>
+        <div style="padding: 4px 8px 4px 34px; color: var(--ink);">T  Headline</div>
+        <div style="padding: 4px 8px 4px 34px; color: var(--ink);">¶  Description</div>
+        <div style="padding: 4px 8px 4px 34px; background: var(--accent-soft); color: var(--accent-ink); border-radius: 3px;">🖼  Hero image</div>
+        <div style="padding: 4px 8px 4px 34px; color: var(--ink);">▭  CTA button</div>
+        <div style="padding: 4px 8px 4px 22px; color: var(--muted);">▸ Product grid</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 40px; left: 40px;"><div class="el-heading">Fresh-baked,<br/>every morning.</div></div>
+        <div class="el" style="top: 180px; left: 40px; width: 420px;"><div class="el-body">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries.</div></div>
+        <div class="el selected" style="top: 40px; left: 520px; width: 340px; height: 300px;">
+          <div class="el-label">Image · hero.jpg</div>
+          <div class="img-ph" style="width:100%;height:100%;">hero image</div>
+          <div class="handles"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i></div>
+        </div>
+      </div>
+      <div class="annot" style="top: 20px; right: 40px;">
+        <div class="note">everything in one panel — more canvas room</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 2: EMPTY / NEW CANVAS                  -->
+<!-- ============================================= -->
+<section class="screen" id="s2">
+  <div class="screen-head">
+    <h2>Empty canvas · new project</h2>
+    <span class="tag">first-run state</span>
+  </div>
+  <p class="screen-desc">What you see after creating a blank page. Canvas is centered, guides visible, and the first-nudge suggests dragging a component in from the left or using the contextual add-menu right on the canvas.</p>
+
+  <div class="editor v1" style="grid-template-columns: 240px 1fr 280px;">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Untitled project</span>
+      <span class="save">· not saved</span>
+      <div class="spacer"></div>
+      <button class="btn-publish" style="background: var(--g2); color: var(--muted);">Publish →</button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg viewBox="0 0 24 24"><path d="M5 3l4 18h2l3-14 3 14h2l4-18"/></svg>Select</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>Text</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>Image</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Shape</div>
+      <div class="breakpoints">
+        <div class="tool on"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+    </div>
+
+    <div class="left">
+      <div class="panel-head"><span>Add</span><div class="search">🔍  search…</div></div>
+      <div class="comp-section">Start with</div>
+      <div class="comp-grid">
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="2" y="3" width="24" height="18"/></svg>Section</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 8h20M4 14h14"/></svg>Text</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="3" y="4" width="22" height="16"/></svg>Image</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><rect x="4" y="7" width="20" height="10" rx="2"/></svg>Button</div>
+      </div>
+      <div class="comp-section">Or pick a template</div>
+      <div style="padding: 6px 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div style="border: 1.5px solid var(--g2); border-radius: 5px; aspect-ratio: 1.3; padding: 6px; font-family: var(--hand); font-size: 10px; color: var(--muted);">Landing</div>
+        <div style="border: 1.5px solid var(--g2); border-radius: 5px; aspect-ratio: 1.3; padding: 6px; font-family: var(--hand); font-size: 10px; color: var(--muted);">Shop</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page" style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px;">
+        <!-- empty state -->
+        <div style="width: 92px; height: 92px; border: 2px dashed var(--g3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-size: 48px; color: var(--g3);">+</div>
+        <div style="font-family: var(--head); font-size: 22px;">An empty page</div>
+        <div style="font-family: var(--hand); color: var(--muted); text-align: center; max-width: 340px;">Drag a component from the left, or click anywhere to drop one in. Elements snap to guides and you can move them freely.</div>
+        <div style="display: flex; gap: 10px; margin-top: 6px;">
+          <div class="btn primary">Start from template</div>
+          <div class="btn">Start blank</div>
+        </div>
+        <div style="margin-top: 20px; font-family: var(--mono); font-size: 10px; color: var(--g3); letter-spacing: 1.2px;">TIP · PRESS  T  FOR TEXT  ·  I  FOR IMAGE  ·  B  FOR BUTTON</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span>Page</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Page</div>
+          <div class="insp-row"><label>Name</label><span class="v">Home</span></div>
+          <div class="insp-row"><label>Slug</label><span class="v">/</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Canvas</div>
+          <div class="insp-row"><label>Bg</label><span class="v"><span class="swatch" style="background:white;"></span> white</span></div>
+          <div class="insp-row"><label>Max W</label><span class="v">1200 px</span></div>
+          <div class="insp-row"><label>Padding</label><span class="v pair"><span>40</span><span>40</span></span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">SEO</div>
+          <div class="insp-row"><label>Title</label><span class="v" style="color:var(--g3);">untitled page</span></div>
+          <div class="insp-row"><label>Desc</label><span class="v" style="color:var(--g3);">add a description…</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 3: TEXT EDITING                        -->
+<!-- ============================================= -->
+<section class="screen" id="s3">
+  <div class="screen-head">
+    <h2>Editing a text block</h2>
+    <span class="tag">rich-text toolbar on selection</span>
+  </div>
+  <p class="screen-desc">Double-click any text to enter edit mode. A floating toolbar hovers above the cursor with the essentials: size, weight, color, link, list, alignment. The right-side inspector mirrors the block-level typography settings.</p>
+
+  <div class="editor v1" style="grid-template-columns: 240px 1fr 280px;">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Sunrise Bakery — About</span>
+      <span class="save">· editing text</span>
+      <div class="spacer"></div>
+      <button class="btn-publish">Publish →</button>
+    </div>
+    <div class="toolbar">
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M5 3l4 18h2l3-14 3 14h2l4-18"/></svg>Select</div>
+      <div class="tool on"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>Text</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>Image</div>
+      <div class="tsep"></div>
+      <span style="font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 0 8px;">Editing · press ESC to exit</span>
+      <div class="breakpoints">
+        <div class="tool on"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+    </div>
+
+    <div class="left">
+      <div class="panel-head"><span>Add</span><div class="search">🔍  search…</div></div>
+      <div class="comp-section">Text</div>
+      <div class="comp-grid">
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 7h20M14 7v14"/></svg>Heading</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M4 7h20M4 12h20M4 17h12"/></svg>Paragraph</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M6 7h4M6 12h4M6 17h4M14 7h10M14 12h10M14 17h8"/></svg>List</div>
+        <div class="comp"><svg viewBox="0 0 28 24"><path d="M5 4l4 16M11 10h12M11 14h8"/></svg>Quote</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 40px; left: 40px; width: 760px;">
+          <div class="el-label" style="background: var(--ink); color: white;">Editing · Heading</div>
+          <div style="outline: 2px solid var(--accent); outline-offset: 4px; padding: 4px; border-radius: 2px;">
+            <div class="el-heading" style="font-size: 40px; line-height: 1.1;">
+              Baked with <span style="background: var(--accent-soft); border-bottom: 2px solid var(--accent);">care since 2014</span><span style="display:inline-block; width: 2px; height: 38px; background: var(--accent); vertical-align: middle; margin-left: 2px; animation: blink 1s infinite;"></span>
+            </div>
+          </div>
+
+          <!-- floating RT toolbar positioned above selection -->
+          <div class="rt-float" style="top: -40px; left: 180px;">
+            <span class="rt" style="padding: 4px 10px; font-family: var(--mono); font-size: 11px;">Heading ▾</span>
+            <span class="sep"></span>
+            <span class="rt" style="padding: 4px 10px; font-family: var(--mono); font-size: 11px;">40</span>
+            <span class="sep"></span>
+            <span class="rt on"><b>B</b></span>
+            <span class="rt"><i>I</i></span>
+            <span class="rt"><u>U</u></span>
+            <span class="sep"></span>
+            <span class="rt"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 1 0-7l3-3M14 11a5 5 0 0 1 0 7l-3 3"/></svg></span>
+            <span class="rt"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>▾</span>
+            <span class="sep"></span>
+            <span class="rt"><span class="swatch" style="width:13px;height:13px;background: var(--accent); border-color: #ffffff40;"></span></span>
+            <span class="rt">⋯</span>
+          </div>
+        </div>
+
+        <div class="el" style="top: 180px; left: 40px; width: 640px;">
+          <div class="el-body">Two brothers. One neighborhood. A whole lot of sourdough. We started out of a shared home oven and now bake through the night for the morning crowd at Oak Street.</div>
+        </div>
+
+        <div class="el" style="top: 320px; left: 40px; width: 640px;">
+          <div class="el-body">Every loaf uses organic stone-milled flour and a 36-hour cold ferment. If you can't tell the difference, we'll give you your money back.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span>Typography</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Font</div>
+          <div class="insp-row"><label>Family</label><span class="v">Architects Daughter ▾</span></div>
+          <div class="insp-row"><label>Weight</label><span class="v">Bold ▾</span></div>
+          <div class="insp-row"><label>Size</label><span class="v">40 px</span></div>
+          <div class="insp-row"><label>Line</label><span class="v">1.1</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Color</div>
+          <div class="insp-row"><label>Text</label><span class="v"><span class="swatch" style="background:#1A1A1A;"></span> #1A1A1A</span></div>
+          <div class="insp-row"><label>Highlight</label><span class="v"><span class="swatch" style="background:var(--accent);"></span> accent</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Align</div>
+          <div class="align-row">
+            <div class="tool on"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h16"/></svg></div>
+            <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 7h16M7 12h10M4 17h16"/></svg></div>
+            <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 7h16M10 12h10M4 17h16"/></svg></div>
+          </div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Responsive</div>
+          <div class="insp-row"><label>Mobile</label><span class="v">28 px</span></div>
+          <div class="insp-row"><label>Tablet</label><span class="v">34 px</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 4: IMAGE RESIZING                      -->
+<!-- ============================================= -->
+<section class="screen" id="s4">
+  <div class="screen-head">
+    <h2>Resizing an image</h2>
+    <span class="tag">handles + live dimensions + snap</span>
+  </div>
+  <p class="screen-desc">Drag corner handles to resize. Hold Shift to keep ratio. Center guides appear when the element aligns with others. Replace, crop, and fit controls float above the selection.</p>
+
+  <div class="editor v1" style="grid-template-columns: 240px 1fr 280px;">
+    <div class="chrome-top">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <span class="title">Sunrise Bakery — Home</span>
+      <span class="save">· resizing</span>
+      <div class="spacer"></div>
+      <button class="btn-publish">Publish →</button>
+    </div>
+    <div class="toolbar">
+      <div class="tool on"><svg viewBox="0 0 24 24"><path d="M5 3l4 18h2l3-14 3 14h2l4-18"/></svg>Select</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>Text</div>
+      <div class="tool"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>Image</div>
+      <div class="tsep"></div>
+      <span style="font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 0 8px;">hold ⇧ to lock ratio · ⌥ to resize from center</span>
+      <div class="breakpoints">
+        <div class="tool on"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></svg></div>
+        <div class="tool"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg></div>
+      </div>
+    </div>
+
+    <div class="left">
+      <div class="panel-head"><span>Assets</span><div class="search">🔍  search…</div></div>
+      <div class="comp-section">Recent</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="img-ph" style="width:100%;aspect-ratio:1;"></div>hero.jpg</div>
+        <div class="comp"><div class="img-ph" style="width:100%;aspect-ratio:1;"></div>loaf.jpg</div>
+        <div class="comp"><div class="img-ph" style="width:100%;aspect-ratio:1;"></div>team.jpg</div>
+        <div class="comp"><div class="img-ph" style="width:100%;aspect-ratio:1;"></div>shop.jpg</div>
+      </div>
+      <div class="comp-section">Unsplash</div>
+      <div class="comp-grid">
+        <div class="comp"><div class="img-ph" style="width:100%;aspect-ratio:1;"></div>bread</div>
+        <div class="comp"><div class="img-ph" style="width:100%;aspect-ratio:1;"></div>coffee</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="page">
+        <div class="el" style="top: 40px; left: 40px; width: 360px;">
+          <div class="el-heading" style="font-size: 28px;">Fresh-baked, every morning.</div>
+        </div>
+        <div class="el" style="top: 180px; left: 40px; width: 320px;">
+          <div class="el-body">Order online before 10am and pick up warm sourdough from Oak Street.</div>
+        </div>
+
+        <!-- guides showing snap -->
+        <div class="guide-v" style="left: 430px;"></div>
+        <div class="guide-h" style="top: 40px;"></div>
+        <div class="guide-h" style="top: 360px;"></div>
+
+        <!-- selected image, mid-resize -->
+        <div class="el selected" style="top: 40px; left: 430px; width: 420px; height: 320px;">
+          <div class="img-ph" style="width:100%;height:100%;">sourdough.jpg · 2400 × 1800</div>
+          <div class="handles">
+            <i class="tl"></i><i class="tr"></i><i class="bl"></i>
+            <i class="br" style="background: var(--accent); transform: scale(1.4);"></i>
+            <i class="tm"></i><i class="bm"></i><i class="lm"></i><i class="rm"></i>
+          </div>
+          <!-- floating contextual toolbar -->
+          <div style="position: absolute; top: -40px; left: 0; background: var(--ink); color: white; border-radius: 6px; padding: 5px 7px; display: flex; gap: 2px; font-family: var(--hand); font-size: 12px; box-shadow: 0 4px 12px #0003;">
+            <span style="padding: 4px 9px;">↩ Replace</span>
+            <span style="padding: 4px 9px;">◱ Crop</span>
+            <span style="padding: 4px 9px;">Fit: Cover ▾</span>
+            <span style="width: 1px; background: #ffffff40; margin: 0 2px;"></span>
+            <span style="padding: 4px 9px;">🔗</span>
+            <span style="padding: 4px 9px;">⋯</span>
+          </div>
+          <!-- live dimension pill -->
+          <div class="dim-pill" style="bottom: -28px; right: 0;">420 × 320</div>
+          <!-- ratio lock indicator -->
+          <div class="dim-pill" style="top: 50%; left: -52px; transform: translateY(-50%); background: var(--ink);">🔒 21:16</div>
+        </div>
+
+        <!-- distance markers -->
+        <div style="position: absolute; top: 20px; left: 430px; width: 420px; display: flex; align-items: center; justify-content: center;">
+          <div style="flex: 1; height: 1px; border-top: 1px dashed var(--accent);"></div>
+          <span class="dim-pill">420</span>
+          <div style="flex: 1; height: 1px; border-top: 1px dashed var(--accent);"></div>
+        </div>
+
+        <div class="el" style="top: 400px; left: 40px; width: 820px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+            <div class="shape-ph" style="height: 140px; border-radius: 6px;"></div>
+            <div class="shape-ph" style="height: 140px; border-radius: 6px;"></div>
+            <div class="shape-ph" style="height: 140px; border-radius: 6px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel-head"><span>Inspector · Image</span></div>
+      <div class="inspector">
+        <div class="insp-section">
+          <div class="insp-title">Size</div>
+          <div class="insp-row"><label>W</label><span class="v" style="color: var(--accent-ink); font-weight: 700;">420</span><label>H</label><span class="v" style="color: var(--accent-ink); font-weight: 700;">320</span></div>
+          <div class="insp-row"><label>Ratio</label><span class="v">🔒  21 : 16</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Position</div>
+          <div class="insp-row"><label>X</label><span class="v">430</span><label>Y</label><span class="v">40</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Image</div>
+          <div class="insp-row"><label>Source</label><span class="v">sourdough.jpg</span></div>
+          <div class="insp-row"><label>Fit</label><span class="v">Cover ▾</span></div>
+          <div class="insp-row"><label>Focal</label>
+            <span class="v" style="padding: 0; display: flex; align-items: center; justify-content: center; height: 48px; position: relative;">
+              <span style="position: absolute; inset: 4px; background: repeating-linear-gradient(45deg, transparent, transparent 4px, var(--g2) 4px, var(--g2) 5px); border: 1px solid var(--g2);"></span>
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--accent); position: relative; z-index: 1;"></span>
+            </span>
+          </div>
+          <div class="insp-row"><label>Alt</label><span class="v">Fresh sourdough on wire rack</span></div>
+        </div>
+        <div class="insp-section">
+          <div class="insp-title">Effects</div>
+          <div class="insp-row"><label>Radius</label><span class="v">0 px</span></div>
+          <div class="insp-row"><label>Shadow</label><span class="v">None ▾</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 5: COMPONENTS LIBRARY (full)           -->
+<!-- ============================================= -->
+<section class="screen" id="s5">
+  <div class="screen-head">
+    <h2>Components &amp; assets library</h2>
+    <span class="tag">pulled out to full view</span>
+  </div>
+  <p class="screen-desc">When the user wants to browse rather than grab-and-drag, the sidebar's library expands into a full-width modal: category nav on the left, browsable grid in the middle, detail pane on the right.</p>
+
+  <div class="lib-shell">
+    <div class="lib-nav">
+      <div class="n-sec">Components</div>
+      <div class="n-item on">◻  Basic <span class="n-count">18</span></div>
+      <div class="n-item">▤  Layout <span class="n-count">12</span></div>
+      <div class="n-item">📷  Media <span class="n-count">8</span></div>
+      <div class="n-item">📝  Forms <span class="n-count">6</span></div>
+      <div class="n-item">🔗  Navigation <span class="n-count">5</span></div>
+      <div class="n-item">🛍  Commerce <span class="n-count">9</span></div>
+      <div class="n-sec">Assets</div>
+      <div class="n-item">🖼  My images <span class="n-count">24</span></div>
+      <div class="n-item">🎨  Icons <span class="n-count">400+</span></div>
+      <div class="n-item">🌊  Stock photos</div>
+      <div class="n-sec">Saved</div>
+      <div class="n-item">⭐  Favorites</div>
+      <div class="n-item">🧩  My blocks <span class="n-count">3</span></div>
+    </div>
+    <div class="lib-main">
+      <div class="lib-filter">
+        <span class="chip on">All</span>
+        <span class="chip">Text</span>
+        <span class="chip">Media</span>
+        <span class="chip">Buttons</span>
+        <span class="chip">Containers</span>
+        <span class="search-big">🔍  search 18 components…</span>
+      </div>
+      <div class="lib-grid">
+        <div class="lib-item">
+          <div class="prev"><div style="background: var(--g3); height: 8px; width: 70%; border-radius: 2px;"></div><div style="background: var(--g2); height: 5px; width: 90%; border-radius: 2px;"></div><div style="background: var(--g2); height: 5px; width: 80%; border-radius: 2px;"></div></div>
+          <div class="nm"><span>Heading + text</span><span>T</span></div>
+        </div>
+        <div class="lib-item selected">
+          <div class="prev"><div class="img-ph" style="flex: 1;"></div></div>
+          <div class="nm"><span>Image</span><span>I</span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev"><div style="background: var(--ink); height: 20px; width: 90px; border-radius: 3px; margin: auto;"></div></div>
+          <div class="nm"><span>Button</span><span>B</span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="flex-direction: row; gap: 6px;"><div class="img-ph" style="flex: 1;"></div><div style="flex: 1; display: flex; flex-direction: column; gap: 4px;"><div style="background: var(--g3); height: 6px; border-radius: 2px;"></div><div style="background: var(--g2); height: 4px; border-radius: 2px;"></div></div></div>
+          <div class="nm"><span>Image + text</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="flex-direction: row; gap: 4px;"><div class="img-ph" style="flex: 1;"></div><div class="img-ph" style="flex: 1;"></div><div class="img-ph" style="flex: 1;"></div></div>
+          <div class="nm"><span>Gallery — 3 up</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev"><div style="background: var(--g2); height: 14px; border-radius: 3px;"></div><div style="background: var(--g2); height: 14px; border-radius: 3px;"></div><div style="background: var(--ink); height: 14px; border-radius: 3px; width: 40%;"></div></div>
+          <div class="nm"><span>Contact form</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev" style="flex-direction: row; justify-content: space-between; align-items: center;"><div style="background: var(--ink); width: 20px; height: 20px; border-radius: 3px;"></div><div style="display: flex; gap: 6px;"><div style="background: var(--g3); width: 20px; height: 4px;"></div><div style="background: var(--g3); width: 20px; height: 4px;"></div><div style="background: var(--g3); width: 20px; height: 4px;"></div></div></div>
+          <div class="nm"><span>Nav bar</span><span></span></div>
+        </div>
+        <div class="lib-item">
+          <div class="prev"><div style="background: var(--g2); height: 30px; border-radius: 3px; margin-bottom: 4px;"></div><div style="background: var(--g3); height: 5px; width: 60%;"></div></div>
+          <div class="nm"><span>Card</span><span>C</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="lib-detail">
+      <h4>Image</h4>
+      <p class="desc">A single image element. Drag onto the canvas and replace with your own, or pick from stock.</p>
+      <div class="big-prev"><div class="img-ph" style="flex: 1; width: 100%;">preview</div></div>
+      <div class="insp-title">Default props</div>
+      <div class="prop"><span>Fit</span><span>cover</span></div>
+      <div class="prop"><span>Radius</span><span>0 px</span></div>
+      <div class="prop"><span>Aspect</span><span>auto</span></div>
+      <div class="prop"><span>Lazy</span><span>true</span></div>
+      <div style="margin-top: 14px; display: flex; gap: 8px;">
+        <div class="btn primary" style="flex: 1;">Drag to canvas</div>
+        <div class="btn" style="padding: 9px 12px;">⭐</div>
+      </div>
+      <div style="margin-top: 12px; font-family: var(--mono); font-size: 10px; color: var(--muted);">SHORTCUT  ·  I</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 6: RESPONSIVE PREVIEW                  -->
+<!-- ============================================= -->
+<section class="screen" id="s6">
+  <div class="screen-head">
+    <h2>Responsive preview</h2>
+    <span class="tag">dedicated mode — all three widths at once</span>
+  </div>
+  <p class="screen-desc">A separate mode (not just a dropdown). The user sees mobile, tablet, and desktop rendering side-by-side so layout breaks are spotted at a glance. Top bar lets them focus on one device or scroll all three in sync.</p>
+
+  <div class="preview-bar">
+    <span class="back">← back to editing</span>
+    <span style="font-family: var(--mono); font-size: 11px; color: white; opacity: 0.7; letter-spacing: 1px;">PREVIEW · SUNRISE BAKERY / HOME</span>
+    <div class="bp-switch">
+      <button><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/></svg>Mobile</button>
+      <button><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></svg>Tablet</button>
+      <button><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/></svg>Desktop</button>
+      <button class="on">All three</button>
+    </div>
+    <span style="font-family: var(--hand); font-size: 13px; background: #ffffff15; padding: 4px 10px; border-radius: 4px; cursor: pointer;">🔗 Share preview</span>
+  </div>
+  <div class="preview-stage">
+    <!-- MOBILE -->
+    <div class="device device-mobile mobile-stack">
+      <div class="bp-label">MOBILE</div>
+      <div class="bp-size">375 px</div>
+      <div class="pg-nav">
+        <div class="logo">Sunrise</div>
+        <a class="mburger">≡</a>
+      </div>
+      <div class="pg-hero">
+        <div class="kicker">Oak Street Bakery</div>
+        <h3>Fresh-baked, every morning.</h3>
+        <p>Order online before 10am and pick up warm sourdough and pastries.</p>
+        <span class="cta">Order for pickup →</span>
+      </div>
+      <div class="img-ph pg-img" style="margin: 0 20px; border-radius: 4px;">hero photo</div>
+      <div class="pg-grid-3 stack">
+        <div class="pg-card"><div class="img-ph" style="height: 80px; border-radius: 3px;"></div><h4>Sourdough</h4><p>$8 / loaf</p></div>
+        <div class="pg-card"><div class="img-ph" style="height: 80px; border-radius: 3px;"></div><h4>Croissants</h4><p>$4 each</p></div>
+        <div class="pg-card"><div class="img-ph" style="height: 80px; border-radius: 3px;"></div><h4>Morning buns</h4><p>$5 each</p></div>
+      </div>
+    </div>
+
+    <!-- TABLET -->
+    <div class="device device-tablet">
+      <div class="bp-label">TABLET</div>
+      <div class="bp-size">768 px</div>
+      <div class="pg-nav">
+        <div class="logo">Sunrise</div>
+        <a>Menu</a><a>About</a><a>Visit</a>
+        <span style="background: var(--accent); color: white; padding: 5px 12px; border-radius: 3px; font-weight: 700;">Order →</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+        <div class="pg-hero">
+          <div class="kicker">Oak Street</div>
+          <h3>Fresh-baked, every morning.</h3>
+          <p>Order online before 10am.</p>
+          <span class="cta">Order for pickup →</span>
+        </div>
+        <div class="img-ph" style="height: 260px; margin: 20px;">hero photo</div>
+      </div>
+      <div class="pg-grid-3">
+        <div class="pg-card"><div class="img-ph" style="height: 80px; border-radius: 3px;"></div><h4>Sourdough</h4><p>$8 / loaf</p></div>
+        <div class="pg-card"><div class="img-ph" style="height: 80px; border-radius: 3px;"></div><h4>Croissants</h4><p>$4 each</p></div>
+        <div class="pg-card"><div class="img-ph" style="height: 80px; border-radius: 3px;"></div><h4>Morning buns</h4><p>$5 each</p></div>
+      </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="device device-desktop">
+      <div class="bp-label">DESKTOP</div>
+      <div class="bp-size">1100 px+</div>
+      <div class="pg-nav">
+        <div class="logo">Sunrise Bakery</div>
+        <a>Menu</a><a>About</a><a>Visit</a><a>Wholesale</a>
+        <span style="background: var(--accent); color: white; padding: 6px 14px; border-radius: 3px; font-weight: 700;">Order for pickup →</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 20px;">
+        <div class="pg-hero" style="padding: 28px 40px;">
+          <div class="kicker">Oak Street Bakery</div>
+          <h3 style="font-size: 44px;">Fresh-baked, every morning.</h3>
+          <p style="font-size: 16px;">Order online before 10am and pick up warm sourdough, croissants, and seasonal pastries from our Oak Street counter.</p>
+          <span class="cta">Order for pickup →</span>
+        </div>
+        <div class="img-ph" style="height: 320px; margin: 20px;">hero photo</div>
+      </div>
+      <div class="pg-grid-3" style="padding: 20px 40px 40px;">
+        <div class="pg-card"><div class="img-ph" style="height: 120px; border-radius: 3px;"></div><h4>Sourdough</h4><p>$8 / loaf</p></div>
+        <div class="pg-card"><div class="img-ph" style="height: 120px; border-radius: 3px;"></div><h4>Croissants</h4><p>$4 each</p></div>
+        <div class="pg-card"><div class="img-ph" style="height: 120px; border-radius: 3px;"></div><h4>Morning buns</h4><p>$5 each</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 7: PUBLISH                             -->
+<!-- ============================================= -->
+<section class="screen" id="s7">
+  <div class="screen-head">
+    <h2>Publish</h2>
+    <span class="tag">pre-flight + go live</span>
+  </div>
+  <p class="screen-desc">Clicking Publish opens a compact modal: confirm the URL, glance at the auto-generated pre-flight checklist (alt text, SEO, mobile look), and ship it. Once live, the button turns into "View live →".</p>
+
+  <div class="pub-wrap">
+    <div class="pub-head">
+      <h3>Publish Sunrise Bakery?</h3>
+      <p>Changes will go live immediately at the URL below.</p>
+    </div>
+    <div class="pub-body">
+      <div class="field">
+        <label>Live URL</label>
+        <div class="input">
+          <span class="prefix">https://</span>
+          <span class="val">sunrisebakery.site</span>
+          <span class="badge">CONNECTED</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Changes in this publish</label>
+        <ul class="checklist">
+          <li><span class="check done"></span> Added hero image on Home</li>
+          <li><span class="check done"></span> Edited heading on About</li>
+          <li><span class="check done"></span> 3 product cards added</li>
+          <li><span style="font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto;">+ 5 more</span></li>
+        </ul>
+      </div>
+      <div class="field">
+        <label>Pre-flight</label>
+        <ul class="checklist">
+          <li><span class="check done"></span> Looks good on mobile</li>
+          <li><span class="check done"></span> SEO title &amp; description set</li>
+          <li><span class="check" style="border-color: #D4A005; color: #D4A005;">!</span> 2 images missing alt text <span style="margin-left: auto; font-family: var(--hand); font-size: 12px; color: var(--accent-ink); cursor: pointer;">fix →</span></li>
+          <li><span class="check done"></span> All links resolve</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pub-footer">
+      <span class="btn ghost">Schedule for later</span>
+      <div style="display: flex; gap: 8px;">
+        <span class="btn">Cancel</span>
+        <span class="btn primary">Publish now →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- SCREEN 8: TEMPLATE PICKER                     -->
+<!-- ============================================= -->
+<section class="screen" id="s8">
+  <div class="screen-head">
+    <h2>Start from a template</h2>
+    <span class="tag">onboarding first step</span>
+  </div>
+  <p class="screen-desc">The first thing a new user sees. Category filters across the top, a grid of template cards, plus a blank-canvas option on its own card. Each template has a rough preview rendered as blocks so the user quickly gets the feel.</p>
+
+  <div class="lib-filter" style="margin-bottom: 22px; max-width: 1100px;">
+    <span class="chip on">All templates</span>
+    <span class="chip">Landing pages</span>
+    <span class="chip">Shops</span>
+    <span class="chip">Portfolios</span>
+    <span class="chip">Restaurants</span>
+    <span class="chip">Events</span>
+    <span class="search-big">🔍  search templates…</span>
+  </div>
+
+  <div class="tpl-grid">
+    <div class="tpl-card blank">
+      <div class="preview"><span class="plus">+</span></div>
+      <div class="meta"><span class="name">Blank canvas</span><span class="cat">FROM SCRATCH</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: flex; gap: 8px; align-items: center;"><div class="mini-block" style="width: 20px; height: 8px;"></div><div style="flex:1;"></div><div class="mini-block" style="width: 50px; height: 8px; background: var(--ink);"></div></div>
+        <div class="mini-block" style="height: 18px; width: 70%; background: var(--ink); margin-top: 10px;"></div>
+        <div class="mini-block" style="height: 5px; width: 80%;"></div>
+        <div class="mini-block" style="height: 5px; width: 60%;"></div>
+        <div style="display: flex; gap: 6px; margin-top: 8px;"><div class="mini-block" style="flex:1;height:40px;"></div><div class="mini-block" style="flex:1;height:40px;"></div><div class="mini-block" style="flex:1;height:40px;"></div></div>
+      </div>
+      <div class="meta"><span class="name">Cafe · Oak</span><span class="cat">RESTAURANT</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 100%;">
+          <div class="mini-block" style="background: var(--ink);"></div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div class="mini-block" style="height: 14px; background: var(--ink);"></div>
+            <div class="mini-block" style="height: 4px;"></div>
+            <div class="mini-block" style="height: 4px; width: 70%;"></div>
+            <div class="mini-block" style="height: 16px; width: 60%; background: var(--accent); margin-top: 4px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="meta"><span class="name">Product launch</span><span class="cat">LANDING</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: flex; gap: 6px;"><div class="mini-block" style="width: 40px; height: 40px;"></div><div style="flex:1;"><div class="mini-block" style="height: 6px; margin-bottom: 3px; background: var(--ink); width: 60%;"></div><div class="mini-block" style="height: 4px;"></div></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px;"><div class="mini-block" style="height: 50px;"></div><div class="mini-block" style="height: 50px;"></div><div class="mini-block" style="height: 50px;"></div><div class="mini-block" style="height: 50px;"></div><div class="mini-block" style="height: 50px;"></div><div class="mini-block" style="height: 50px;"></div></div>
+      </div>
+      <div class="meta"><span class="name">Shop grid</span><span class="cat">COMMERCE</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div class="mini-block" style="height: 10px; width: 30%; background: var(--ink);"></div>
+        <div class="mini-block" style="height: 22px; width: 90%; background: var(--ink); margin-top: 6px;"></div>
+        <div class="mini-block" style="flex: 1; margin-top: 10px;"></div>
+      </div>
+      <div class="meta"><span class="name">Portfolio · big</span><span class="cat">PORTFOLIO</span></div>
+    </div>
+    <div class="tpl-card">
+      <div class="preview">
+        <div style="display: flex; justify-content: center; margin-top: 14px;"><div class="mini-block" style="width: 60%; height: 14px; background: var(--ink);"></div></div>
+        <div style="display: flex; justify-content: center; margin-top: 4px;"><div class="mini-block" style="width: 70%; height: 4px;"></div></div>
+        <div class="mini-block" style="height: 60px; margin-top: 14px;"></div>
+        <div style="display: flex; justify-content: center; margin-top: 10px;"><div class="mini-block" style="width: 50%; height: 18px; background: var(--accent);"></div></div>
+      </div>
+      <div class="meta"><span class="name">Event · one-pager</span><span class="cat">EVENT</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- TWEAKS PANEL                                  -->
+<!-- ============================================= -->
+<div class="tweaks-panel" id="tweaksPanel">
+  <h4>Tweaks</h4>
+  <div class="row">
+    <label>Accent color</label>
+    <div class="accents" id="accents">
+      <button data-c="oklch(0.68 0.18 48)" class="on" style="background: oklch(0.68 0.18 48);"></button>
+      <button data-c="oklch(0.62 0.17 245)" style="background: oklch(0.62 0.17 245);"></button>
+      <button data-c="oklch(0.62 0.17 150)" style="background: oklch(0.62 0.17 150);"></button>
+      <button data-c="oklch(0.58 0.2 340)" style="background: oklch(0.58 0.2 340);"></button>
+      <button data-c="#1A1A1A" style="background: #1A1A1A;"></button>
+    </div>
+  </div>
+  <div class="row">
+    <label>Sketchy paper grid</label>
+    <div class="toggle"><span>Show dots</span><div class="sw on" id="sw-dots"></div></div>
+    <div class="toggle"><span>Show annotations</span><div class="sw on" id="sw-annot"></div></div>
+  </div>
+  <div class="row">
+    <label>Editor · Show</label>
+    <div class="toggle"><span>Left panel</span><div class="sw on" id="sw-left"></div></div>
+    <div class="toggle"><span>Right panel</span><div class="sw on" id="sw-right"></div></div>
+  </div>
+  <div class="row">
+    <label>Wireframe font</label>
+    <div style="display: flex; gap: 4px;">
+      <button class="btn" data-font="Kalam" style="flex: 1; padding: 5px; font-family: Kalam;">Kalam</button>
+      <button class="btn" data-font="Architects Daughter" style="flex: 1; padding: 5px; font-family: 'Architects Daughter';">Architects</button>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
+</style>
+
+<script>
+  /*EDITMODE-BEGIN*/
+  const TWEAKS = {
+    "accent": "oklch(0.68 0.18 48)",
+    "dots": true,
+    "annotations": true,
+    "leftPanel": true,
+    "rightPanel": true,
+    "font": "Kalam"
+  }
+  /*EDITMODE-END*/;
+
+  // Tab navigation
+  const tabs = document.querySelectorAll('#tabs .tab');
+  const screens = document.querySelectorAll('.screen');
+  function showScreen(id) {
+    screens.forEach(s => s.classList.toggle('active', s.id === id));
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.screen === id));
+    localStorage.setItem('ce_screen', id);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => showScreen(t.dataset.screen)));
+  const saved = localStorage.getItem('ce_screen');
+  if (saved && document.getElementById(saved)) showScreen(saved);
+
+  // Variation switch
+  const varBtns = document.querySelectorAll('#varSwitch button');
+  const vars = document.querySelectorAll('#s1 .editor');
+  varBtns.forEach(b => b.addEventListener('click', () => {
+    varBtns.forEach(x => x.classList.toggle('on', x === b));
+    vars.forEach(v => v.style.display = v.dataset.var === b.dataset.var ? '' : 'none');
+    localStorage.setItem('ce_var', b.dataset.var);
+  }));
+  const savedVar = localStorage.getItem('ce_var');
+  if (savedVar) {
+    const btn = document.querySelector(`#varSwitch button[data-var="${savedVar}"]`);
+    if (btn) btn.click();
+  }
+
+  // ===== TWEAKS =====
+  const panel = document.getElementById('tweaksPanel');
+  function applyTweaks() {
+    document.documentElement.style.setProperty('--accent', TWEAKS.accent);
+    // recompute accent-soft
+    document.documentElement.style.setProperty('--accent-soft', TWEAKS.accent.replace(')', ' / 0.12)'));
+    document.body.style.backgroundImage = TWEAKS.dots
+      ? 'radial-gradient(circle at 20% 30%, #00000006 0 1px, transparent 1px), radial-gradient(circle at 80% 70%, #00000006 0 1px, transparent 1px)'
+      : 'none';
+    document.querySelectorAll('.annot').forEach(a => a.style.display = TWEAKS.annotations ? '' : 'none');
+    document.querySelectorAll('.left').forEach(l => l.style.display = TWEAKS.leftPanel ? '' : 'none');
+    document.querySelectorAll('.right').forEach(r => r.style.display = TWEAKS.rightPanel ? '' : 'none');
+    // recompute editor grid when panels hidden
+    document.querySelectorAll('#s1 .editor.v1, #s2 .editor, #s3 .editor, #s4 .editor').forEach(ed => {
+      let cols = '';
+      if (TWEAKS.leftPanel) cols += '240px ';
+      cols += '1fr';
+      if (TWEAKS.rightPanel) cols += ' 280px';
+      ed.style.gridTemplateColumns = cols;
+    });
+    document.documentElement.style.setProperty('--hand', TWEAKS.font === 'Kalam' ? "'Kalam', cursive" : "'Architects Daughter', cursive");
+  }
+  applyTweaks();
+
+  // Accent swatches
+  document.querySelectorAll('#accents button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#accents button').forEach(x => x.classList.toggle('on', x === b));
+      TWEAKS.accent = b.dataset.c;
+      persistAndApply();
+    });
+  });
+  // Toggle switches
+  function bindSw(id, key) {
+    const sw = document.getElementById(id);
+    sw.addEventListener('click', () => {
+      TWEAKS[key] = !TWEAKS[key];
+      sw.classList.toggle('on', TWEAKS[key]);
+      persistAndApply();
+    });
+  }
+  bindSw('sw-dots', 'dots');
+  bindSw('sw-annot', 'annotations');
+  bindSw('sw-left', 'leftPanel');
+  bindSw('sw-right', 'rightPanel');
+  // Font buttons
+  document.querySelectorAll('[data-font]').forEach(b => {
+    b.addEventListener('click', () => { TWEAKS.font = b.dataset.font; persistAndApply(); });
+  });
+
+  function persistAndApply() {
+    applyTweaks();
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: TWEAKS }, '*');
+  }
+
+  // Tweaks protocol: listener first, then announce
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode') panel.classList.add('on');
+    else if (d.type === '__deactivate_edit_mode') panel.classList.remove('on');
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+</script>
+
+</body>
+</html>
