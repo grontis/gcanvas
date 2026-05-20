@@ -4,7 +4,7 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CanvasStateService } from '../../services/canvas-state.service';
 import { SelectionService } from '../../services/selection.service';
 import { CanvasElement } from '../../models/canvas-element.model';
@@ -26,6 +26,14 @@ export class LayersPanelComponent {
   readonly layers = computed(() =>
     [...this.canvasState.elements()].sort((a, b) => b.zIndex - a.zIndex)
   );
+
+  // Reject foreign drags (palette tiles) that the CdkDropListGroup would
+  // otherwise route here. Only layer rows (with no PaletteEntry-shape data)
+  // are accepted.
+  readonly layerOnlyPredicate = (item: CdkDrag<unknown>): boolean => {
+    const data = item.data as { toolId?: unknown } | undefined;
+    return data?.toolId === undefined;
+  };
 
   labelOf(el: CanvasElement): string {
     return elementLabel(el);

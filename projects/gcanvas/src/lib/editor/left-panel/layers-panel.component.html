@@ -1,4 +1,9 @@
-<div class="gc-layers-panel" cdkDropList (cdkDropListDropped)="onDrop($event)">
+<div
+  class="gc-layers-panel"
+  cdkDropList
+  [cdkDropListEnterPredicate]="layerOnlyPredicate"
+  (cdkDropListDropped)="onDrop($event)"
+>
   @for (layer of layers(); track layer.id) {
     <div
       class="gc-layer-row"

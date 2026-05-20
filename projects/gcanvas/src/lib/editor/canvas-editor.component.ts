@@ -13,7 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { provideCanvas } from '../providers/provide-canvas';
 import { provideEditor } from '../providers/provide-editor';
 import { CanvasStateService } from '../services/canvas-state.service';
@@ -53,6 +53,10 @@ import { TemplatePickerComponent } from '../templates/template-picker.component'
   styleUrl: './canvas-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [...provideCanvas(), ...provideEditor()],
+  // CdkDropListGroup auto-connects every CdkDropList inside the editor (palette,
+  // layers panel, canvas drop zone) so a drag from one routes to another. Each
+  // list's `cdkDropListEnterPredicate` controls what it accepts.
+  hostDirectives: [CdkDropListGroup],
   host: {
     '[class.gc-layout--classic]':      "layout() === 'classic'",
     '[class.gc-layout--rail]':         "layout() === 'rail'",
@@ -296,7 +300,10 @@ export class CanvasEditorComponent {
     if (toolId === 'text') {
       return {
         id, type: 'text', position, size, zIndex,
-        content: { type: 'doc', content: [{ type: 'paragraph' }] },
+        content: {
+          type: 'doc',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Text' }] }],
+        },
       };
     }
     if (toolId === 'image') {

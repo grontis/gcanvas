@@ -61,9 +61,6 @@ export class ElementWrapperComponent {
   // NgComponentOutlet inputs — key must match the input() name in child component
   readonly outletInputs = computed(() => ({ element: this.element() }));
 
-  // Drag position binding for CDK — uses live element position from state
-  readonly dragPosition = computed(() => this.element().position);
-
   // --- Local resize preview state ---
   // During an active resize gesture, these hold the live preview values.
   // Only committed to the service on pointerup to avoid flooding history.
@@ -105,8 +102,10 @@ export class ElementWrapperComponent {
    *   dimensions             — DOMRect of the root element at drag start
    *   pickupPositionInElement — pointer offset within the element at pick-up (element-local coords)
    *
-   * To compute the element's proposed canvas-local top-left:
-   *   proposedElementTopLeft = point − canvasRect.origin − pickupPositionInElement
+   * Return value contract: when `constrainPosition` is set, CDK treats the
+   * return as the desired ELEMENT TOP-LEFT in page space (offset internally by
+   * `_initialDomRect`, not by pickup position). Returning the cursor position
+   * instead causes the element to jump by `pickupPositionInElement` on mousedown.
    */
   readonly constrainPosition = (
     point: Point,
@@ -120,7 +119,7 @@ export class ElementWrapperComponent {
     const rect = canvasEl.getBoundingClientRect();
     const canvasSize = this.canvasState.canvasData().viewport;
 
-    // Convert pointer page-space → element canvas-local proposed top-left
+    // Cursor page-space → element canvas-local proposed top-left
     const proposed: ElementPosition = {
       x: point.x - rect.left - pickupPositionInElement.x,
       y: point.y - rect.top  - pickupPositionInElement.y,
@@ -130,10 +129,10 @@ export class ElementWrapperComponent {
     const others = this.canvasState.elements().filter(e => e.id !== el.id);
     const snapped = this.snapGuide.computeSnap(proposed, el.size, others, canvasSize);
 
-    // Return snapped pointer position in page space
+    // Return element top-left in page space (NOT the cursor position).
     return {
-      x: snapped.x + rect.left + pickupPositionInElement.x,
-      y: snapped.y + rect.top  + pickupPositionInElement.y,
+      x: snapped.x + rect.left,
+      y: snapped.y + rect.top,
     };
   };
 
@@ -149,7 +148,10 @@ export class ElementWrapperComponent {
   private _resizing: ResizeState | null = null;
 
   onResizeStart(event: PointerEvent, handle: string): void {
-    event.stopPropagation(); // prevent CDK drag from starting
+    // Note: CDK drag binds `mousedown`/`touchstart` (not `pointerdown`), so
+    // stopping pointerdown alone won't prevent it. The handles also block
+    // mousedown/touchstart in the template — both are required.
+    event.stopPropagation();
     (event.target as HTMLElement).setPointerCapture(event.pointerId);
     const el = this.element();
     this._resizing = {
@@ -160,9 +162,11 @@ export class ElementWrapperComponent {
       startSize: { ...el.size },
       pointerId: event.pointerId,
     };
-    // Initialize preview signals with current values
+    // Initialize preview signals with current values; clear any stale snap
+    // guides from a prior drag (resize doesn't snap — see onResizeMove).
     this.previewSize.set({ ...el.size });
     this.previewPosition.set({ ...el.position });
+    this.snapGuide.clear();
   }
 
   onResizeMove(event: PointerEvent): void {
@@ -235,24 +239,12 @@ export class ElementWrapperComponent {
     const proposedPos:  ElementPosition = { x, y };
     const proposedSize: ElementSize     = { width, height };
 
-    // Snap + commit preview (same as existing code)
-    const canvasEl = (event.target as HTMLElement).closest('.gc-canvas') as HTMLElement | null;
-    if (canvasEl) {
-      const viewport = this.canvasState.canvasData().viewport;
-      const others   = this.canvasState.elements().filter(e => e.id !== this.element().id);
-      const snapped  = this.snapGuide.computeSnap(proposedPos, proposedSize, others, viewport);
-      this.previewPosition.set(snapped);
-      const dxSnap = snapped.x - startPos.x;
-      const dySnap = snapped.y - startPos.y;
-      let snappedWidth  = proposedSize.width;
-      let snappedHeight = proposedSize.height;
-      if (movesW) snappedWidth  = Math.max(MIN_SIZE, startSize.width  - dxSnap);
-      if (movesN) snappedHeight = Math.max(MIN_SIZE, startSize.height - dySnap);
-      this.previewSize.set({ width: snappedWidth, height: snappedHeight });
-    } else {
-      this.previewSize.set(proposedSize);
-      this.previewPosition.set(proposedPos);
-    }
+    // No snap-to-guide during resize. `computeSnap` is drag-oriented and
+    // shifts the whole element to align any edge, which surfaces as the
+    // element drifting while the user is only trying to resize. An edge-aware
+    // snap that only adjusts moving edges could be reintroduced later.
+    this.previewSize.set(proposedSize);
+    this.previewPosition.set(proposedPos);
   }
 
   onResizeEnd(event: PointerEvent): void {

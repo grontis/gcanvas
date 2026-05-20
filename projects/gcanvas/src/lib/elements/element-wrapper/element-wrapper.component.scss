@@ -8,10 +8,19 @@
   position: relative;
   box-sizing: border-box;
   cursor: move;
+  // Faint dashed outline so empty/low-contrast elements (e.g. an empty text
+  // box on a white canvas) are still visible in the editor. Suppressed in
+  // readonly mode (preview/published) — see --readonly modifier.
+  outline: 1px dashed rgba(0, 0, 0, 0.15);
+  outline-offset: -1px;
 
   &.cdk-drag-dragging {
     opacity: 0.85;
   }
+}
+
+.gc-element-wrapper--readonly {
+  outline: none;
 }
 
 // Locked element — suppress cursor and dim opacity

@@ -1,6 +1,6 @@
 <div
   cdkDrag
-  [cdkDragFreeDragPosition]="dragPosition()"
+  [cdkDragFreeDragPosition]="effectivePosition()"
   [cdkDragDisabled]="readonly() || (element().locked ?? false)"
   [cdkDragConstrainPosition]="constrainPosition"
   (cdkDragStarted)="onDragStarted($event)"
@@ -9,6 +9,7 @@
   class="gc-element-wrapper"
   [class.gc-element-wrapper--locked]="element().locked"
   [class.gc-element-wrapper--hidden]="element().visible === false"
+  [class.gc-element-wrapper--readonly]="readonly()"
   [style.width.px]="effectiveSize().width"
   [style.height.px]="effectiveSize().height"
   [style.z-index]="element().zIndex"
@@ -39,6 +40,8 @@
         (pointerdown)="onResizeStart($event, handle)"
         (pointermove)="onResizeMove($event)"
         (pointerup)="onResizeEnd($event)"
+        (mousedown)="$event.stopPropagation()"
+        (touchstart)="$event.stopPropagation()"
       ></div>
     }
   }

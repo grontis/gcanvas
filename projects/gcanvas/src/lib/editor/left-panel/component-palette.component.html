@@ -1,10 +1,16 @@
-<div class="gc-palette-grid">
+<div
+  class="gc-palette-grid"
+  cdkDropList
+  cdkDropListSortingDisabled
+  [cdkDropListEnterPredicate]="rejectAllPredicate"
+>
   @for (entry of entries; track entry.toolId) {
     <div
       class="gc-palette-tile"
       [class.gc-palette-tile--active]="activeTool() === entry.toolId"
       cdkDrag
       [cdkDragData]="entry"
+      (cdkDragEnded)="onTileDragEnded($event)"
       (click)="setTool(entry)"
       [attr.aria-label]="entry.label"
       [attr.title]="entry.label"
@@ -20,9 +26,6 @@
         <div [innerHTML]="entry.icon"></div>
         <span>{{ entry.label }}</span>
       </div>
-
-      <!-- CDK drag placeholder — shown in original position while dragging -->
-      <div *cdkDragPlaceholder class="gc-palette-drag-placeholder"></div>
     </div>
   }
 </div>

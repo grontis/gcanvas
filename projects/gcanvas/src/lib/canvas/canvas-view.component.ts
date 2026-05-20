@@ -6,6 +6,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { CDK_DROP_LIST } from '@angular/cdk/drag-drop';
 import { CanvasStateService } from '../services/canvas-state.service';
 import { SelectionService } from '../services/selection.service';
 import { SnapGuideService } from '../services/snap-guide.service';
@@ -21,6 +22,11 @@ import { FloatingActionToolbarComponent } from './overlays/floating-action-toolb
   templateUrl: './canvas-view.component.html',
   styleUrl: './canvas-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // The parent .gc-canvas-wrap is a CdkDropList (palette drop target). Shadow
+  // CDK_DROP_LIST here with `null` so descendant cdkDrag instances (the
+  // element-wrappers) don't get adopted as list items — they need to remain
+  // standalone free drags so `cdkDragFreeDragPosition` actually applies.
+  providers: [{ provide: CDK_DROP_LIST, useValue: null }],
   host: {
     tabindex: '0',
     '[class.gc-canvas-view--readonly]': 'readonly()',

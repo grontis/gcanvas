@@ -82,7 +82,10 @@ gc-editor-left-panel {
   overflow: auto;
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  // `safe` falls back to start-alignment when the canvas is wider than the
+  // wrap, so the overflow stays scrollable on the right instead of being
+  // clipped invisibly on the left.
+  justify-content: safe center;
   position: relative;
 }
 
