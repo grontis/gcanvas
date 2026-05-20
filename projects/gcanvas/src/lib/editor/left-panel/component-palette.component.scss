@@ -11,27 +11,27 @@
   justify-content: center;
   gap: 4px;
   padding: 10px 6px 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--gc-line, #e5e7eb);
   border-radius: 6px;
-  background: #fff;
+  background: var(--gc-bg, #ffffff);
   cursor: grab;
   user-select: none;
   transition: border-color 0.1s, background 0.1s;
 
   &:hover {
-    border-color: #93c5fd;
-    background: #f0f9ff;
+    border-color: #93c5fd; // light blue distinct from --gc-accent; kept literal
+    background: #f0f9ff;   // distinct from --gc-accent-soft; kept literal
   }
 
   &--active {
-    border-color: #2563eb;
-    background: #eff6ff;
+    border-color: var(--gc-accent, #2563eb);
+    background: var(--gc-accent-soft, #eff6ff);
   }
 
   &__icon {
     width: 24px;
     height: 24px;
-    color: #374151;
+    color: #374151; // distinct dark-gray for icons; kept literal
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,7 +44,7 @@
 
   &__label {
     font-size: 11px;
-    color: #6b7280;
+    color: var(--gc-muted, #6b7280);
   }
 }
 
@@ -53,12 +53,12 @@
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  background: #fff;
-  border: 1px solid #93c5fd;
+  background: var(--gc-bg, #ffffff);
+  border: 1px solid #93c5fd; // kept literal
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   font-size: 12px;
-  color: #374151;
+  color: #374151; // kept literal
   pointer-events: none;
 
   svg {
@@ -68,8 +68,8 @@
 }
 
 .gc-palette-drag-placeholder {
-  background: #eff6ff;
-  border: 1px dashed #93c5fd;
+  background: var(--gc-accent-soft, #eff6ff);
+  border: 1px dashed #93c5fd; // kept literal
   border-radius: 6px;
   width: 100%;
   height: 80px;

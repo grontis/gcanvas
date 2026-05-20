@@ -3,8 +3,8 @@
   <div class="gc-insp-title">Page</div>
 
   <div class="gc-insp-row">
-    <label>Name</label>
-    <div class="gc-insp-v gc-insp-v--text">
+    <span class="gc-insp-label">Name</span>
+    <label class="gc-insp-v gc-insp-v--text">
       <input
         class="gc-insp-input"
         type="text"
@@ -12,12 +12,12 @@
         [ngModel]="pageName()"
         (ngModelChange)="onNameChange($event)"
       />
-    </div>
+    </label>
   </div>
 
   <div class="gc-insp-row">
-    <label>Slug</label>
-    <div class="gc-insp-v gc-insp-v--text">
+    <span class="gc-insp-label">Slug</span>
+    <label class="gc-insp-v gc-insp-v--text">
       <input
         class="gc-insp-input"
         type="text"
@@ -25,7 +25,7 @@
         [ngModel]="pageSlug()"
         (ngModelChange)="onSlugChange($event)"
       />
-    </div>
+    </label>
   </div>
 </div>
 
@@ -34,8 +34,8 @@
   <div class="gc-insp-title">Canvas</div>
 
   <div class="gc-insp-row">
-    <label>Background</label>
-    <div class="gc-insp-v">
+    <span class="gc-insp-label">Background</span>
+    <label class="gc-insp-v">
       <span
         class="gc-color-swatch"
         [style.background]="bgColor()"
@@ -46,12 +46,12 @@
         [ngModel]="bgColor()"
         (ngModelChange)="onBgColorChange($event)"
       />
-    </div>
+    </label>
   </div>
 
   <div class="gc-insp-row">
-    <label>Max width</label>
-    <div class="gc-insp-v">
+    <span class="gc-insp-label">Max width</span>
+    <label class="gc-insp-v">
       <input
         class="gc-insp-input"
         type="number"
@@ -60,13 +60,13 @@
         (ngModelChange)="onMaxWidthChange($event)"
       />
       <span class="gc-insp-v__unit">px</span>
-    </div>
+    </label>
   </div>
 
   <div class="gc-insp-row">
-    <label>Padding</label>
+    <span class="gc-insp-label">Padding</span>
     <div class="gc-insp-pair">
-      <div class="gc-insp-v">
+      <label class="gc-insp-v">
         <span class="gc-insp-v__axis">X</span>
         <input
           class="gc-insp-input"
@@ -76,8 +76,8 @@
           (ngModelChange)="onPaddingXChange($event)"
         />
         <span class="gc-insp-v__unit">px</span>
-      </div>
-      <div class="gc-insp-v">
+      </label>
+      <label class="gc-insp-v">
         <span class="gc-insp-v__axis">Y</span>
         <input
           class="gc-insp-input"
@@ -87,7 +87,7 @@
           (ngModelChange)="onPaddingYChange($event)"
         />
         <span class="gc-insp-v__unit">px</span>
-      </div>
+      </label>
     </div>
   </div>
 </div>
@@ -97,8 +97,8 @@
   <div class="gc-insp-title">SEO</div>
 
   <div class="gc-insp-row">
-    <label>Title</label>
-    <div class="gc-insp-v gc-insp-v--text">
+    <span class="gc-insp-label">Title</span>
+    <label class="gc-insp-v gc-insp-v--text">
       <input
         class="gc-insp-input"
         type="text"
@@ -106,12 +106,12 @@
         [ngModel]="seoTitle()"
         (ngModelChange)="onSeoTitleChange($event)"
       />
-    </div>
+    </label>
   </div>
 
   <div class="gc-insp-row">
-    <label>Description</label>
-    <div class="gc-insp-v gc-insp-v--text">
+    <span class="gc-insp-label">Description</span>
+    <label class="gc-insp-v gc-insp-v--text">
       <input
         class="gc-insp-input"
         type="text"
@@ -119,6 +119,6 @@
         [ngModel]="seoDesc()"
         (ngModelChange)="onSeoDescChange($event)"
       />
-    </div>
+    </label>
   </div>
 </div>

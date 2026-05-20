@@ -4,8 +4,8 @@
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: var(--gc-surface-elevated, #fff);
-  border: 1px solid var(--gc-border, #e0e0e0);
+  background: var(--gc-bg, #ffffff);
+  border: 1px solid var(--gc-line, #e5e7eb);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   z-index: 1000;
@@ -23,11 +23,16 @@
   background: transparent;
   cursor: pointer;
   font-size: 11px;
-  color: var(--gc-text, #333);
+  color: var(--gc-ink, #0b0d10);
   gap: 4px;
 
   &:hover {
-    background: var(--gc-hover, #f0f0f0);
+    background: var(--gc-bg-raised, #f3f4f6);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gc-accent, #2563eb);
+    outline-offset: 2px;
   }
 
   &--danger:hover {
@@ -39,6 +44,6 @@
 .gc-fat__divider {
   width: 1px;
   height: 20px;
-  background: var(--gc-border, #e0e0e0);
+  background: var(--gc-line, #e5e7eb);
   margin: 0 2px;
 }

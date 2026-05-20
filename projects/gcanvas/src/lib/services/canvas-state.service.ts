@@ -37,6 +37,10 @@ export class CanvasStateService {
 
   // --- Snapshot ---
   loadSnapshot(data: CanvasData): void {
+    // Guard prevents history wipe when parent component re-passes the same canvasData reference
+    // after each canvasChange emission (see demo app.component.ts pattern).
+    if (data === this._state()) return; // no-op when reference-equal
+
     // Do not push to history when loading from external input
     this._past = [];
     this._future = [];
@@ -111,6 +115,20 @@ export class CanvasStateService {
       }),
     }));
     this._emit({ changedElementIds: orderedIds, changeType: 'reorder' });
+  }
+
+  /**
+   * Shallow-merges CSS style properties into an element's styles map.
+   * Avoids the `{ styles: { ...el.styles, key: value } }` spread pattern
+   * that was duplicated across every inspector section component.
+   */
+  patchStyles(id: string, styles: Partial<Record<string, string>>): void {
+    this._pushHistory();
+    this._mutateElement(id, el => ({
+      ...el,
+      styles: { ...(el.styles ?? {}), ...styles } as Record<string, string>,
+    }));
+    this._emit({ changedElementIds: [id], changeType: 'edit' });
   }
 
   /**

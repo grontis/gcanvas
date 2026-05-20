@@ -1,12 +1,49 @@
 :host {
+  // --- CSS custom property design tokens ---
+  // Consumers override by targeting: gc-canvas-editor { --gc-accent: #your-color; }
+  --gc-accent:           #2563eb;
+  --gc-accent-soft:      #eff6ff;
+  --gc-ink:              #0b0d10;
+  --gc-bg:               #ffffff;
+  --gc-line:             #e5e7eb;
+  --gc-muted:            #6b7280;
+  --gc-bg-raised:        #f3f4f6;
+  --gc-overlay-backdrop: rgba(0, 0, 0, 0.45);
+  --gc-canvas-bg:        #f6f7f9;
+  --gc-canvas-grid-color: #d1d5db;
+
+  // --- Layout base ---
   display: grid;
-  grid-template-columns: 248px 1fr 296px;
   grid-template-rows: 40px 44px 1fr;
   height: 100%;
   overflow: hidden;
-  background: #ffffff;
+  background: var(--gc-bg);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 14px;
+
+  // --- V1: Classic (default) ---
+  // chrome | chrome | chrome
+  // tool   | tool   | tool
+  // left   | canvas | inspector
+  &.gc-layout--classic      { grid-template-columns: 248px 1fr 296px; }
+
+  // --- V2: Rail ---
+  // chrome | chrome | chrome
+  // tool   | tool   | tool
+  // rail   | canvas | inspector
+  &.gc-layout--rail         { grid-template-columns: 48px 1fr 296px; }
+
+  // --- V3: Canvas-first ---
+  // chrome (full width)
+  // tool   (full width)
+  // canvas (full width)
+  &.gc-layout--canvas-first { grid-template-columns: 1fr; }
+
+  // --- V4: Unified-left ---
+  // chrome | chrome
+  // tool   | tool
+  // left   | canvas (inspector inside left)
+  &.gc-layout--unified-left { grid-template-columns: 320px 1fr; }
 }
 
 gc-editor-chrome-top {
@@ -17,23 +54,28 @@ gc-editor-chrome-top {
 gc-editor-toolbar {
   grid-column: 1 / -1;
   grid-row: 2;
-  border-bottom: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-bottom: 1px solid var(--gc-line);
+  background: var(--gc-bg);
 }
 
 gc-editor-left-panel {
   grid-row: 3;
   grid-column: 1;
-  border-right: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-right: 1px solid var(--gc-line);
+  background: var(--gc-bg);
   overflow: hidden;
 }
 
+// Canvas wrap grid-column depends on current layout
+:host.gc-layout--classic .gc-canvas-wrap,
+:host.gc-layout--rail    .gc-canvas-wrap    { grid-column: 2; }
+:host.gc-layout--canvas-first .gc-canvas-wrap { grid-column: 1 / -1; }
+:host.gc-layout--unified-left .gc-canvas-wrap { grid-column: 2; }
+
 .gc-canvas-wrap {
   grid-row: 3;
-  grid-column: 2;
-  background-color: #f6f7f9;
-  background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px);
+  background-color: var(--gc-canvas-bg, #f6f7f9);
+  background-image: radial-gradient(circle, var(--gc-canvas-grid-color, #d1d5db) 1px, transparent 1px);
   background-size: 16px 16px;
   background-position: -1px -1px;
   padding: 32px;
@@ -41,6 +83,7 @@ gc-editor-left-panel {
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  position: relative;
 }
 
 gc-editor-inspector {

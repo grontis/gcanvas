@@ -71,32 +71,20 @@ export class EffectsSectionComponent {
   }
 
   setBorderRadius(value: string): void {
-    const el = this.element();
     const clean = value.match(/^\d+$/) ? `${value}px` : value;
-    this.canvasState.patchElement(el.id, {
-      styles: { ...el.styles, 'border-radius': clean },
-    });
+    this.canvasState.patchStyles(this.element().id, { 'border-radius': clean });
   }
 
   setShadow(preset: ShadowPreset): void {
-    const el = this.element();
-    this.canvasState.patchElement(el.id, {
-      styles: { ...el.styles, 'box-shadow': SHADOW_PRESETS[preset] },
-    });
+    this.canvasState.patchStyles(this.element().id, { 'box-shadow': SHADOW_PRESETS[preset] });
   }
 
   setOpacity(percent: number): void {
-    const el = this.element();
     const clamped = Math.max(0, Math.min(100, percent));
-    this.canvasState.patchElement(el.id, {
-      styles: { ...el.styles, 'opacity': (clamped / 100).toFixed(2) },
-    });
+    this.canvasState.patchStyles(this.element().id, { 'opacity': (clamped / 100).toFixed(2) });
   }
 
   setBorder(value: string): void {
-    const el = this.element();
-    this.canvasState.patchElement(el.id, {
-      styles: { ...el.styles, 'border': value },
-    });
+    this.canvasState.patchStyles(this.element().id, { 'border': value });
   }
 }

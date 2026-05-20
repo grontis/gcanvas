@@ -1,30 +1,30 @@
 :host {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-left: 1px solid var(--gc-line, #e5e7eb);
+  background: var(--gc-bg, #ffffff);
   overflow: hidden;
 }
 
 .gc-panel-head {
   padding: 10px 12px;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--gc-muted, #6b7280);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #eef0f3;
+  border-bottom: 1px solid #eef0f3; // inner inspector border; softer than --gc-line; kept literal
   font-weight: 500;
   flex-shrink: 0;
 
-  &__title { color: #0b0d10; font-weight: 600; font-size: 12px; }
+  &__title { color: var(--gc-ink, #0b0d10); font-weight: 600; font-size: 12px; }
 }
 
 .gc-type-chip {
   font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
   font-size: 10px;
-  background: #f3f4f6;
-  color: #2b2f36;
+  background: var(--gc-bg-raised, #f3f4f6);
+  color: var(--gc-ink, #0b0d10); // #2b2f36 is near-ink; mapped to --gc-ink
   padding: 1px 6px;
   border-radius: 3px;
 }

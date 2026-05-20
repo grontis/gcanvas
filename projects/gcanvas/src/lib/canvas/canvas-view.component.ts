@@ -12,7 +12,7 @@ import { SnapGuideService } from '../services/snap-guide.service';
 import { ElementWrapperComponent } from '../elements/element-wrapper/element-wrapper.component';
 import { FloatingToolbarComponent } from '../toolbar/floating-toolbar.component';
 import { SnapGuidesOverlayComponent } from './snap-guides-overlay.component';
-import { FloatingActionToolbarComponent } from '../editor/canvas-overlay/floating-action-toolbar.component';
+import { FloatingActionToolbarComponent } from './overlays/floating-action-toolbar.component';
 
 @Component({
   selector: 'gc-canvas-view',

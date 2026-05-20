@@ -1,23 +1,62 @@
-<div class="gc-left-panel-inner">
-  <div class="gc-left-panel__tabs">
+@if (collapsed()) {
+  <div class="gc-left-panel-rail">
     <button
-      class="gc-left-panel__tab"
-      [class.gc-left-panel__tab--active]="activeTab() === 'components'"
+      class="gc-left-panel-rail__btn"
+      [class.gc-left-panel-rail__btn--active]="activeTab() === 'components'"
+      type="button"
+      title="Components"
+      aria-label="Components"
       (click)="setTab('components')"
-      type="button"
-    >Components</button>
+    >
+      <!-- simple grid icon inline SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+      </svg>
+    </button>
     <button
-      class="gc-left-panel__tab"
-      [class.gc-left-panel__tab--active]="activeTab() === 'layers'"
-      (click)="setTab('layers')"
+      class="gc-left-panel-rail__btn"
+      [class.gc-left-panel-rail__btn--active]="activeTab() === 'layers'"
       type="button"
-    >Layers</button>
+      title="Layers"
+      aria-label="Layers"
+      (click)="setTab('layers')"
+    >
+      <!-- simple layers icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+        <polyline points="2 17 12 22 22 17"/>
+        <polyline points="2 12 12 17 22 12"/>
+      </svg>
+    </button>
   </div>
+} @else {
+  <div class="gc-left-panel-inner">
+    <div class="gc-left-panel__tabs">
+      <button
+        class="gc-left-panel__tab"
+        [class.gc-left-panel__tab--active]="activeTab() === 'components'"
+        (click)="setTab('components')"
+        type="button"
+      >Components</button>
+      <button
+        class="gc-left-panel__tab"
+        [class.gc-left-panel__tab--active]="activeTab() === 'layers'"
+        (click)="setTab('layers')"
+        type="button"
+      >Layers</button>
+    </div>
 
-  @if (activeTab() === 'components') {
-    <gc-component-palette />
-  }
-  @if (activeTab() === 'layers') {
-    <gc-layers-panel />
-  }
-</div>
+    @if (activeTab() === 'components') {
+      <gc-component-palette />
+    }
+    @if (activeTab() === 'layers') {
+      <gc-layers-panel />
+    }
+
+    <!-- ng-content slot for unified-left: inspector is projected here -->
+    <ng-content />
+  </div>
+}

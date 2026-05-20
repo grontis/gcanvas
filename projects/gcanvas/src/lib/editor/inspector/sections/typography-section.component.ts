@@ -62,10 +62,7 @@ export class TypographySectionComponent {
 
   // --- Write helpers ---
   private patch(styles: Record<string, string>): void {
-    const el = this.element();
-    this.canvasState.patchElement(el.id, {
-      styles: { ...el.styles, ...styles },
-    });
+    this.canvasState.patchStyles(this.element().id, styles);
   }
 
   onFontFamilyChange(event: Event): void {

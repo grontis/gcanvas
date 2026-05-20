@@ -1,0 +1,71 @@
+@if (open()) {
+  <div class="gc-lib-backdrop" (click)="onBackdropClick()">
+    <div class="gc-lib-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gc-lib-title"
+      cdkTrapFocus
+      (click)="$event.stopPropagation()">
+      <header class="gc-lib-header">
+        <h2 class="gc-lib-title" id="gc-lib-title">Library</h2>
+        <input
+          class="gc-lib-search"
+          type="text"
+          placeholder="Search components..."
+          autocomplete="off"
+          (input)="onQueryChange($event)"
+          aria-label="Search library"
+        />
+        <button class="gc-lib-close" type="button" (click)="dismiss()" aria-label="Close">&#x2715;</button>
+      </header>
+
+      <div class="gc-lib-body">
+        <nav class="gc-lib-nav">
+          <button
+            class="gc-lib-nav__item"
+            [class.gc-lib-nav__item--active]="_category() === null"
+            type="button"
+            (click)="setCategory(null)"
+          >All</button>
+          @for (cat of categories(); track cat) {
+            <button
+              class="gc-lib-nav__item"
+              [class.gc-lib-nav__item--active]="_category() === cat"
+              type="button"
+              (click)="setCategory(cat)"
+            >{{ cat }}</button>
+          }
+        </nav>
+
+        <div class="gc-lib-grid">
+          @for (entry of filteredEntries(); track entry.toolId) {
+            <button
+              class="gc-lib-tile"
+              [class.gc-lib-tile--selected]="_selected()?.toolId === entry.toolId"
+              type="button"
+              (click)="selectEntry(entry)"
+            >
+              <span class="gc-lib-tile__icon" [innerHTML]="entry.icon"></span>
+              <span class="gc-lib-tile__label">{{ entry.label }}</span>
+            </button>
+          }
+          @empty {
+            <p class="gc-lib-empty">No components match your search.</p>
+          }
+        </div>
+
+        @if (_selected(); as sel) {
+          <aside class="gc-lib-detail">
+            <h3 class="gc-lib-detail__name">{{ sel.label }}</h3>
+            @if (sel.description) {
+              <p class="gc-lib-detail__desc">{{ sel.description }}</p>
+            }
+            <p class="gc-lib-detail__size">
+              Default size: {{ sel.defaultSize.width }}px &times; {{ sel.defaultSize.height }}px
+            </p>
+          </aside>
+        }
+      </div>
+    </div>
+  </div>
+}

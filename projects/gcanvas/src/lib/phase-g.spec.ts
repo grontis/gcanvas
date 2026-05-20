@@ -524,7 +524,7 @@ describe('TemplatePickerComponent — selectBlank / selectTemplate', () => {
 
   it('selectBlank() emits templateSelected with elements: []', () => {
     TestBed.runInInjectionContext(() => {
-      const comp = new TemplatePickerComponent(null);
+      const comp = new TemplatePickerComponent([]);
       const emitted: CanvasData[] = [];
       comp.templateSelected.subscribe(d => emitted.push(d));
       comp.selectBlank();
@@ -544,9 +544,9 @@ describe('TemplatePickerComponent — selectBlank / selectTemplate', () => {
     });
   });
 
-  it('templateList returns empty array when no templates injected', () => {
+  it('templateList returns empty array when no templates provided', () => {
     TestBed.runInInjectionContext(() => {
-      const comp = new TemplatePickerComponent(null);
+      const comp = new TemplatePickerComponent([]);
       expect(comp.templateList()).toEqual([]);
     });
   });

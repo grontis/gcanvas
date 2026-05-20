@@ -8,6 +8,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { SelectionService } from '../services/selection.service';
 import { CanvasStateService } from '../services/canvas-state.service';
+import { isSafeUrl } from '../utils/sanitize-url.util';
 
 @Component({
   selector: 'gc-floating-toolbar',
@@ -114,7 +115,7 @@ export class FloatingToolbarComponent {
     if (!ed) return;
     const href = this.linkUrl.trim();
     if (href) {
-      if (/^(javascript|data|vbscript):/i.test(href)) {
+      if (!isSafeUrl(href)) {
         this.showLinkPopover.set(false);
         this.linkUrl = '';
         return;

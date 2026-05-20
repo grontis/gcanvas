@@ -17,7 +17,6 @@ import { CanvasStateService } from '../../services/canvas-state.service';
 import { SelectionService } from '../../services/selection.service';
 import {
   TIPTAP_EXTENSIONS_TOKEN,
-  DEFAULT_TIPTAP_EXTENSIONS,
 } from '../../tokens/tiptap-extensions.token';
 
 const DEBOUNCE_MS = 300;
@@ -37,9 +36,9 @@ export class TextElementComponent implements OnDestroy {
   private readonly canvasState = inject(CanvasStateService);
   private readonly selection = inject(SelectionService);
 
-  // Extensions — injected via token (optional) with fallback to the library defaults
+  // Extensions — injected via token; default is guaranteed by provideCanvas()
   private readonly extensions =
-    inject(TIPTAP_EXTENSIONS_TOKEN, { optional: true }) ?? DEFAULT_TIPTAP_EXTENSIONS;
+    inject(TIPTAP_EXTENSIONS_TOKEN);
 
   // Mode signal
   readonly editMode = signal(false);

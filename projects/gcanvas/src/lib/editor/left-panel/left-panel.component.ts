@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { ComponentPaletteComponent } from './component-palette.component';
 import { LayersPanelComponent } from './layers-panel.component';
 
@@ -13,6 +13,8 @@ type LeftPanelTab = 'components' | 'layers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorLeftPanelComponent {
+  collapsed = input<boolean>(false);
+
   readonly activeTab = signal<LeftPanelTab>('components');
 
   setTab(tab: LeftPanelTab): void {

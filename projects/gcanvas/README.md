@@ -1,63 +1,85 @@
-# Gcanvas
+# @grontis/gcanvas
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+An Angular 19 no-code canvas editor library. Embed either:
 
-## Code scaffolding
+- **`<gc-canvas>`** — the primitive (drag, resize, rich-text edit; no chrome)
+- **`<gc-canvas-editor>`** — the full editor shell (top chrome, palette, layers, inspector, modals, command palette, responsive preview)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Both surfaces share the same `CanvasData` / `CanvasChangeEvent` contract.
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Install
 
 ```bash
-ng generate --help
+npm install @grontis/gcanvas
+npm install @angular/cdk \
+  @tiptap/core @tiptap/starter-kit @tiptap/html \
+  @tiptap/extension-text-style @tiptap/extension-color @tiptap/extension-underline \
+  @tiptap/extension-font-family @tiptap/extension-highlight \
+  @tiptap/extension-link @tiptap/extension-text-align \
+  ngx-tiptap
 ```
 
-## Building
+Requires Angular 19+.
 
-To build the library, run:
+## Primitive
 
-```bash
-ng build gcanvas
+```typescript
+import { CanvasComponent } from '@grontis/gcanvas';
+
+@Component({
+  imports: [CanvasComponent],
+  template: `<gc-canvas [canvasData]="canvasData" (canvasChange)="onChange($event)" />`,
+})
+export class AppComponent {
+  canvasData = { version: 1, viewport: { width: 1200, height: 800, backgroundColor: '#fff' }, elements: [] };
+  onChange(e) { this.canvasData = e.canvasData; }
+}
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
+## Full editor
 
-### Publishing the Library
+```typescript
+import { CanvasEditorComponent } from '@grontis/gcanvas';
 
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-   ```bash
-   cd dist/gcanvas
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
+@Component({
+  imports: [CanvasEditorComponent],
+  template: `
+    <gc-canvas-editor
+      [canvasData]="canvasData"
+      [projectName]="'My Project'"
+      [layout]="'classic'"
+      (canvasChange)="onChange($event)"
+      (publish)="onPublish()" />
+  `,
+})
+export class AppComponent { /* ... */ }
 ```
 
-## Running end-to-end tests
+Layouts: `classic` (default), `rail`, `canvas-first`, `unified-left`.
 
-For end-to-end (e2e) testing, run:
+## Theming
 
-```bash
-ng e2e
+Override CSS custom properties on `gc-canvas-editor`:
+
+```scss
+gc-canvas-editor {
+  --gc-accent: #2563eb;
+  --gc-bg: #ffffff;
+  --gc-ink: #0b0d10;
+  --gc-line: #e5e7eb;
+  /* ... see GitHub README for the full token list */
+}
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Extension points
 
-## Additional Resources
+Five `InjectionToken<T[]>` extension points let you register custom element types, palette entries, templates, TipTap extensions, and `⌘K` commands. Defaults are provided automatically by `provideCanvas()` / `provideEditor()`.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Full documentation
+
+See the [GitHub repository](https://github.com/grontis/gcanvas) for the complete README, including:
+
+- All extension-point examples
+- Accessibility model (modal a11y, focus management, focus-visible)
+- Keyboard shortcuts
+- Development & release workflow

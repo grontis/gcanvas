@@ -73,10 +73,7 @@ export class ImageSectionComponent {
   }
 
   setFocalPoint(position: string): void {
-    const el = this.element();
-    this.canvasState.patchElement(el.id, {
-      styles: { ...el.styles, 'object-position': position },
-    });
+    this.canvasState.patchStyles(this.element().id, { 'object-position': position });
   }
 
   onAltTextChange(event: Event): void {

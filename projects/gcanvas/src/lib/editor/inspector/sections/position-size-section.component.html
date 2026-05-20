@@ -2,9 +2,9 @@
   <div class="gc-insp-title">Position &amp; size</div>
 
   <div class="gc-insp-row">
-    <label>Position</label>
+    <span class="gc-insp-label">Position</span>
     <div class="gc-insp-pair">
-      <div class="gc-insp-v">
+      <label class="gc-insp-v">
         <span class="gc-insp-v__axis">X</span>
         <input
           class="gc-insp-input"
@@ -13,8 +13,8 @@
           (ngModelChange)="onPositionChange('x', $event)"
         />
         <span class="gc-insp-v__unit">px</span>
-      </div>
-      <div class="gc-insp-v">
+      </label>
+      <label class="gc-insp-v">
         <span class="gc-insp-v__axis">Y</span>
         <input
           class="gc-insp-input"
@@ -23,14 +23,14 @@
           (ngModelChange)="onPositionChange('y', $event)"
         />
         <span class="gc-insp-v__unit">px</span>
-      </div>
+      </label>
     </div>
   </div>
 
   <div class="gc-insp-row">
-    <label>Size</label>
+    <span class="gc-insp-label">Size</span>
     <div class="gc-insp-pair">
-      <div class="gc-insp-v">
+      <label class="gc-insp-v">
         <span class="gc-insp-v__axis">W</span>
         <input
           class="gc-insp-input"
@@ -39,8 +39,8 @@
           (ngModelChange)="onSizeChange('w', $event)"
         />
         <span class="gc-insp-v__unit">px</span>
-      </div>
-      <div class="gc-insp-v">
+      </label>
+      <label class="gc-insp-v">
         <span class="gc-insp-v__axis">H</span>
         <input
           class="gc-insp-input"
@@ -49,7 +49,7 @@
           (ngModelChange)="onSizeChange('h', $event)"
         />
         <span class="gc-insp-v__unit">px</span>
-      </div>
+      </label>
     </div>
   </div>
 </div>

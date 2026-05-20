@@ -19,11 +19,14 @@ import { provideEditor } from '../providers/provide-editor';
 import { CanvasStateService } from '../services/canvas-state.service';
 import { EditorChromeService, SaveStatus } from '../services/editor-chrome.service';
 import { ToolStateService } from '../services/tool-state.service';
+import { CommandPaletteService } from '../services/command-palette.service';
 import { CanvasViewComponent } from '../canvas/canvas-view.component';
 import { ChromeTopComponent } from './chrome/chrome-top.component';
 import { InspectorComponent } from './inspector/inspector.component';
 import { EditorToolbarComponent } from './toolbar/editor-toolbar.component';
 import { EditorLeftPanelComponent } from './left-panel/left-panel.component';
+import { CommandPaletteComponent } from './command-palette/command-palette.component';
+import { LibraryModalComponent } from './library-modal/library-modal.component';
 import { COMPONENT_PALETTE_TOKEN, PaletteEntry } from '../tokens/component-palette.token';
 import { CanvasData, CanvasChangeEvent } from '../models/canvas-data.model';
 import { CanvasElement } from '../models/canvas-element.model';
@@ -43,11 +46,19 @@ import { TemplatePickerComponent } from '../templates/template-picker.component'
     CdkDrag,
     PublishModalComponent,
     TemplatePickerComponent,
+    CommandPaletteComponent,
+    LibraryModalComponent,
   ],
   templateUrl: './canvas-editor.component.html',
   styleUrl: './canvas-editor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [...provideCanvas(), ...provideEditor()],
+  host: {
+    '[class.gc-layout--classic]':      "layout() === 'classic'",
+    '[class.gc-layout--rail]':         "layout() === 'rail'",
+    '[class.gc-layout--canvas-first]': "layout() === 'canvas-first'",
+    '[class.gc-layout--unified-left]': "layout() === 'unified-left'",
+  },
 })
 export class CanvasEditorComponent {
   // --- Public API (same shape as CanvasComponent for parity) ---
@@ -63,6 +74,23 @@ export class CanvasEditorComponent {
   publishUrl           = input<string>('');
   enableTemplatePicker = input<boolean>(false);
 
+  // --- Phase H inputs ---
+  /**
+   * Controls the editor chrome layout.
+   *
+   * - `'classic'`      Three columns: left panel (248px) | canvas | inspector (296px).
+   * - `'rail'`         Three columns: icon rail (48px) | canvas | inspector. Left panel collapsed to icon-only.
+   * - `'canvas-first'` Full-width canvas only; left panel and inspector hidden.
+   * - `'unified-left'` Two columns: combined left+inspector panel (320px) | canvas. Inspector projected into left panel.
+   *
+   * Planned but not yet implemented: `'inspector-only'` (canvas + inspector, no left panel),
+   * `'no-chrome'` (canvas only, including chrome rows removed — requires row-level grid changes).
+   */
+  layout = input<'classic' | 'rail' | 'canvas-first' | 'unified-left'>('classic');
+
+  // --- Phase G/Review: readonly passthrough ---
+  readonly = input<boolean>(false);
+
   // --- Action outputs ---
   publish = output<void>();
   preview = output<'mobile' | 'tablet' | 'desktop' | 'all'>();
@@ -71,14 +99,22 @@ export class CanvasEditorComponent {
   @ViewChild('canvasWrap') canvasWrapRef!: ElementRef<HTMLElement>;
 
   // --- Injected services ---
-  private readonly canvasState   = inject(CanvasStateService);
-  private readonly chromeService = inject(EditorChromeService);
-  private readonly toolState     = inject(ToolStateService);
-  private readonly destroyRef    = inject(DestroyRef);
-  private readonly palette       = inject(COMPONENT_PALETTE_TOKEN);
+  private readonly canvasState    = inject(CanvasStateService);
+  private readonly chromeService  = inject(EditorChromeService);
+  private readonly toolState      = inject(ToolStateService);
+  private readonly destroyRef     = inject(DestroyRef);
+  private readonly palette        = inject(COMPONENT_PALETTE_TOKEN);
+  readonly commandPalette         = inject(CommandPaletteService);
 
   // --- Internal state ---
   readonly _publishOpen = signal(false);
+  readonly _libraryOpen = signal(false);
+
+  // --- Phase H layout computed signals ---
+  readonly _showLeftPanel  = computed(() => this.layout() !== 'canvas-first');
+  readonly _showInspector  = computed(() => this.layout() === 'classic' || this.layout() === 'rail');
+  readonly _leftCollapsed  = computed(() => this.layout() === 'rail');
+  readonly _unifiedLeft    = computed(() => this.layout() === 'unified-left');
 
   // --- Computed ---
   readonly elements = computed(() => this.canvasState.elements());
@@ -111,11 +147,21 @@ export class CanvasEditorComponent {
     this.canvasState.changes$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(event => this.canvasChange.emit(event));
+
+    // Phase H: Subscribe to EditorChromeService subjects for Publish and Library commands
+    this.chromeService.openPublishModal$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.openPublishModal());
+
+    this.chromeService.openLibraryModal$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this._libraryOpen.set(true));
   }
 
   // --- Keyboard shortcut guard ---
   private _isEditingText(event: KeyboardEvent): boolean {
-    const el = event.target as HTMLElement;
+    const el = event.target as HTMLElement | null;
+    if (!el) return false;
     return (
       el.tagName === 'INPUT' ||
       el.tagName === 'TEXTAREA' ||
@@ -145,6 +191,15 @@ export class CanvasEditorComponent {
   onToolShape(event: KeyboardEvent): void {
     if (this._isEditingText(event)) return;
     this.toolState.setTool('shape');
+  }
+
+  // --- Phase H: ⌘K / Ctrl+K command palette shortcut ---
+  @HostListener('document:keydown.meta.k', ['$event'])
+  @HostListener('document:keydown.control.k', ['$event'])
+  onCommandPaletteShortcut(event: KeyboardEvent): void {
+    if (this._isEditingText(event)) return;
+    event.preventDefault();
+    this.commandPalette.toggle();
   }
 
   // --- Palette drop handler ---
@@ -222,6 +277,11 @@ export class CanvasEditorComponent {
 
   onTemplateSelected(data: CanvasData): void {
     this.canvasState.loadSnapshot(data);
+  }
+
+  // --- Phase H methods ---
+  onLibraryClosed(): void {
+    this._libraryOpen.set(false);
   }
 
   // --- Element factory ---

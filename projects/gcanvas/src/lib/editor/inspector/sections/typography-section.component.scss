@@ -9,7 +9,7 @@
 .gc-align-btn {
   width: 28px;
   height: 28px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--gc-line, #e5e7eb);
   border-radius: 3px;
   background: none;
   cursor: pointer;
@@ -19,12 +19,12 @@
   justify-content: center;
 
   &:hover {
-    background: #f0f0f0;
+    background: var(--gc-bg-raised, #f3f4f6);
   }
 
   &--active {
-    background: #e8f0fe;
-    border-color: #4285f4;
-    color: #4285f4;
+    background: var(--gc-accent-soft, #eff6ff);
+    border-color: var(--gc-accent, #2563eb);
+    color: var(--gc-accent, #2563eb);
   }
 }

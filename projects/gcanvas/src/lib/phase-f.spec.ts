@@ -28,9 +28,11 @@ import {
   TIPTAP_EXTENSIONS_TOKEN,
   DEFAULT_TIPTAP_EXTENSIONS,
   FontSize,
-  TypographySectionComponent,
   SYSTEM_FONTS,
 } from '../public-api';
+
+// TypographySectionComponent is internal (not in barrel — ARCH §3 cleanup)
+import { TypographySectionComponent } from './editor/inspector/sections/typography-section.component';
 
 import { FloatingToolbarComponent } from './toolbar/floating-toolbar.component';
 import { InspectorComponent } from './editor/inspector/inspector.component';
@@ -80,7 +82,8 @@ describe('Phase F barrel exports', () => {
     expect(FontSize).toBeDefined();
   });
 
-  it('TypographySectionComponent should be defined', () => {
+  // TypographySectionComponent is internal (not in barrel — ARCH §3 cleanup)
+  it('TypographySectionComponent should be defined (direct import)', () => {
     expect(TypographySectionComponent).toBeDefined();
   });
 

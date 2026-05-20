@@ -14,17 +14,17 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 12px;
-  background: #f5f5f5;
+  background: var(--gc-bg-raised, #f3f4f6);
   user-select: none;
 
   &--selected {
-    background: #e3f2fd;
+    background: var(--gc-accent-soft, #eff6ff);
     font-weight: 600;
   }
 
   &.cdk-drag-preview {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-    background: #fff;
+    background: var(--gc-bg, #ffffff);
   }
 
   &.cdk-drag-placeholder {
@@ -33,7 +33,7 @@
 
   &__drag-handle {
     cursor: grab;
-    color: #999;
+    color: #999; // tertiary icon color; kept literal
     font-size: 14px;
   }
 
@@ -45,7 +45,7 @@
   }
 
   &__type {
-    color: #999;
+    color: #999; // kept literal
     font-size: 10px;
     min-width: 36px;
   }

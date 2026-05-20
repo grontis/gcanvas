@@ -3,8 +3,8 @@
   align-items: center;
   gap: 8px;
   padding: 0 12px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #ffffff;
+  border-bottom: 1px solid var(--gc-line, #e5e7eb);
+  background: var(--gc-bg, #ffffff);
   font-size: 12px;
 }
 
@@ -12,11 +12,11 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #6b7280;
+  color: var(--gc-muted, #6b7280);
 
-  b { color: #0b0d10; font-weight: 600; }
+  b { color: var(--gc-ink, #0b0d10); font-weight: 600; }
 
-  &__sep { color: #9aa1ab; }
+  &__sep { color: #9aa1ab; } // distinct lighter shade; kept literal
 }
 
 .gc-chrome-spacer {
@@ -27,7 +27,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #6b7280;
+  color: var(--gc-muted, #6b7280);
   font-size: 12px;
   padding: 4px 8px;
 
@@ -35,15 +35,15 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #187a47; // green = saved
+    background: #187a47; // semantic green for saved; kept literal
   }
 
-  &--saving .gc-status-pill__dot  { background: #b4631d; }
-  &--unsaved .gc-status-pill__dot { background: #9aa1ab; }
-  &--unsaved { color: #9aa1ab; }
+  &--saving .gc-status-pill__dot  { background: #b4631d; } // semantic amber; kept literal
+  &--unsaved .gc-status-pill__dot { background: #9aa1ab; } // kept literal
+  &--unsaved { color: #9aa1ab; } // kept literal
 
   &--editing {
-    background: #e8f0fe;
+    background: #e8f0fe; // Google-blue pill; kept literal
     color: #1a73e8;
     border: 1px solid #4285f4;
     border-radius: 4px;
@@ -58,7 +58,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  color: #6b7280;
+  color: var(--gc-muted, #6b7280);
   padding: 4px 8px;
   border-radius: 4px;
   cursor: pointer;
@@ -66,23 +66,23 @@
   border: none;
   font-family: inherit;
 
-  &:hover:not(:disabled) { background: #f3f4f6; color: #0b0d10; }
+  &:hover:not(:disabled) { background: var(--gc-bg-raised, #f3f4f6); color: var(--gc-ink, #0b0d10); }
   &:disabled { opacity: 0.35; cursor: default; }
 }
 
 .gc-kbd {
   font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
   font-size: 10px;
-  color: #6b7280;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  color: var(--gc-muted, #6b7280);
+  background: var(--gc-bg-raised, #f3f4f6);
+  border: 1px solid var(--gc-line, #e5e7eb);
   padding: 1px 5px;
   border-radius: 3px;
   line-height: 1.4;
 }
 
 .gc-btn-publish {
-  background: #0b0d10;
+  background: var(--gc-ink, #0b0d10);
   color: white;
   border: none;
   padding: 6px 12px;
@@ -92,5 +92,5 @@
   cursor: pointer;
   font-family: inherit;
 
-  &:hover { background: #1a1d21; }
+  &:hover { background: #1a1d21; } // slightly lightened ink; no token; kept literal
 }

@@ -22,12 +22,14 @@ import { reflectComponentType, ChangeDetectionStrategy } from '@angular/core';
 
 import {
   FloatingActionToolbarComponent,
-  ImageSectionComponent,
   FOCAL_POINT_POSITIONS,
-  EffectsSectionComponent,
   SHADOW_PRESETS,
   type ShadowPreset,
 } from '../public-api';
+
+// Internal component imports (not exported from public-api per ARCH §3 cleanup)
+import { ImageSectionComponent } from './editor/inspector/sections/image-section.component';
+import { EffectsSectionComponent } from './editor/inspector/sections/effects-section.component';
 
 import { CanvasStateService } from './services/canvas-state.service';
 import { SelectionService } from './services/selection.service';
@@ -82,7 +84,8 @@ describe('Phase E barrel exports', () => {
     expect(FloatingActionToolbarComponent).toBeDefined();
   });
 
-  it('ImageSectionComponent should be defined', () => {
+  // ImageSectionComponent and EffectsSectionComponent are internal (not in barrel — ARCH §3)
+  it('ImageSectionComponent should be defined (direct import)', () => {
     expect(ImageSectionComponent).toBeDefined();
   });
 
@@ -91,7 +94,7 @@ describe('Phase E barrel exports', () => {
     expect(FOCAL_POINT_POSITIONS.length).toBe(9);
   });
 
-  it('EffectsSectionComponent should be defined', () => {
+  it('EffectsSectionComponent should be defined (direct import)', () => {
     expect(EffectsSectionComponent).toBeDefined();
   });
 

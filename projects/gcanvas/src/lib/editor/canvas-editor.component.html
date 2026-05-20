@@ -5,7 +5,13 @@
 
 <gc-editor-toolbar />
 
-<gc-editor-left-panel />
+@if (_showLeftPanel()) {
+  <gc-editor-left-panel [collapsed]="_leftCollapsed()">
+    @if (_unifiedLeft()) {
+      <gc-editor-inspector />
+    }
+  </gc-editor-left-panel>
+}
 
 <div
   class="gc-canvas-wrap"
@@ -21,14 +27,22 @@
     [enableTemplatePicker]="enableTemplatePicker() && elements().length === 0"
     (templateSelected)="onTemplateSelected($event)"
   />
-  <gc-canvas-view />
+  <gc-canvas-view [readonly]="readonly()" />
 </div>
 
-<gc-editor-inspector />
+@if (_showInspector()) {
+  <gc-editor-inspector />
+}
 
+<!-- Overlays (position: fixed; no layout class needed) -->
 <gc-publish-modal
   [open]="_publishOpen()"
   [publishUrl]="publishUrl()"
   (confirmed)="onPublishConfirmed()"
   (closed)="onPublishClosed()"
+/>
+<gc-command-palette />
+<gc-library-modal
+  [open]="_libraryOpen()"
+  (closed)="onLibraryClosed()"
 />

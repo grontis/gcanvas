@@ -11,7 +11,7 @@
 .gc-left-panel__section-title {
   font-size: 11px;
   font-weight: 600;
-  color: #9ca3af;
+  color: #9ca3af; // distinct from --gc-muted; kept literal
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 8px;
@@ -20,7 +20,7 @@
 
 .gc-left-panel__tabs {
   display: flex;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--gc-line, #e5e7eb);
   margin-bottom: 4px;
 }
 
@@ -31,12 +31,45 @@
   padding: 6px 4px;
   font-size: 12px;
   cursor: pointer;
-  color: #666;
+  color: var(--gc-muted, #6b7280);
   border-bottom: 2px solid transparent;
 
   &--active {
-    color: #1976d2;
-    border-bottom-color: #1976d2;
+    color: var(--gc-accent, #2563eb);
+    border-bottom-color: var(--gc-accent, #2563eb);
     font-weight: 600;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gc-accent, #2563eb);
+    outline-offset: -2px; /* inset for compact appearance */
+  }
+}
+
+// Rail (collapsed) mode
+.gc-left-panel-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 0;
+  height: 100%;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--gc-muted, #6b7280);
+
+    svg { width: 18px; height: 18px; }
+
+    &:hover { background: var(--gc-bg-raised, #f3f4f6); color: var(--gc-ink, #0b0d10); }
+    &--active { background: var(--gc-accent-soft, #eff6ff); color: var(--gc-accent, #2563eb); }
   }
 }

@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   Inject,
-  Optional,
   computed,
   inject,
   input,
@@ -28,15 +27,11 @@ export class TemplatePickerComponent {
   private readonly canvasState = inject(CanvasStateService);
 
   constructor(
-    @Inject(TEMPLATE_REGISTRY_TOKEN) @Optional()
-    private readonly templates: TemplateEntry[] | null,
-  ) {
-    if (!this.templates) {
-      this.templates = [];
-    }
-  }
+    @Inject(TEMPLATE_REGISTRY_TOKEN)
+    private readonly templates: TemplateEntry[],
+  ) {}
 
-  readonly templateList = computed(() => this.templates ?? []);
+  readonly templateList = computed(() => this.templates);
 
   selectTemplate(entry: TemplateEntry): void {
     this.templateSelected.emit(entry.data);

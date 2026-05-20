@@ -15,6 +15,7 @@ import { TextElementComponent } from './text-element.component';
 import { CanvasStateService } from '../../services/canvas-state.service';
 import { SelectionService } from '../../services/selection.service';
 import { TextCanvasElement } from '../../models/canvas-element.model';
+import { TIPTAP_EXTENSIONS_TOKEN, DEFAULT_TIPTAP_EXTENSIONS } from '../../tokens/tiptap-extensions.token';
 
 // ---------------------------------------------------------------------------
 // Minimal host component — required to satisfy input.required<TextCanvasElement>()
@@ -51,7 +52,11 @@ describe('TextElementComponent — exitEdit() idempotency', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HostComponent],
-      providers: [CanvasStateService, SelectionService],
+      providers: [
+        CanvasStateService,
+        SelectionService,
+        { provide: TIPTAP_EXTENSIONS_TOKEN, useValue: DEFAULT_TIPTAP_EXTENSIONS },
+      ],
     });
   });
 

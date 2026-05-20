@@ -1,8 +1,13 @@
 @if (open()) {
   <div class="gc-modal-backdrop" (click)="onBackdropClick()">
-    <div class="gc-modal" (click)="$event.stopPropagation()">
+    <div class="gc-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gc-publish-title"
+      cdkTrapFocus
+      (click)="$event.stopPropagation()">
       <header class="gc-modal__header">
-        <h2 class="gc-modal__title">Publish</h2>
+        <h2 class="gc-modal__title" id="gc-publish-title">Publish</h2>
         <button class="gc-modal__close" (click)="dismiss()" aria-label="Close">&#x2715;</button>
       </header>
 

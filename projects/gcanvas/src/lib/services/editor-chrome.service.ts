@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, inject, signal, Signal } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CanvasStateService } from './canvas-state.service';
 import { CanvasChangeEvent } from '../models/canvas-data.model';
@@ -57,4 +57,8 @@ export class EditorChromeService {
   setSaveStatus(status: SaveStatus): void {
     this._saveStatus.set(status);
   }
+
+  // --- Phase H subjects ---
+  readonly openPublishModal$ = new Subject<void>();
+  readonly openLibraryModal$ = new Subject<void>();
 }

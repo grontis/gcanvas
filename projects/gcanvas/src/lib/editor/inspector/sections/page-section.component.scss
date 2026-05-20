@@ -2,13 +2,13 @@
 
 .gc-insp-section {
   padding: 10px 14px;
-  border-bottom: 1px solid #eef0f3;
+  border-bottom: 1px solid #eef0f3; // inner inspector border; kept literal
   &:last-child { border-bottom: none; }
 }
 
 .gc-insp-title {
   font-size: 10px;
-  color: #9aa1ab;
+  color: #9aa1ab; // distinct lighter shade; kept literal
   letter-spacing: 0.06em;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -23,8 +23,9 @@
   margin-bottom: 6px;
   font-size: 12px;
 
-  label {
-    color: #6b7280;
+  label,
+  .gc-insp-label {
+    color: var(--gc-muted, #6b7280);
     font-size: 11px;
   }
 }
@@ -36,21 +37,21 @@
 }
 
 .gc-insp-v {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--gc-line, #e5e7eb);
   border-radius: 4px;
   padding: 4px 6px;
-  background: #ffffff;
+  background: var(--gc-bg, #ffffff);
   font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
   font-size: 11px;
-  color: #0b0d10;
+  color: var(--gc-ink, #0b0d10);
   display: flex;
   align-items: center;
   gap: 4px;
   min-height: 26px;
 
   &--text { font-family: inherit; }   // override mono for text fields
-  &__axis { color: #9aa1ab; flex-shrink: 0; }
-  &__unit { color: #9aa1ab; margin-left: auto; flex-shrink: 0; }
+  &__axis { color: #9aa1ab; flex-shrink: 0; } // kept literal
+  &__unit { color: #9aa1ab; margin-left: auto; flex-shrink: 0; } // kept literal
 }
 
 .gc-insp-input {
@@ -69,13 +70,13 @@
   &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   -moz-appearance: textfield;
 
-  &::placeholder { color: #9aa1ab; }
+  &::placeholder { color: #9aa1ab; } // kept literal
 }
 
 .gc-color-swatch {
   width: 14px;
   height: 14px;
   border-radius: 3px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--gc-line, #e5e7eb);
   flex-shrink: 0;
 }

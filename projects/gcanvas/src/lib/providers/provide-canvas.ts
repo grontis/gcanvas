@@ -3,6 +3,7 @@ import { CanvasStateService } from '../services/canvas-state.service';
 import { SelectionService } from '../services/selection.service';
 import { SnapGuideService } from '../services/snap-guide.service';
 import { ELEMENT_REGISTRY_TOKEN, ElementRegistryEntry } from '../tokens/element-registry.token';
+import { TIPTAP_EXTENSIONS_TOKEN, DEFAULT_TIPTAP_EXTENSIONS } from '../tokens/tiptap-extensions.token';
 import { TextElementComponent } from '../elements/text-element/text-element.component';
 import { ImageElementComponent } from '../elements/image-element/image-element.component';
 import { ButtonElementComponent } from '../elements/button-element/button-element.component';
@@ -27,6 +28,10 @@ export function provideCanvas(config?: CanvasConfig): Provider[] {
     {
       provide: ELEMENT_REGISTRY_TOKEN,
       useValue: config?.registry ?? defaultRegistry,
+    },
+    {
+      provide: TIPTAP_EXTENSIONS_TOKEN,
+      useValue: DEFAULT_TIPTAP_EXTENSIONS,
     },
   ];
 }
