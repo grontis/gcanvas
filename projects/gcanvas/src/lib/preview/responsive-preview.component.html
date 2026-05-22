@@ -1,16 +1,31 @@
 <div class="gc-preview-chrome">
   <div class="gc-preview-columns">
-    <div class="gc-preview-column">
-      <span class="gc-preview-label">Mobile</span>
-      <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="375" />
-    </div>
-    <div class="gc-preview-column">
-      <span class="gc-preview-label">Tablet</span>
-      <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="768" />
-    </div>
-    <div class="gc-preview-column">
-      <span class="gc-preview-label">Desktop</span>
-      <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="1280" />
-    </div>
+    @if (previewMode() === 'html') {
+      <div class="gc-preview-column">
+        <span class="gc-preview-label">Mobile</span>
+        <gc-breakpoint-iframe [srcdoc]="serializedMobile()" [width]="375" [height]="canvasData().viewport.height" />
+      </div>
+      <div class="gc-preview-column">
+        <span class="gc-preview-label">Tablet</span>
+        <gc-breakpoint-iframe [srcdoc]="serializedTablet()" [width]="768" [height]="canvasData().viewport.height" />
+      </div>
+      <div class="gc-preview-column">
+        <span class="gc-preview-label">Desktop</span>
+        <gc-breakpoint-iframe [srcdoc]="serializedDesktop()" [width]="1280" [height]="canvasData().viewport.height" />
+      </div>
+    } @else {
+      <div class="gc-preview-column">
+        <span class="gc-preview-label">Mobile</span>
+        <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="375" />
+      </div>
+      <div class="gc-preview-column">
+        <span class="gc-preview-label">Tablet</span>
+        <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="768" />
+      </div>
+      <div class="gc-preview-column">
+        <span class="gc-preview-label">Desktop</span>
+        <gc-breakpoint-canvas [canvasData]="canvasData()" [width]="1280" />
+      </div>
+    }
   </div>
 </div>

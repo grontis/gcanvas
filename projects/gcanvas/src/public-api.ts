@@ -62,3 +62,16 @@ export { defaultCommandsFactory } from './lib/providers/provide-editor';
 
 // Review-fixes additions
 export { isSafeUrl } from './lib/utils/sanitize-url.util';
+
+// Publish-export additions
+export type { PublishPayload } from './lib/models/publish-payload.model';
+export {
+  ELEMENT_SERIALIZER_TOKEN,
+  type ElementSerializerEntry,
+  type SerializerContext,
+  type SerializedFragment,
+} from './lib/tokens/element-serializer.token';
+export { IMAGE_RESOLVER_TOKEN, type ImageResolver } from './lib/tokens/image-resolver.token';
+export { CanvasSerializer } from './lib/serialize/canvas-serializer.service';
+export { serializeCanvas, toHtmlDocument } from './lib/serialize/canvas-serializer';
+export { BreakpointIframeComponent } from './lib/preview/breakpoint-iframe.component';

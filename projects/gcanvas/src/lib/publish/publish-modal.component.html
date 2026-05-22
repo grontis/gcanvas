@@ -43,8 +43,16 @@
       </section>
 
       <footer class="gc-modal__footer">
+        @if (hasBlockingErrors()) {
+          <span class="gc-modal__blocking-error">Fix errors above to publish</span>
+        }
         <button class="gc-btn-secondary" type="button" (click)="dismiss()">Cancel</button>
-        <button class="gc-btn-publish" type="button" (click)="confirm()">Publish now</button>
+        <button
+          class="gc-btn-publish"
+          [class.gc-btn-publish--disabled]="hasBlockingErrors()"
+          [disabled]="hasBlockingErrors()"
+          type="button"
+          (click)="confirm()">Publish now</button>
       </footer>
     </div>
   </div>

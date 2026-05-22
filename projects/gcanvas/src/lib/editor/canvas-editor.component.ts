@@ -30,8 +30,10 @@ import { LibraryModalComponent } from './library-modal/library-modal.component';
 import { COMPONENT_PALETTE_TOKEN, PaletteEntry } from '../tokens/component-palette.token';
 import { CanvasData, CanvasChangeEvent } from '../models/canvas-data.model';
 import { CanvasElement } from '../models/canvas-element.model';
+import { PublishPayload } from '../models/publish-payload.model';
 import { PublishModalComponent } from '../publish/publish-modal.component';
 import { TemplatePickerComponent } from '../templates/template-picker.component';
+import { CanvasSerializer } from '../serialize/canvas-serializer.service';
 
 @Component({
   selector: 'gc-canvas-editor',
@@ -96,19 +98,20 @@ export class CanvasEditorComponent {
   readonly = input<boolean>(false);
 
   // --- Action outputs ---
-  publish = output<void>();
+  publish = output<PublishPayload>();
   preview = output<'mobile' | 'tablet' | 'desktop' | 'all'>();
 
   // --- ViewChild ---
   @ViewChild('canvasWrap') canvasWrapRef!: ElementRef<HTMLElement>;
 
   // --- Injected services ---
-  private readonly canvasState    = inject(CanvasStateService);
-  private readonly chromeService  = inject(EditorChromeService);
-  private readonly toolState      = inject(ToolStateService);
-  private readonly destroyRef     = inject(DestroyRef);
-  private readonly palette        = inject(COMPONENT_PALETTE_TOKEN);
-  readonly commandPalette         = inject(CommandPaletteService);
+  private readonly canvasState       = inject(CanvasStateService);
+  private readonly chromeService     = inject(EditorChromeService);
+  private readonly toolState         = inject(ToolStateService);
+  private readonly destroyRef        = inject(DestroyRef);
+  private readonly palette           = inject(COMPONENT_PALETTE_TOKEN);
+  private readonly canvasSerializer  = inject(CanvasSerializer);
+  readonly commandPalette            = inject(CommandPaletteService);
 
   // --- Internal state ---
   readonly _publishOpen = signal(false);
@@ -268,7 +271,8 @@ export class CanvasEditorComponent {
 
   onPublishConfirmed(): void {
     this._publishOpen.set(false);
-    this.publish.emit();
+    const payload = this.canvasSerializer.serialize(this.canvasState.canvasData());
+    this.publish.emit(payload);
   }
 
   onPublishClosed(): void {

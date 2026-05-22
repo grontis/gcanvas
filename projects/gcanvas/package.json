@@ -1,6 +1,32 @@
 {
   "name": "@grontis/gcanvas",
   "version": "0.1.0",
+  "description": "An Angular 19 no-code canvas editor library. Ships a bare drag/resize/rich-text canvas (<gc-canvas>) and a full editor shell (<gc-canvas-editor>) with palette, layers, inspector, command palette, responsive preview, and an HTML/CSS export pipeline.",
+  "keywords": [
+    "angular",
+    "angular-library",
+    "canvas",
+    "editor",
+    "no-code",
+    "low-code",
+    "drag-and-drop",
+    "rich-text",
+    "tiptap",
+    "page-builder",
+    "wysiwyg",
+    "responsive"
+  ],
+  "author": "grontis <grantkveton@msn.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/grontis/gcanvas#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grontis/gcanvas.git",
+    "directory": "projects/gcanvas"
+  },
+  "bugs": {
+    "url": "https://github.com/grontis/gcanvas/issues"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },

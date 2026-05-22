@@ -5,7 +5,11 @@ An Angular 19 no-code canvas editor library. Ships two embeddable surfaces:
 - **`<gc-canvas>`** — the primitive. A bare canvas where users drag, resize, and rich-text-edit elements. No chrome, no panels.
 - **`<gc-canvas-editor>`** — the full editor shell. Chrome bar, component palette, layers panel, inspector, floating toolbars, command palette, library/publish/template modals, responsive preview.
 
-Both surfaces consume the same `CanvasData` model and emit the same `CanvasChangeEvent`. Pick the surface that fits your product; share state between them if you want.
+Both surfaces consume the same `CanvasData` model and emit the same `CanvasChangeEvent`. The full editor additionally serializes the canvas to a complete HTML document on publish. Pick the surface that fits your product; share state between them if you want.
+
+> **Looking for the consumer guide?** The full install/usage documentation lives in [`projects/gcanvas/README.md`](projects/gcanvas/README.md) — that's the file npm consumers see on the package page. This root README is the contributor view.
+>
+> **Releasing?** See [`PUBLISHING.md`](PUBLISHING.md) for the maintainer release flow.
 
 ## Features
 
@@ -23,28 +27,40 @@ Both surfaces consume the same `CanvasData` model and emit the same `CanvasChang
 - Floating action toolbar (per-selection actions)
 - Floating text toolbar (TipTap rich-text controls)
 - Command palette (`⌘K` / `Ctrl+K`) with extensible command registry
-- Library modal, template picker, publish modal with preflight checks
-- Responsive preview across mobile/tablet/desktop breakpoints
+- Library modal, template picker, publish modal with pre-flight checks
+- Responsive preview across mobile/tablet/desktop breakpoints — each breakpoint rendered in a sandboxed iframe of the serialized output
 - Four built-in layouts: `classic`, `rail`, `canvas-first`, `unified-left`
 - Read-only mode for presenter/preview surfaces
 - Accessible modals (`role="dialog"`, `aria-modal`, focus trap, focus return, `:focus-visible`)
 
+**Publish / HTML export pipeline**
+- `<gc-canvas-editor>` emits a `PublishPayload` on `(publish)` with `html`, `css`, optional `js`, and a ready-to-ship `fullDocument` (`<!DOCTYPE html>` … `</html>`)
+- `CanvasSerializer` service and pure `serializeCanvas()` / `toHtmlDocument()` helpers for headless export
+- Per-element-type serializers registered through `ELEMENT_SERIALIZER_TOKEN`
+- `IMAGE_RESOLVER_TOKEN` rewrites image `src` values at export time (CDN swap, URL signing)
+- Pre-flight checks: missing alt text, missing SEO title, missing SEO description
+
 **Architecture**
 - Standalone components, signals-first, `ChangeDetectionStrategy.OnPush` throughout
-- CSS custom properties for theming (`--gc-*` tokens)
+- CSS custom properties for theming (`--gc-*` tokens — part of the public API)
 - Storage-agnostic — accepts `CanvasData` input, emits `CanvasChangeEvent` on every change
 - Tree-shakeable: import only what you use
 
 ## Installation
 
-Add a `.npmrc` pointing `@grontis` to GitHub Packages:
+The package is on **GitHub Packages**, not npmjs.org. Add a `.npmrc` at your project root that scopes `@grontis` to it:
 
 ```
 @grontis:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
 ```
 
-Then install the library and its peers:
+Then add a token (with `read:packages`) to your **user-level** `~/.npmrc`:
+
+```
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT
+```
+
+Install the library and its peers:
 
 ```bash
 npm install @grontis/gcanvas
@@ -57,7 +73,7 @@ npm install @angular/cdk \
   ngx-tiptap
 ```
 
-Requires Angular 19+.
+Requires Angular 19+. Full install and auth notes (including CI) live in [`projects/gcanvas/README.md`](projects/gcanvas/README.md#install).
 
 ## Quick start — primitive `<gc-canvas>`
 
@@ -70,8 +86,7 @@ import type { CanvasData, CanvasChangeEvent } from '@grontis/gcanvas';
   template: `
     <gc-canvas
       [canvasData]="canvasData"
-      (canvasChange)="onCanvasChange($event)"
-    />
+      (canvasChange)="onCanvasChange($event)" />
   `,
 })
 export class AppComponent {
@@ -91,7 +106,9 @@ export class AppComponent {
 
 ```typescript
 import { CanvasEditorComponent } from '@grontis/gcanvas';
-import type { CanvasData, CanvasChangeEvent, SaveStatus } from '@grontis/gcanvas';
+import type {
+  CanvasData, CanvasChangeEvent, SaveStatus, PublishPayload,
+} from '@grontis/gcanvas';
 import { signal } from '@angular/core';
 
 @Component({
@@ -104,8 +121,7 @@ import { signal } from '@angular/core';
       [saveStatus]="saveStatus()"
       [layout]="'classic'"
       (canvasChange)="onCanvasChange($event)"
-      (publish)="onPublish()"
-    />
+      (publish)="onPublish($event)" />
   `,
 })
 export class AppComponent {
@@ -113,7 +129,10 @@ export class AppComponent {
   readonly saveStatus = signal<SaveStatus>('saved');
 
   onCanvasChange(e: CanvasChangeEvent) { this.canvasData = e.canvasData; }
-  onPublish() { /* persist + publish */ }
+  onPublish(payload: PublishPayload) {
+    // payload.fullDocument is a complete <!DOCTYPE html> string.
+    persistToHost(payload.fullDocument);
+  }
 }
 ```
 
@@ -153,11 +172,13 @@ All editor chrome, modals, inspector, floating toolbars, and snap-guide overlays
 
 ## Extensibility
 
-The editor surfaces five `InjectionToken<T[]>` extension points. Each defaults to a sensible array via `provideCanvas()` / `provideEditor()`; supply your own to replace.
+The library surfaces seven `InjectionToken<T[]>` extension points. Each defaults to a sensible value via `provideCanvas()` / `provideEditor()`; supply your own to replace.
 
 | Token | Purpose |
 |---|---|
-| `ELEMENT_REGISTRY_TOKEN` | Register custom element types (renderer + identifier) |
+| `ELEMENT_REGISTRY_TOKEN` | Component used to render each element `type` |
+| `ELEMENT_SERIALIZER_TOKEN` | HTML/CSS/JS emitted on export per element `type` |
+| `IMAGE_RESOLVER_TOKEN` | Rewrites image `src` values at export time |
 | `COMPONENT_PALETTE_TOKEN` | Entries in the left-panel component palette |
 | `TEMPLATE_REGISTRY_TOKEN` | Templates available in the template picker |
 | `TIPTAP_EXTENSIONS_TOKEN` | TipTap extensions loaded by text elements |
@@ -186,6 +207,48 @@ const myCommand: CommandEntry = {
 ```
 
 The library also exports an `isSafeUrl()` utility for URL allow-list validation (blocks `javascript:`, `data:`, `vbscript:` schemes). The text-toolbar link action uses it internally; expose it to your own URL ingestion paths if needed.
+
+## Publish / HTML export
+
+`<gc-canvas-editor>`'s `(publish)` emits a `PublishPayload`:
+
+```typescript
+interface PublishPayload {
+  canvasData: CanvasData;
+  html: string;          // body markup
+  css: string;           // collected styles
+  js?: string;           // collected scripts (often absent)
+  fullDocument: string;  // complete <!DOCTYPE html> document, ready to ship
+  meta: CanvasData['meta'];
+}
+```
+
+Headless usage (no editor mounted):
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { CanvasSerializer, provideCanvas } from '@grontis/gcanvas';
+
+@Component({
+  template: '',
+  providers: [provideCanvas()],
+})
+export class Exporter {
+  private readonly serializer = inject(CanvasSerializer);
+  export(data: CanvasData) {
+    return this.serializer.serialize(data).fullDocument;
+  }
+}
+```
+
+Pure-function form (no DI):
+
+```typescript
+import { serializeCanvas, toHtmlDocument } from '@grontis/gcanvas';
+const html = toHtmlDocument(serializeCanvas(data, serializers, ctx), data.meta);
+```
+
+See [`projects/gcanvas/README.md#publishing-and-html-export`](projects/gcanvas/README.md#publishing-and-html-export) for the full export reference.
 
 ## Accessibility
 
@@ -228,16 +291,22 @@ The demo imports `@grontis/gcanvas` via a `tsconfig.json` path alias to `dist/gc
 ng test gcanvas --no-watch --browsers=ChromeHeadless
 ```
 
-Suite covers per-phase acceptance tests (`phase-*.spec.ts`), service unit tests, component unit tests, and integration tests (`phase-h.integration.spec.ts`, `review-fixes.integration.spec.ts`).
+Suite covers per-phase acceptance tests (`phase-*.spec.ts`), service unit tests, component unit tests, and integration tests (`phase-h.integration.spec.ts`, `review-fixes.integration.spec.ts`, `publish-export.integration.spec.ts`).
 
 ## Releasing
+
+Releases are tag-driven — pushing a `v*` tag triggers `.github/workflows/publish.yml`, which builds `dist/gcanvas` and publishes it to GitHub Packages with the workflow's built-in `GITHUB_TOKEN`.
 
 ```bash
 # Bump the version in projects/gcanvas/package.json, then:
 git add projects/gcanvas/package.json
-git commit -m "chore: bump version to x.y.z"
-git tag vx.y.z
+git commit -m "chore: release vX.Y.Z"
+git tag vX.Y.Z
 git push origin main --tags
 ```
 
-`.github/workflows/publish.yml` triggers on `v*` tags, builds the library, and publishes `dist/gcanvas` to `https://npm.pkg.github.com`. Uses the built-in `GITHUB_TOKEN` — no manual secrets.
+Full release flow — pre-release checklist, versioning rules, manual-publish fallback, troubleshooting — lives in [`PUBLISHING.md`](PUBLISHING.md).
+
+## License
+
+[MIT](LICENSE) © grontis

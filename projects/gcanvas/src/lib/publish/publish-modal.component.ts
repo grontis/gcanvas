@@ -41,6 +41,10 @@ export class PublishModalComponent implements OnInit, OnDestroy {
     runPreflightChecks(this.canvasState.canvasData())
   );
 
+  readonly hasBlockingErrors = computed(() =>
+    this.preflightResults().some(r => r.severity === 'error')
+  );
+
   ngOnInit(): void {
     // Capture the currently focused element so we can restore focus when the modal closes
     this._previouslyFocusedElement = document.activeElement as HTMLElement | null;

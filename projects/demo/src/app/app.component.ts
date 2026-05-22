@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CanvasEditorComponent } from '@grontis/gcanvas';
-import type { CanvasData, CanvasChangeEvent, SaveStatus } from '@grontis/gcanvas';
+import type { CanvasData, CanvasChangeEvent, SaveStatus, PublishPayload } from '@grontis/gcanvas';
 
 @Component({
   selector: 'app-root',
@@ -47,7 +47,12 @@ export class AppComponent {
     console.log('Canvas changed:', event.changeType, event.changedElementIds);
   }
 
-  onPublish(): void {
-    console.log('Publish requested — modal coming in Phase G.');
+  onPublish(payload: PublishPayload): void {
+    console.log('Publish payload received:', {
+      meta: payload.meta,
+      htmlLength: payload.html.length,
+      cssLength: payload.css.length,
+      fullDocumentLength: payload.fullDocument.length,
+    });
   }
 }

@@ -183,4 +183,18 @@
     outline: 2px solid var(--gc-accent, #2563eb);
     outline-offset: 2px;
   }
+
+  &--disabled,
+  &:disabled {
+    background: var(--gc-muted, #6b7280);
+    cursor: not-allowed;
+    filter: none;
+    opacity: 0.6;
+  }
+}
+
+.gc-modal__blocking-error {
+  font-size: 13px;
+  color: #d93025; /* semantic error color; kept literal */
+  margin-right: auto;
 }
