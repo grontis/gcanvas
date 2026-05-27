@@ -70,17 +70,6 @@
   &:disabled { opacity: 0.35; cursor: default; }
 }
 
-.gc-kbd {
-  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
-  font-size: 10px;
-  color: var(--gc-muted, #6b7280);
-  background: var(--gc-bg-raised, #f3f4f6);
-  border: 1px solid var(--gc-line, #e5e7eb);
-  padding: 1px 5px;
-  border-radius: 3px;
-  line-height: 1.4;
-}
-
 .gc-btn-publish {
   background: var(--gc-ink, #0b0d10);
   color: white;

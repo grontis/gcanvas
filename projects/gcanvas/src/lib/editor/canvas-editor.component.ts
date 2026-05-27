@@ -80,6 +80,10 @@ export class CanvasEditorComponent {
   publishUrl           = input<string>('');
   enableTemplatePicker = input<boolean>(false);
 
+  // --- Chrome action toggles ---
+  enablePreview = input<boolean>(true);
+  enablePublish = input<boolean>(true);
+
   // --- Phase H inputs ---
   /**
    * Controls the editor chrome layout.
@@ -148,6 +152,10 @@ export class CanvasEditorComponent {
 
     effect(() => {
       this.chromeService.setSaveStatus(this.saveStatus());
+    });
+
+    effect(() => {
+      this.chromeService.setPublishEnabled(this.enablePublish());
     });
 
     // Wire change stream to output
@@ -266,6 +274,7 @@ export class CanvasEditorComponent {
 
   // --- Phase G methods ---
   openPublishModal(): void {
+    if (!this.enablePublish()) return;
     this._publishOpen.set(true);
   }
 

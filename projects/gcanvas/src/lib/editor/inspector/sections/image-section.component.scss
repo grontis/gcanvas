@@ -1,3 +1,5 @@
+@use './section-fields';
+
 .gc-focal-grid {
   display: grid;
   grid-template-columns: repeat(3, 20px);

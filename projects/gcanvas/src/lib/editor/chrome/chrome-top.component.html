@@ -29,7 +29,7 @@
   title="Undo"
   aria-label="Undo"
 >
-  <kbd class="gc-kbd">&#8984;Z</kbd>
+  Undo
 </button>
 
 <button
@@ -39,13 +39,17 @@
   title="Redo"
   aria-label="Redo"
 >
-  <kbd class="gc-kbd">&#8984;&#8679;Z</kbd>
+  Redo
 </button>
 
-<button class="gc-chrome-mini" type="button" (click)="previewClicked.emit()" title="Preview" aria-label="Preview">
-  Preview
-</button>
+@if (enablePreview()) {
+  <button class="gc-chrome-mini" type="button" (click)="previewClicked.emit()" title="Preview" aria-label="Preview">
+    Preview
+  </button>
+}
 
-<button class="gc-btn-publish" type="button" (click)="publishClicked.emit()">
-  Publish
-</button>
+@if (enablePublish()) {
+  <button class="gc-btn-publish" type="button" (click)="publishClicked.emit()">
+    Publish
+  </button>
+}

@@ -1,2 +1,3 @@
-// Effects section — no additional styles beyond global gc-inspector-section rules.
-// Shadow/opacity/border controls use shared gc-input, gc-select, gc-range classes.
+@use './section-fields';
+
+// Effects section — component-specific overrides beyond shared section-fields rules.

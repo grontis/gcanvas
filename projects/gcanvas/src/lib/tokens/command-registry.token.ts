@@ -11,6 +11,8 @@ export interface CommandEntry {
   category?: string;
   /** Called when the user activates this command (click or Enter). */
   action: () => void;
+  /** Optional predicate; when it returns false the command is hidden/unavailable in the palette. */
+  isAvailable?: () => boolean;
 }
 
 export const COMMAND_REGISTRY_TOKEN = new InjectionToken<CommandEntry[]>(

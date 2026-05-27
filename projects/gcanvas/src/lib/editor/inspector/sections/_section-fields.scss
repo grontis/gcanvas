@@ -1,0 +1,114 @@
+.gc-inspector-section {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--gc-line, #e5e7eb);
+
+  &:last-child { border-bottom: none; }
+}
+
+.gc-section-header {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gc-muted, #6b7280);
+  margin: 0 0 8px;
+}
+
+.gc-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  &--top { align-items: flex-start; }
+  &:last-child { margin-bottom: 0; }
+}
+
+.gc-field-label {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--gc-ink, #0b0d10);
+  min-width: 52px;
+}
+
+.gc-field-value {
+  font-size: 12px;
+  color: var(--gc-muted, #6b7280);
+}
+
+.gc-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+
+.gc-input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--gc-ink, #0b0d10);
+  background: var(--gc-bg, #fff);
+  border: 1px solid var(--gc-line, #e5e7eb);
+  border-radius: 4px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--gc-accent, #2563eb);
+  }
+
+  &--sm {
+    flex: 0 0 64px;
+    width: 64px;
+  }
+}
+
+.gc-btn-sm {
+  padding: 3px 8px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--gc-ink, #0b0d10);
+  background: var(--gc-bg-raised, #f3f4f6);
+  border: 1px solid var(--gc-line, #e5e7eb);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { background: var(--gc-line, #e5e7eb); }
+}
+
+.gc-select {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--gc-ink, #0b0d10);
+  background: var(--gc-bg, #fff);
+  border: 1px solid var(--gc-line, #e5e7eb);
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--gc-accent, #2563eb);
+  }
+}
+
+.gc-range {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--gc-accent, #2563eb);
+  cursor: pointer;
+}
+
+.gc-field-unit {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--gc-muted, #6b7280);
+  white-space: nowrap;
+}

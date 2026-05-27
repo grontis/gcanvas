@@ -13,8 +13,9 @@ export class CommandPaletteService {
 
   readonly filteredCommands: Signal<CommandEntry[]> = computed(() => {
     const q = this._query().toLowerCase().trim();
-    if (!q) return this._commands;
-    return this._commands.filter(cmd =>
+    const available = this._commands.filter(c => c.isAvailable?.() ?? true);
+    if (!q) return available;
+    return available.filter(cmd =>
       cmd.label.toLowerCase().includes(q) ||
       (cmd.category?.toLowerCase().includes(q) ?? false)
     );

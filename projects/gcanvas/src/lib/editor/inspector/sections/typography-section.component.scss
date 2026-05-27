@@ -1,5 +1,6 @@
-// Inherits gc-inspector-section, gc-field-row, gc-field-label, gc-select, gc-input patterns
-// from global inspector styles. Only component-specific styles here.
+@use './section-fields';
+
+// Component-specific styles beyond shared section-fields rules.
 
 .gc-align-group {
   display: flex;

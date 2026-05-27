@@ -1,4 +1,6 @@
 <gc-editor-chrome-top
+  [enablePreview]="enablePreview()"
+  [enablePublish]="enablePublish()"
   (publishClicked)="openPublishModal()"
   (previewClicked)="onPreviewClicked()"
 />

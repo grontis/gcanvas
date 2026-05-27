@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  input,
   output,
 } from '@angular/core';
 import { EditorChromeService } from '../../services/editor-chrome.service';
@@ -20,6 +21,9 @@ import { SelectionService } from '../../services/selection.service';
 export class ChromeTopComponent {
   publishClicked = output<void>();
   previewClicked = output<void>();
+
+  enablePreview = input<boolean>(true);
+  enablePublish = input<boolean>(true);
 
   private readonly chrome      = inject(EditorChromeService);
   private readonly canvasState = inject(CanvasStateService);

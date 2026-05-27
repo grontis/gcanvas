@@ -772,3 +772,39 @@ describe('ChromeTopComponent — previewClicked output', () => {
     expect(mirror?.outputs.some(o => o.propName === 'publishClicked')).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// CanvasEditorComponent — v0.3.0 enablePreview / enablePublish inputs
+// ---------------------------------------------------------------------------
+
+describe('CanvasEditorComponent — v0.3.0 enablePreview / enablePublish inputs', () => {
+  it('CanvasEditorComponent should have enablePreview input', async () => {
+    const { CanvasEditorComponent } = await import('./editor/canvas-editor.component');
+    const mirror = reflectComponentType(CanvasEditorComponent);
+    expect(mirror?.inputs.some(i => i.propName === 'enablePreview')).toBe(true);
+  });
+
+  it('CanvasEditorComponent should have enablePublish input', async () => {
+    const { CanvasEditorComponent } = await import('./editor/canvas-editor.component');
+    const mirror = reflectComponentType(CanvasEditorComponent);
+    expect(mirror?.inputs.some(i => i.propName === 'enablePublish')).toBe(true);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ChromeTopComponent — v0.3.0 enablePreview / enablePublish inputs
+// ---------------------------------------------------------------------------
+
+describe('ChromeTopComponent — v0.3.0 enablePreview / enablePublish inputs', () => {
+  it('should have enablePreview input', async () => {
+    const { ChromeTopComponent } = await import('./editor/chrome/chrome-top.component');
+    const mirror = reflectComponentType(ChromeTopComponent);
+    expect(mirror?.inputs.some(i => i.propName === 'enablePreview')).toBe(true);
+  });
+
+  it('should have enablePublish input', async () => {
+    const { ChromeTopComponent } = await import('./editor/chrome/chrome-top.component');
+    const mirror = reflectComponentType(ChromeTopComponent);
+    expect(mirror?.inputs.some(i => i.propName === 'enablePublish')).toBe(true);
+  });
+});

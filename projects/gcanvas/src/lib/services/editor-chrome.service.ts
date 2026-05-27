@@ -58,6 +58,11 @@ export class EditorChromeService {
     this._saveStatus.set(status);
   }
 
+  // --- Publish availability ---
+  private readonly _publishEnabled = signal<boolean>(true);
+  readonly publishEnabled: Signal<boolean> = this._publishEnabled.asReadonly();
+  setPublishEnabled(enabled: boolean): void { this._publishEnabled.set(enabled); }
+
   // --- Phase H subjects ---
   readonly openPublishModal$ = new Subject<void>();
   readonly openLibraryModal$ = new Subject<void>();

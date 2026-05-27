@@ -56,7 +56,7 @@ export function defaultCommandsFactory(
     { id: 'undo',         label: 'Undo',         category: 'history', hotkey: '⌘Z',   action: () => canvasState.undo()                  },
     { id: 'redo',         label: 'Redo',         category: 'history', hotkey: '⌘⇧Z',  action: () => canvasState.redo()                  },
     { id: 'open-library', label: 'Open Library', category: 'view',    hotkey: '',     action: () => chrome.openLibraryModal$.next()     },
-    { id: 'publish',      label: 'Publish',      category: 'publish', hotkey: '',     action: () => chrome.openPublishModal$.next()     },
+    { id: 'publish',      label: 'Publish',      category: 'publish', hotkey: '',     action: () => chrome.openPublishModal$.next(),     isAvailable: () => chrome.publishEnabled() },
   ];
 }
 
